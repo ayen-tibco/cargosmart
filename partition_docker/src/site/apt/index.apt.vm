@@ -1,0 +1,110 @@
+  ------
+  Introduction
+  ------
+  Adam yen
+  ------
+  2017-02-06
+  ------
+
+~~ Copyright 2017 TIBCO, Inc. All rights reserved.
+
+Introduction
+
+  This example demonstrates the following using the various Docker components (docker (build/run), compose, machine, swarm) to deploy StreamBase 10:
+  For a simpler docker deployment on a local machine, please use the Maven Docker Archtype feature included in StreamBase 10 Studio.
+  
+  
+  * Create a docker image containing topologies application archive
+
+  * Start docker containers configured in a two node active cluster locally
+  
+  * Create VMs with docker swarm and deploy StreamBase Application to the remote swarm
+
+  * Run basic test using ep-maven-plugin to display the primary cluster node
+
+[uml/docker-vsphere.svg] Docker Cluster Diagram
+
+  []
+
+* Profiles
+
+  Three docker flavors are illustrated in this example: 
+
+  * {{{./usage.html}Default Active Maven Profile}} 3rd party Docker Maven Plugin docker-maven-plugin for building/pushing image and running containers
+  
+  * {{{./compose_example.html}Docker-compose}} for building/pushing image and running containers
+  
+  * {{{./machine_swarm_example.html}Docker-machine and docker swarm}} (legacy) for deployment
+  
+  []
+  
+* Prerequisites
+
+  * Hardware: Minimum 4GB RAM/2 x vCPUs/20GB HDD, Recommend 8GB RAM/4 x vCPUs/50GB HDD
+    SB Applications with multiple fragments requires at least 8GB/4vCPUs
+  
+  * StreamBase Linux Binary
+  
+  * ep-maven-plugin
+  
+  * Docker Engine 1.13+
+  
+  * Curl
+  
+  * Optional: fabric8io/docker-maven-plugin (Maven pulls this automatically)
+  
+  * Optional: docker-compose 1.9+ and docker-machine 0.9.0+
+  
+  * Optional: VM Infrastructure Provider and Backend driver for docker-machine (default vmwarevsphere in this example)
+  
+* Codeline
+
+  The following are snippets of files checked into this codeline.
+
+** Dependencies in pom.xml
+
+%{snippet|id=dependencies|file=${project.basedir}/pom.xml}
+
+*** Primary Docker Support Files
+
+  Dockerfile definition in src/main/resources/Dockerfile
+
+  By default, Dockerfile is utilized to build the StreamBase image.
+
+%{snippet|file=${project.basedir}/src/main/resources/Dockerfile}
+
+*------------------------*------------------------------------------*
+| <<Port Number>>        | <<Description>>                          |
+*------------------------*------------------------------------------*
+|5556/tcp                |Default StreamBase Engine Node admin port.   |
+|                        |Used for cluster admin, node start/stop,  |
+|                        |and monitoring.                           |
+*------------------------*------------------------------------------*
+|5557-5558/tcp           |Default node data communication           |
+*------------------------*------------------------------------------*
+|54321/udp               |Default broadcast for node auto discovery |
+*------------------------*------------------------------------------*
+|10000/tcp               |Default StreamBase Application port for data  |
+|                        |and monitoring.                      |
+*------------------------*------------------------------------------*
+Docker Container Exposed Ports
+
+  Startup script src/main/resources/startsb.sh
+  
+  Purpose of this script is to handle environment variables being passed
+  to start SB10 and provide signal handling to stop the container.
+
+%{snippet|file=${project.basedir}/src/main/resources/startsb.sh}
+
+  Docker Compose file two-node-bridge.yml for starting up two containers locally.
+  
+%{snippet|file=${project.basedir}/src/test/compose/two-node-bridge.yml}
+
+  Docker Compose file two-node-bridge_swarm.yml for starting up two 
+  containers remotely in a swarm cluster. The services are set with node
+  constraints to assign where exactly it should be deployed.  The network
+  bridge mode setting is necessary for weave to work properly.
+  
+%{snippet|file=${project.basedir}/src/test/compose/two-node-bridge_swarm.yml}
+
+

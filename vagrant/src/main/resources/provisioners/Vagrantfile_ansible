@@ -1,0 +1,108 @@
+# This guide is optimized for Vagrant 1.7 and above.
+# Although versions 1.6.x should behave very similarly, it is recommended
+# to upgrade instead of disabling the requirement below.
+Vagrant.require_version ">= 1.7.0"
+
+cluster_machine_names=Array.new
+# forwarded port doesn not work with vsphere plugin yet
+# host_admin_ports=[${A1_ADMINPORT},${A2_ADMINPORT},${A3_ADMINPORT}]
+
+unless Vagrant.has_plugin?("vsphere")
+  raise 'vagrant-vsphere is not installed! Enter [vagrant plugin install vagrant-vsphere] to install.'
+end
+
+Vagrant.configure(2) do |config|
+
+    # Disable the new default behavior introduced in Vagrant 1.7, to
+    # ensure that all Vagrant machines will use the same SSH key pair.
+    # See https://github.com/mitchellh/vagrant/issues/5005
+    config.ssh.insert_key = false
+    config.ssh.username = "vagrant"
+    config.ssh.private_key_path = './example_box/vagrant_private.key'
+    config.ssh.pty = true
+    config.vm.box = "vsphere.box"
+    config.vm.box_url = "example_box/vsphere.box"
+    config.vm.synced_folder "./app","/opt/tibco/topologies", type: "rsync",
+        rsync__exclude:"sb", rsync__chown: false
+
+    # Vsphere defaults
+    config.vm.provider :vsphere do |vsphere|
+        vsphere.host = 'na-wal-vcenter.lab.streambase.com'
+        vsphere.compute_resource_name = 'Cluster 2'
+        vsphere.resource_pool_name = 'Vagrant Automated'
+        vsphere.template_name = 'Vagrant-Template'
+        vsphere.user = 'sbvagrant@na.tibco.com'
+        vsphere.password = 'DePl0yMe!@'
+        # If you don't have SSL configured correctly, set this to 'true'
+        vsphere.insecure = true
+        vsphere.memory_mb = 4096
+        vsphere.cpu_count = 2
+    end
+
+    N=2
+    (1..N).each do |i|
+        config.vm.define "A#{i}" do |instance|
+            instance.vm.hostname = "A#{i}"
+            cluster_machine_names << "A#{i}"
+            instance.vm.network "private_network", type: "dhcp"
+            # forwarded port doesn not work with vsphere plugin yet
+            # instance.vm.network "forwarded_port", guest: 5556, host: host_admin_ports[N], auto_correct: true
+            instance.vm.provider :vsphere do |vsphere|
+                vsphere.name = "A#{i}"
+            end
+
+            # trick to get playbook run only once with parrallelism
+            if i == N
+                instance.vm.provision "ansible" do |ansible|
+                    if "ansible" == "ansible"
+                        ansible.verbose = "v"
+                        ansible.limit = "all"
+                        ansible.groups = { "topologies" => cluster_machine_names }
+                        if "prep,install,deploy,docker" == "redeploy"
+                            ansible.playbook = "ansible/playbooks/Redeploy_Nodes.yml"
+                        elsif "prep,install,deploy,docker" == "update"
+                            ansible.playbook = "ansible/playbooks/Update_Cluster_Config.yml"
+                        elsif "prep,install,deploy,docker" == "display"
+                            ansible.playbook = "ansible/playbooks/Display_All_Nodes.yml"
+                        elsif "prep,install,deploy,docker" == "remove"
+                            ansible.playbook = "ansible/playbooks/Remove_All_Nodes.yml"
+                        else
+                          # perform the entire deployment or custom tags
+                            ansible.playbook = "ansible/playbooks/topologies.yml"
+                            ansible.tags = "prep,install,deploy,docker"
+                        end
+                    elsif "ansible" == "puppet"
+                        # enable only if using puppet server
+                        # ansible.puppet.puppet_server = ""
+                        # ansible.puppet_node = "${PUPPET_NODE}"
+                        ansible.environment = "production"                        
+                        ansible.environment_path = "puppet/environments"
+                        #ansible.module_path = "puppet/environments/production/modules:/etc/puppetlabs/code/environments/production/modules:/opt/puppetlabs/puppet/modules"
+                        ansible.options = "--verbose --debug"
+                    end
+                end
+            end
+        end
+    end
+
+    $shell_script= <<SCRIPT
+    # Install the EPEL repo
+    yum makecache fast
+    rpm -Uvh http://download.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm
+SCRIPT
+
+    if "ansible" == "puppet"
+        $shell_script= <<PUPPETSCRIPT
+        # install puppet repo
+        rpm -Uvh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
+        yum -y install puppet-agent
+        puppet module install puppet-archive
+        puppet module install puppetlabs-docker_platform
+PUPPETSCRIPT
+    end
+
+    # install additional default apps not included in deployment scripts
+    config.vm.provision "shell", inline: $shell_script
+
+end
+

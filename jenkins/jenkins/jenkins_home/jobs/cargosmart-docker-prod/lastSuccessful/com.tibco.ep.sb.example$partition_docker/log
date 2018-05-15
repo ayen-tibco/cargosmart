@@ -1,0 +1,225 @@
+[INFO] 
+[INFO] --------------< com.tibco.ep.sb.example:partition_docker >--------------
+[INFO] Building Docker Test Build and Push 1.0.0-SNAPSHOT                 [2/2]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ partition_docker ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker
+[INFO] Storing buildNumber: 9071dee0b599ed6e3849142b32db919b586abf4f at timestamp: 1526260388501
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (set-windows-perms) @ partition_docker ---
+[INFO] Executing tasks
+
+set-windows-perms:
+     [echo] This is ${OS_FAMILY} OS so setting SB_TARBALL var to sb/. Including extract command in Dockerfile .
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-dependency-plugin:3.1.0:unpack-dependencies (unpack-tgz-files) @ partition_docker ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-dependency-plugin:3.1.0:copy (default) @ partition_docker ---
+[INFO] Configured Artifact: com.tibco.ep.sb.example:partitioning-application:1.0.0-SNAPSHOT:ep-application
+[INFO] Copying partitioning-application-1.0.0-SNAPSHOT.zip to /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker/target/docker/partition_docker/build/maven/opt/tibco/partitioning-application/partitioning-application-1.0.0-SNAPSHOT.zip
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-scripts) @ partition_docker ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 9 resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (set-scripts-perms) @ partition_docker ---
+[INFO] Executing tasks
+
+set-scripts-perms:
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (prepare-package) @ partition_docker ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker
+[INFO] Storing buildNumber: 9071dee0b599ed6e3849142b32db919b586abf4f at timestamp: 1526260394437
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] >>> maven-source-plugin:3.0.1:jar (attach-sources) > generate-sources @ partition_docker >>>
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ partition_docker ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker
+[INFO] Storing buildNumber: 9071dee0b599ed6e3849142b32db919b586abf4f at timestamp: 1526260394670
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (set-windows-perms) @ partition_docker ---
+[INFO] Executing tasks
+
+set-windows-perms:
+     [echo] This is ${OS_FAMILY} OS so setting SB_TARBALL var to sb/. Including extract command in Dockerfile .
+[INFO] Executed tasks
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Failed to getClass for org.apache.maven.plugins.source.SourceJarMojo
+[INFO] 
+[INFO] <<< maven-source-plugin:3.0.1:jar (attach-sources) < generate-sources @ partition_docker <<<
+[INFO] 
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-source-plugin:3.0.1:jar (attach-sources) @ partition_docker ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-javadoc-plugin:2.10.4:jar (attach-javadocs) @ partition_docker ---
+[INFO] Not executing Javadoc as the project is not a Java classpath-capable package
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- docker-maven-plugin:0.25.2:build (build) @ partition_docker ---
+[INFO] DOCKER> Pulling from library/centos
+[INFO] DOCKER> Digest: sha256:2a61f8abd6250751c4b1dd3384a2bdd8f87e0e60d11c064b8a90e2e552fee2d7
+[INFO] DOCKER> Status: Image is up to date for centos:7.4.1708
+[INFO] DOCKER> Pulled centos:7.4.1708 in 376 milliseconds
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] The assembly descriptor contains a filesystem-root relative reference, which is not cross platform compatible /opt/tibco/partitioning-application
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] The assembly descriptor contains a filesystem-root relative reference, which is not cross platform compatible /opt/tibco/sb-cep/10.2/distrib/tibco/bin
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot include project artifact: com.tibco.ep.sb.example:partition_docker:pom:1.0.0-SNAPSHOT; it doesn't have an associated file or directory.
+[INFO] Copying files to /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker/target/docker/partition_docker/build/maven
+[INFO] Building tar: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod/partition_docker/target/docker/partition_docker/tmp/docker-build.tar
+[INFO] DOCKER> [partition_docker:latest] "partition_docker-build": Created docker-build.tar in 15 seconds 
+[INFO] DOCKER> Step 1/33 : FROM centos:7.4.1708
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> 3afd47092a0e
+[INFO] DOCKER> Step 2/33 : MAINTAINER Adam Yen <ayen@tibco.com>
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 10c3cb4e1218
+[INFO] DOCKER> Step 3/33 : ENV TIBCO_INSTALL_DIR=/opt/tibco
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> fca8655ac927
+[INFO] DOCKER> Step 4/33 : ENV SB_CEP_VERSION=10.2
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> fc0e7de8142a
+[INFO] DOCKER> Step 5/33 : ENV STREAMBASE_HOME=$TIBCO_INSTALL_DIR/sb-cep/$SB_CEP_VERSION
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> c0d9472d5433
+[INFO] DOCKER> Step 6/33 : ENV TIBCO_EP_HOME=/opt/tibco/sb-cep/10.2
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 687cb047a58f
+[INFO] DOCKER> Step 7/33 : ENV INSTALL_NODE_PATH=/opt/tibco/deploy/nodes
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> dd3abaa74bc2
+[INFO] DOCKER> Step 8/33 : ENV ADMINISTRATOR=/opt/tibco/sb-cep/10.2/distrib/tibco/bin/epadmin
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 1703225bf7eb
+[INFO] DOCKER> Step 9/33 : ENV SB_TARBALL=sb/
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 0dbda8594bf5
+[INFO] DOCKER> Step 10/33 : ENV SB_APP_FILE=partitioning-application-1.0.0-SNAPSHOT.zip
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 58151039f786
+[INFO] DOCKER> Step 11/33 : ENV SB_APP_DIR=/opt/tibco/partitioning-application
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> c4efee3b237e
+[INFO] DOCKER> Step 12/33 : ENV NODE_CONFIG=three-node-static-proxy-azure-node.conf
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> cfd20962bfe4
+[INFO] DOCKER> Step 13/33 : ENV SUBSTITUTIONS=
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> c4b8c1ad84f2
+[INFO] DOCKER> Step 14/33 : ENV MAVEN_HOME=/opt/tibco/sb-cep/10.2/3rdparty/generic/maven/3.3.3
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 893d8e0eb33b
+[INFO] DOCKER> Step 15/33 : ENV NODENAME=${nodename}
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 3fb0da8db322
+[INFO] DOCKER> Step 16/33 : COPY maven/ /
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> e8d970b7dd9e
+[INFO] DOCKER> Step 17/33 : RUN yum -y install zip wget tar sysstat unzip git java-1.8.0-openjdk java-1.8.0-openjdk-devel bind-utils tcpdump net-tools hostname &&  yum clean all
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> ff671b393d27
+[INFO] DOCKER> Step 18/33 : ENV JAVA_HOME=/etc/alternatives/java_sdk_1.8.0
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 368b781d93e1
+[INFO] DOCKER> Step 19/33 : RUN groupadd -g 3303 -f sbusers &&  useradd -c "TIBCO StreamBase User" -m -p Tibco123 -u 3303 -g sbusers -s /bin/bash sbuser &&  mkdir -p $TIBCO_EP_HOME && chown -R sbuser:sbusers $TIBCO_EP_HOME &&  mkdir -p $SB_APP_DIR && chown -R sbuser:sbusers $SB_APP_DIR &&  mkdir -p $TIBCO_INSTALL_DIR && chown -R sbuser:sbusers $TIBCO_INSTALL_DIR
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 8c71ead9699e
+[INFO] DOCKER> Step 20/33 : ENV PATH=$TIBCO_EP_HOME/distrib/tibco/bin:$PATH
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> cd1014fa311f
+[INFO] DOCKER> Step 21/33 : RUN chmod -R ugo+rx $SB_APP_DIR
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 605fb5c0063c
+[INFO] DOCKER> Step 22/33 : RUN chmod ugo+x $TIBCO_EP_HOME/distrib/tibco/bin/startsb.sh
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 9f35493904ec
+[INFO] DOCKER> Step 23/33 : COPY sbuser_dtm_options /home/sbuser/.dtm/options
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> f5d544e0f635
+[INFO] DOCKER> Step 24/33 : RUN chown sbuser:sbusers /home/sbuser/.dtm/options
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> c4e99b4ec1fa
+[INFO] DOCKER> Step 25/33 : EXPOSE 5556/tcp
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 539f7c022292
+[INFO] DOCKER> Step 26/33 : EXPOSE 5557/tcp
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> a376904cab21
+[INFO] DOCKER> Step 27/33 : EXPOSE 5558/tcp
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 036cd3d60ae4
+[INFO] DOCKER> Step 28/33 : EXPOSE 54321/udp
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 9d8ae2ad8857
+[INFO] DOCKER> Step 29/33 : EXPOSE 10000
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 44b7b2da0a10
+[INFO] DOCKER> Step 30/33 : EXPOSE 10080
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 4c4620c44922
+[INFO] DOCKER> Step 31/33 : USER sbuser
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 270bc9f81c19
+[INFO] DOCKER> Step 32/33 : WORKDIR $TIBCO_EP_HOME/distrib/tibco/bin
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> db9283c8a30a
+[INFO] DOCKER> Step 33/33 : ENTRYPOINT ["./startsb.sh", "Cluster1"]
+[INFO] DOCKER> 
+[INFO] DOCKER> ---> Using cache
+[INFO] DOCKER> ---> 2829d72f9330
+[INFO] DOCKER> Successfully built 2829d72f9330
+[INFO] DOCKER> Successfully tagged partition_docker:latest
+[INFO] DOCKER> [partition_docker:latest] "partition_docker-build": Built image sha256:2829d
+[INFO] DOCKER> [partition_docker:latest] "partition_docker-build": Tag with latest,1.0.0-SNAPSHOT

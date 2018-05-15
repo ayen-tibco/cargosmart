@@ -1,0 +1,188 @@
+  ------
+  Usage
+  ------
+~~ %{snippet|file=pom.xml}  
+~~ Copyright 2017 TIBCO Software Inc. ALL RIGHTS RESERVED.
+
+Usage
+
+%{toc}
+
+  The following sections provide usage information to the Vagrant examples.
+  By default, the {{{https://github.com/nsidc/vagrant-vsphere}Vagrant-vsphere Plugin}} is 
+  used as the provider and ansible as the provisioner.
+  
+  The goal is to create vsphere compute VMs with Vagrant 
+  and provision the VMs with Ansible.  Vagrant utilizes Ansible to remotely
+  deploy docker containers running StreamBase Application.
+
+  The topologies application archive will be used along with the {{{../../applications/topologies/index.html}two node active}} 
+  configuration.  Two VMs are created to host each docker container. ep-maven-plugin is 
+  used to display the status of the node after the container is launched.
+
+  Complete Maven lifecycle will create VMs, deploy SB10, run ep-maven test,
+  and remove the VMs.
+
++------------
+mvn post-integration-test
++------------
+  
+  Maven target directory target/staging/vsphere will be created for Vagrant to bootstrap
+  and deploy with the necessary support files.
+  
+* Prepare a vSphere Template
+
+  In this example, a vsphere template is used to create VMs. The plugin also supports cloning
+  from existing VM. In this example, a Centos 7.3 Linux VM was created in vCenter with default
+  vagrant user and password account. VMware tools was also installed. Then it was converted into
+  a template.
+  
+* Setting Profile Properties
+
+  Profile properties file are used and are located at profiles/<provider>/config.properties.
+  In Maven, profile id represents the provider. The Maven <<initialize>> lifecycle is used
+  to load the config.properties for antrun shell scripts. Also filtering are set to use 
+  the profile properties file when copying resources like Vagrantfile and scripts.
+
+  The filtering customizes the Vagrantfile with vsphere specific settings, hostnames, 
+  number of VMs to be deployed, etc.
+  
+  In addition to these settings, Vsphere credentials and vCenter settings are required
+  for VMs to be provisioned.
+
++------------
+cp src/main/resources/profiles/vsphere/config.properties src/main/resources/profile/vsphere/config_myversion.properties
+vi src/main/resources/profile/vsphere/config_myversion.properties
+mvn -Pvsphere post-integration-test -DCONFIG_PROP_FILE=config_myversion.properties
++------------
+  
+  config.properties
+  
+%{snippet|file=${project.basedir}/src/main/resources/profiles/vsphere/config.properties}
+
+  The following custom property variables MUST be set prior to running Maven lifecycles.
+
+*------------------------*------------------------------------------*---------------------------------------*
+| <<Variable Name>>      | <<Description>>                          | <<Example Value(s)>>                  |
+*------------------------*------------------------------------------*---------------------------------------*
+|VSPHERE_USERNAME        |vSphere vCenter credentials necessary     |                                       |
+|VSPHERE_PASSWORD        |to create VMs.                            |                                       |
+|VSPHERE_VCENTER_HOST    |vCenter hostname, template, resource pool |                                       |
+|VSPHERE_COMPUTE_RESOURCE_NAME|OR computer resource.                |                                       |
+|VSPHERE_RESOURCE_POOL_NAME|                                       |
+|VSPHERE_TEMPLATE|                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_DOCKER_IMAGE         |Custom StreamBase App and Binary Docker   |                                       |
+|SB_DOCKER_IMAGE_TAG     |image and tag (default latest).           |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY         |Private or public registry.               | <docker.io> (default) |
+|                       |                                           | OR
+|                       |                                           | myprivaterepo.domain.com:5000 |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY_USERNAME|Docker credentials. Can be blank if not   |                                       |
+|DOCKER_REGISTRY_PASSWORD|required by registry                       |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+Required Custom Property Settings for vSphere vCenter Deployment
+
+* Create and provision VMs
+
+  The compile goal copies the vsphere custom Vagrant and supporting script files. It
+  then installs the vagrant-vsphere plugin and hostmanager plugin.
+  The hostmanager plugin is needed to update /etc/hosts file locally and remotely with
+  the name of the VMs.  This allows the local Vagrant host to access the remote VMs
+  by name.
+  
+  <<<vagrant up>>> is called with basic shell provisioning like setting linux repo.
+  
++------------  
+mvn compile
+...
+INFO] Using 'UTF-8' encoding to copy filtered resources.
+17:28:51 [INFO] Copying 5 resources
+17:28:51 [INFO] Copying 4 resources
+17:28:51 [INFO] 
+17:28:51 [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-provisioner-scripts) @ vagrant ---
+17:28:51 [INFO] Using 'UTF-8' encoding to copy filtered resources.
+17:28:51 [INFO] Copying 100 resources
+ [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-nodeconfig) @ vagrant ---
+ [INFO] Using 'UTF-8' encoding to copy filtered resources.
+ [INFO] Copying 1 resource
+ [INFO] 
+ [INFO] --- maven-dependency-plugin:2.10:copy (copy-sb-app) @ vagrant ---
+ [INFO] Configured Artifact: com.tibco.ep.dtmexamples.applications:topologies:3.1.0-SNAPSHOT:ep-application
+ [INFO] Configured Artifact: com.tibco.ep.sb.rt:platform_linuxx86_64:10.1.0-SNAPSHOT:zip
+ [INFO] Copying topologies-3.1.0-SNAPSHOT.zip to applications/vagrant/target/staging/vsphere/app/topologies-3.1.0-SNAPSHOT.zip
+ [INFO] Copying platform_linuxx86_64-10.1.0-SNAPSHOT.zip to applications/vagrant/target/staging/vsphere/app/platform_linuxx86_64-10.1.0-SNAPSHOT.zip
+ [INFO] 
+ [INFO] --- maven-antrun-plugin:1.8:run (install-hostmanager-plugin) @ vagrant ---
+ [INFO] Executing tasks
+ 
+ install_hostmanager_plugin:
+ [INFO] Executed tasks
+ [INFO] 
+ [INFO] --- maven-antrun-plugin:1.8:run (install-vsphere-plugin) @ vagrant ---
+ [INFO] Executing tasks
++------------
+  
+* Custom Provision and Run Containers
+
+  The antrun target <provision-sb-vsphere> executes <<<vagrant provision>>> script calling either Ansible by default or Puppet.
+  This assume previous compile lifecycle has been executed.
+  
+  Results:
+
++------------
+$ mvn initialize antrun:run@provision-sb-vsphere
+[INFO] Executing tasks
+provision_sb_vsphere:
+     [exec] ==> A21-1: Rsyncing folder: applications/vagrant/target/staging/vsphere/app/ => /opt/tibco/topologies
+     [exec] ==> A21-1:   - Exclude: [".vagrant/", "sb"]
+     [exec] ==> A21-1: Rsyncing folder: applications/vagrant/target/staging/vsphere/ => /vagrant
+     [exec] ==> A21-2: Rsyncing folder: applications/vagrant/target/staging/vsphere/app/ => /opt/tibco/topologies
+     [exec] ==> A21-2:   - Exclude: [".vagrant/", "sb"]
+     [exec] ==> A21-2: Rsyncing folder: applications/vagrant/target/staging/vsphere/ => /vagrant
+     [exec] ==> A21-2: Running provisioner: ansible...
+     [exec]     A21-2: Running ansible-playbook...
+     [exec]
+     [exec] PLAY [topologies] **************************************************************
+     [exec]
+     [exec] TASK [setup] *******************************************************************
+     [exec] ok: [A21-2]
+     [exec] ok: [A21-1]
+...
+
++------------
+    
+* Stop and Remove Containers
+
+  Invoking maven lifecycle <<clean>> will run <<Vagrant destroy>> script to remove the VMs.
+
++------------  
+mvn -fn initialize clean
++------------
+  
+  OR
+  
++------------  
+mvn initialize antrun:run@destroy-vsphere-vms
++------------
+  
+* Tests
+  
+  ep-maven-plugin is invoked with 'display node' on the first node running inside
+  container A1.topologies.
+
++------------  
+mvn initialize ep:administer-nodes@display-nodes
+[INFO] [5556] Running "display node"
+[INFO] Node             Node Name     Node Description Node State Host Name     Administration Port Discovery Service     Container Node Directory                                      Deployment Directories                         Install Time                  Last Start Time               Build Type  Product Version                                                                         Product Installation Directory Web Server State Web Server URLs
+[INFO] [localhost:5556] A1.topologies No description   Started    A1.topologies 5556                running on port 54321 tibco/sb  /opt/tibco/sb-cep/10/deploy/nodes/A1.topologies /opt/tibco/sb-cep/10/lib:/opt/tibco/topologies 2017-02-08 17:13:01 +0000 UTC 2017-02-08 17:13:14 +0000 UTC DEVELOPMENT TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1702011015 streambase-master-linux-327) /opt/tibco/sb-cep/10       Started          http://A1.topologies:59855
+[INFO] [5556] Finished "display node"
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------
+  
+  Codeline :
+  
+%{snippet|id=eptest|file=${project.basedir}/pom.xml}

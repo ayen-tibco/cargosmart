@@ -1,0 +1,141 @@
+  ------
+  Introduction
+  ------
+  Adam yen
+  ------
+  2017-02-13
+  ------
+
+~~ Copyright 2017 TIBCO, Inc. All rights reserved.
+
+Introduction
+
+  The Vagrant examples contain the following Maven pom.xml to produce:
+
+  * Vagrant Deployment of SB10 Docker image to Vsphere using Ansible provisioning
+
+  * Vagrant Deployment of SB10 Docker image to AWS EC2 using Ansible provisioning
+  
+  * Vagrant Deployment of SB10 Docker image to Azure using Ansible provisioning
+  
+  * Vagrant Deployment of SB10 Docker image to Openstack (Ocata Release) using Ansible provisioning
+    
+  * Vagrant Deployment of SB10 Docker image using Puppet provisioning
+
+  * Run basic test cases
+
+  []
+
+* Profiles
+
+  Three Cloud provider profiles are illustrated in this section: 
+
+  * {{{https://github.com/nsidc/vagrant-vsphere}Vagrant-vsphere Plugin}} provider utilizing vCenter API (Default Active Maven Profile) for deployment on VMware Vsphere
+  
+  * {{{https://github.com/mitchellh/vagrant-aws}Vagrant-aws plugin}} provider for deployment on Amazon EC2
+  
+  * {{{https://github.com/Azure/vagrant-azure}Vagrant-azure plugin}} provider for deployment on Microsoft Azure
+  
+  * {{{https://github.com/ggiamarchi/vagrant-openstack-provider}vagrant-openstack-provider plugin}} provider for deployment on Openstack
+  
+  []
+  
+* Prerequisites
+
+  * Hardware: Minimum 4GB RAM/2 x vCPUs/20GB HDD, Recommend 8GB RAM/4 x vCPUs/50GB HDD
+    SB Applications with multiple fragments requires at least 8GB/4vCPUs
+  
+  * Red Hat Enterprise/Centos Linux 7.3 with kernel 3.10.0.514.6.1
+  
+  * StreamBase Linux Binary
+  
+  * Maven 3.3.3 and Java 1.8_102+ (Openjdk or Oracle)
+  
+  * ep-maven-plugin
+  
+  * Custom built StreamBase App Docker Image (See ../docker/index.html)
+  
+  * Curl
+  
+  * Docker Engine 1.13
+  
+  * {{{https://www.vagrantup.com/downloads.html}Vagrant 1.8.5}}
+  
+  * Optional: {{{http://docs.ansible.com/ansible/intro_installation.html#getting-ansible}Ansible 2.1.3}} or {{{https://puppet.com/}Puppet Open Source 4.4.x}}
+  
+  * Optional: Docker Registry (Private or Public like Docker Hub)
+  
+* Codeline
+
+  The following are snippets of files checked into this codeline.
+
+** Dependencies in pom.xml
+
+%{snippet|id=dependencies|file=${project.basedir}/pom.xml}
+
+*** Primary Vagrant Support Files
+
+  Custom Provider Vagrantfile src/main/<provider>/Vagrantfile
+  
+  Each provider has a custom Vagrantfile tailored for launching VMs in
+  that particular environment. Common settings like VM hostnames, shell bootstrapping,
+  and provisioning (Ansible/Puppet) are included. Maven properties are used to filter
+  and produce a working target/staging/<provider>/Vagrantfile prior to launching
+  <<<vagrant up>>>.
+  
+  Scripts for provisioning:
+  
+  parallel_provision.sh
+
+%{snippet|file=${project.basedir}/src/main/resources/scripts/parallel_provision.sh}
+
+  Scripts for bootstrapping Puppet Server and agent installation:
+  
+  puppet_agent.sh
+  
+%{snippet|file=${project.basedir}/src/main/resources/scripts/puppet_agent.sh}
+
+  puppet_server.sh
+
+%{snippet|file=${project.basedir}/src/main/resources/scripts/puppet_server.sh}
+
+  Script for destroying the compute instances/VMs and resetting /etc/host file
+
+%{snippet|file=${project.basedir}/src/main/resources/scripts/vagrant_destroy_vms.sh}
+
+  Ansible Provisioning
+  
+  Ansible scripts are copied from {{{../ansible/index.html}applications/ansible}} to provision the VMs
+  and deploy SB10.
+
+  Puppet Provisioning
+  
+  Puppet scripts are copied from {{{../puppet/index.html}applications/puppet}} to provision the VMs
+  and deploy SB10.
+  
+  SSH Keys
+
+  Common ssh private and public keys are placed in each <provider>/example_box/ directory.
+  When using for production environment, it's recommended these ssh key files are replaced
+  with a new set of custom keys.
+
+* Vagrant Hostmanager Plugin
+
+  The purpose of using the hostmanager plugin is for the ep-maven-plugin on the local system to connect and perform administration commands on the StreamBase nodes remotely.
+  The plugin is also needed to update the remote VMs /etc/hosts file so the StreamBase DTM engine can resolve nodenames when DNS and auto discover
+  is not available. Vagrant VM hostnames are set using NODENAME_PREFIX followed by Node index count <${NODENAME_PREFIX}#{i}> in the Vagrantfile.
+
+* Vagrant Commands
+
+  Vagrant commands can be used from target/staging/<provider> directory
+  once a maven lifecycle has been executed.
+  
++------------
+$ mvn -Paws compile
+$ cd target/staging/aws
+$ Vagrant status
+Current machine states:
+
+A21-1                     vagrant_vsphere.states.short_running (vsphere)
+A21-2                     vagrant_vsphere.states.short_running (vsphere)
++------------

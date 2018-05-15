@@ -1,0 +1,83 @@
+Started by user [8mha:////4LFCF2qqWvAi501ZWXfsAgXzaSAypkNcz23SGiy7qBImAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgYu/dLi1CIwAQCumwTUvwAAAA==[0madmin
+[EnvInject] - Loading node environment variables.
+[EnvInject] - Preparing an environment for the build.
+[EnvInject] - Keeping Jenkins system variables.
+[EnvInject] - Keeping Jenkins build variables.
+[EnvInject] - Injecting as environment variables the properties content 
+TIBCO_EP_HOME=/opt/tibco/sb-cep/10.2
+ANSIBLE_TAGS=prep,install,deploy,docker
+SB_DOCKER_IMAGE_TAG=latest
+CONFIG_PROP_FILE=config-docker.properties
+LD_LIBRARY_PATH=
+DOCKERDEPLOY=true
+SB_DOCKER_IMAGE=ayentibco/partition_docker
+
+[EnvInject] - Variables injected successfully.
+[EnvInject] - Injecting contributions.
+Building in workspace /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure
+ > /opt/bitnami/git/bin/git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > /opt/bitnami/git/bin/git config remote.origin.url https://github.com/ayen-tibco/oocl.git # timeout=10
+Fetching upstream changes from https://github.com/ayen-tibco/oocl.git
+ > /opt/bitnami/git/bin/git --version # timeout=10
+using GIT_ASKPASS to set credentials github
+ > /opt/bitnami/git/bin/git fetch --tags --progress https://github.com/ayen-tibco/oocl.git +refs/heads/*:refs/remotes/origin/*
+ > /opt/bitnami/git/bin/git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > /opt/bitnami/git/bin/git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 9071dee0b599ed6e3849142b32db919b586abf4f (refs/remotes/origin/master)
+ > /opt/bitnami/git/bin/git config core.sparsecheckout # timeout=10
+ > /opt/bitnami/git/bin/git checkout -f 9071dee0b599ed6e3849142b32db919b586abf4f
+Commit message: "move elastic.conf to test permanently so to use deployment node conf"
+ > /opt/bitnami/git/bin/git rev-list --no-walk 21fd3c5728951d02cc10254725d4ee86e2fa7188 # timeout=10
+[cargosmart-partition-docker-azure] $ /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/bin/mvn -f vagrant/pom.xml -s /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/settings.xml -Pazure initialize clean -DCONFIG_PROP_FILE=config-docker.properties
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.tibco.ep.sb.sample.cloud:vagrant >----------------
+[INFO] Building Vagrant and Cloud Provisioning Examples 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product-1) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:set-resources (default-set-resources) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (install_sb) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildNumber: 9071dee0b599ed6e3849142b32db919b586abf4f at timestamp: 1526258268959
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (destroy-azure-vms) @ vagrant ---
+[INFO] Executing tasks
+
+destroy_azure_vms:
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 14.381 s
+[INFO] Finished at: 2018-05-13T20:37:51-04:00
+[INFO] ------------------------------------------------------------------------
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] Failed to execute goal org.apache.maven.plugins:maven-antrun-plugin:1.8:run (destroy-azure-vms) on project vagrant: An Ant BuildException has occured: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/staging/azure does not exist.
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] around Ant part ...<chmod file="/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/staging/azure/vagrant_destroy_vms.sh" perm="ugo+rx"/>... @ 4:167 in /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/antrun/build-destroy_azure_vms.xml
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] -> [Help 1]
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] 
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] 
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+Build step 'Invoke top-level Maven targets' marked build as failure
+Finished: FAILURE

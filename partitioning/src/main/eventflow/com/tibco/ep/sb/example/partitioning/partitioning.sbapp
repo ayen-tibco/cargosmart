@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<modify version="10.2.1_177c19781b045143ae9bff24723363ab2dbd1891">
+    <add>
+        <annotations>
+            <annotation name="hygienic"/>
+        </annotations>
+        <dynamic-variables/>
+        <data name="PartitionedTable" shared="false" source="concrete" type="querytable">
+            <param name="storage-method" value="transactional_memory"/>
+            <param name="replicated" value="false"/>
+            <table-schema>
+                <schema>
+                    <field name="name" type="string"/>
+                    <field name="value" type="string"/>
+                </schema>
+                <primary-index partitioning-key="true" type="hash">
+                    <field name="name"/>
+                </primary-index>
+            </table-schema>
+            <param name="truncate" value="false"/>
+            <preload format="csv" mode="empty"/>
+            <table-partitioning>
+                <param name="data-distribution-policy-name" value="dynamic-data-distribution-policy"/>
+                <param name="data-mapper-type" value="distributed-hash"/>
+            </table-partitioning>
+        </data>
+        <stream name="InputStream">
+            <schema>
+                <field name="name" type="string"/>
+                <field name="value" type="string"/>
+            </schema>
+        </stream>
+        <box name="Query" type="query">
+            <input port="1" stream="InputStream"/>
+            <output port="1" stream="OutputStream"/>
+            <dataref id="querytable" name="PartitionedTable"/>
+            <param name="operation" value="write"/>
+            <param name="where" value="primary-key"/>
+            <param name="key-field.0" value="name"/>
+            <param name="key-value.0" value="name"/>
+            <param name="write-type" value="insert"/>
+            <param name="if-write-fails" value="force"/>
+            <param name="no-match-mode" value="output-no-match-null"/>
+            <param name="order-by-direction" value="none"/>
+            <target-list>
+                <item name="input" selection="none"/>
+                <item name="old" selection="none"/>
+                <item name="new" selection="all"/>
+                <item name="current" selection="none"/>
+            </target-list>
+            <target-list name="insert">
+                <item name="input" selection="all"/>
+            </target-list>
+            <target-list name="update">
+                <item name="input" selection="all"/>
+            </target-list>
+            <target-list name="no-match">
+                <item name="input" selection="all"/>
+            </target-list>
+        </box>
+        <output-stream name="OutputStream"/>
+    </add>
+</modify>

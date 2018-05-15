@@ -1,0 +1,1019 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- vim: set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab : -->
+    <!-- Copyright (c) 2017 TIBCO Software Inc. -->
+    
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.tibco.ep.sb.example</groupId>
+    <artifactId>partition_docker</artifactId>
+    <packaging>pom</packaging>
+    <name>Docker Test Build and Push</name>
+
+    <parent>
+        <groupId>com.tibco.ep.sb.example</groupId>
+        <artifactId>partitioning</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <!-- START SNIPPET: globalprops -->
+    <properties>
+        <!-- defaults to centos/rh7/fedora dockerfile template -->
+        <SB_DOCKERFILE>Dockerfile_centos</SB_DOCKERFILE>
+        <DOCKER_BASE_IMAGE>centos:7.4.1708</DOCKER_BASE_IMAGE>
+        <!-- <DOCKER_BASE_IMAGE>registry.access.redhat.com/rhel7.2</DOCKER_BASE_IMAGE> -->
+
+        <!-- <SB_DOCKERFILE>Dockerfile_alpine</SB_DOCKERFILE>
+        <DOCKER_BASE_IMAGE>openjdk:8-jdk-alpine</DOCKER_BASE_IMAGE> -->
+        
+        <DOCKER_IMAGE_NAME>%a</DOCKER_IMAGE_NAME>
+        <TIBCO_INSTALL_DIR>/opt/tibco</TIBCO_INSTALL_DIR>
+        <SB_CEP_VERSION>10.2</SB_CEP_VERSION>
+        <STREAMBASE_HOME>${TIBCO_INSTALL_DIR}/sb-cep/${SB_CEP_VERSION}</STREAMBASE_HOME>
+        <DOCKER_TIBCO_EP_HOME>${STREAMBASE_HOME}</DOCKER_TIBCO_EP_HOME>
+        <!-- <SB_TARBALL>sb/</SB_TARBALL> -->
+
+        <!-- if using docker toolbox, uncomment DOCKER_HOST_IP with virtualbox ip address -->
+        <!-- <DOCKER_HOST_IP>192.168.99.100</DOCKER_HOST_IP>
+        <DOCKER_HOST>tcp://${DOCKER_HOST_IP}:2376</DOCKER_HOST> -->
+        <DOCKER_COMPOSE_VERSION>2.0</DOCKER_COMPOSE_VERSION>
+        <DOCKER_MACHINE_INSTALL_PATH>${project.build.directory}/staging/docker</DOCKER_MACHINE_INSTALL_PATH>
+        <DOCKER_COMPOSE_INSTALL_PATH>${project.build.directory}/staging/docker</DOCKER_COMPOSE_INSTALL_PATH>
+        <WEAVE_INSTALL_PATH>${project.build.directory}/staging/docker</WEAVE_INSTALL_PATH>
+
+        <!-- Update to point at application and configuration to run -->
+        <!-- application name used for Dockerfile staging -->
+        <DOCKER_REGISTRY>localhost:5000</DOCKER_REGISTRY>
+        <SB_APP_NAME>partitioning-application</SB_APP_NAME>
+        <!-- target path where the application app will reside in the docker image -->
+        <SB_APP_DIR>${TIBCO_INSTALL_DIR}/${SB_APP_NAME}</SB_APP_DIR>
+        <!-- the application archive file to pass to SB when running the docker image -->
+        <SB_APP_FILE>${SB_APP_NAME}-1.0.0-SNAPSHOT.zip</SB_APP_FILE>
+        <NODE_CONFIG>three-node-static-proxy-azure-node.conf</NODE_CONFIG>
+        <CLUSTERNAME>partition</CLUSTERNAME>
+        <NODENAME_PREFIX></NODENAME_PREFIX>
+        <nodename1>A</nodename1>
+        <nodename2>B</nodename2>
+        <nodename3>C</nodename3>
+        <A1_NODENAME>${nodename1}.${CLUSTERNAME}</A1_NODENAME>
+        <A2_NODENAME>${nodename2}.${CLUSTERNAME}</A2_NODENAME>
+        <A3_NODENAME>${nodename3}.${CLUSTERNAME}</A3_NODENAME>
+        <nodename1.net>isolated_nw</nodename1.net>
+        <SUBSTITUTIONS></SUBSTITUTIONS>
+        <!-- specify adminport since docker currently does not support servicename multicast -->
+        <ADMIN_PORT>5556</ADMIN_PORT>
+    </properties>
+    <!-- END SNIPPET: globalprops -->
+
+    <!-- START SNIPPET: dependencies  -->
+    <dependencies>       
+        <dependency>
+    		<groupId>com.tibco.ep.sb.example</groupId>
+    		<artifactId>partitioning-application</artifactId>
+    		<version>1.0.0-SNAPSHOT</version>
+    		<type>ep-application</type>
+        </dependency>
+      <dependency>
+        <groupId>com.tibco.ep.sb.rt</groupId>
+        <artifactId>platform_linuxx86_64</artifactId>
+        <version>10.2.1</version>
+        <type>zip</type>
+	<scope>provided</scope>
+      </dependency>
+    </dependencies>
+    <!-- END SNIPPET: dependencies  -->
+
+    <profiles>
+        <profile>
+            <id>fabric8</id>
+            <properties>
+                <epmaven_hostname></epmaven_hostname>
+            </properties>            
+
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <!-- START SNIPPET: fabric8buildimage -->
+            <build>
+            <plugins>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <configuration>
+                        <skip>${skipTests}</skip>
+                        <watchInterval>500</watchInterval>
+                        <logDate>default</logDate>
+                        <verbose>true</verbose>
+                        <autoPull>always</autoPull>
+                        <images>
+                        <!-- Only used to build image when skiptest is true -->
+                            <image>
+                                <alias>${project.artifactId}-build</alias>
+                                <name>${DOCKER_IMAGE_NAME}</name>
+                                <!-- use variable when pushing to artifacts in cmd to override registry above-->
+                                <registry>${DOCKER_REGISTRY}</registry>
+                                <build>
+                                    <dockerFile>${project.basedir}/src/main/resources/docker/${SB_DOCKERFILE}</dockerFile>
+                                <assembly>
+                                    <inline>
+                                        <dependencySets>
+                                            <dependencySet>
+                                                <includes>
+                                                    <include>com.tibco.ep.sb.rt:platform_linuxx86_64:zip</include>
+                                                </includes>
+                                                <unpack>true</unpack>
+						<scope>provided</scope>
+                                                <fileMode>755</fileMode>
+                                                <directoryMode>755</directoryMode>
+                                                <outputDirectory>${DOCKER_TIBCO_EP_HOME}</outputDirectory>						
+                                            </dependencySet>
+                                        </dependencySets>
+                                        <files>
+                                            <file>
+                                                <source>${project.basedir}/../partitioning-application/src/test/configurations/${NODE_CONFIG}</source>
+                                                <outputDirectory>/opt/tibco/${SB_APP_NAME}</outputDirectory>
+                                            </file>
+                                            <file>
+                                                <source>${project.basedir}/src/main/resources/docker/startsb.sh</source>
+                                                <outputDirectory>${DOCKER_TIBCO_EP_HOME}/distrib/tibco/bin</outputDirectory>
+                                            </file>
+                                        </files>
+                                    </inline>
+                                </assembly>
+                                    <!-- Skip building Docker Image if running tests -->
+                                    <skip>${docker.skip.build}</skip>
+                                    <tags>
+                                        <tag>latest</tag>
+                                        <tag>${project.version}</tag>
+                                    </tags>
+                                </build>
+                                <run>
+                                    <!-- Skip run as a container if running tests only -->
+                                    <skip>${docker.skip.build}</skip>
+                                    <hostname>${A1_NODENAME}</hostname> -->
+                                    <log>
+                                        <enabled>true</enabled>
+                                        <date>medium</date>
+                                    </log>
+                                    <!-- block build until log shows node has started - otherwise wait and fail build -->
+                                    <wait>
+                                        <log>Node started</log>
+                                        <time>305000</time>
+                                    </wait>
+                                </run>
+                            </image>
+                            <!-- END SNIPPET: fabric8buildimage  -->
+                            <image>
+                                <alias>${A1_NODENAME}</alias>
+                                <name>${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest</name>
+                                <run>
+                                    <skip>${skipNode1}</skip>
+                                    <namingStrategy>alias</namingStrategy>
+                                    <env>
+                                        <NODENAME>${A1_NODENAME}</NODENAME>
+                                    </env>
+                                    <ports>
+                                    <!-- Port mappings: Container internal port (which must be exposed) will be
+                                    STATICALLY mapped. Multiple port mapping can be specified here-->
+                                        <port>5556:5556</port>
+                                        <port>5557:5557</port>
+                                        <port>5558:5558</port>
+                                        <port>10000:10000</port>
+                                        <!-- export udp discovery if you need to -->
+                                        <port>54321:54321/udp</port>
+                                    </ports>
+                                    <!-- disable below if not using ep-maven, use bridge for Windows/OSX VM -->
+                                    <net>${nodename1.net}</net>
+                                    <!-- disable if using net host to make servicename work with ep-maven -->
+                                    <hostname>${A1_NODENAME}</hostname>
+                                    <!-- give enough time for 1st node to start before starting next node -->
+                                    <wait>
+                                        <log>Starting node</log>
+                                        <time>350000</time>
+                                    </wait>
+                                    <log>
+                                        <enabled>true</enabled>
+                                        <date>medium</date>
+                                    </log>
+                                </run>
+                            </image>
+                            <!-- START SNIPPET: fabric8containers -->
+                            <image>
+                                <alias>${A2_NODENAME}</alias>
+                                <name>${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest</name>
+                                <run>
+                                    <skip>${skipNode2}</skip>
+                                    <namingStrategy>alias</namingStrategy>
+                                    <env>
+                                        <NODENAME>${A2_NODENAME}</NODENAME>
+                                    </env>
+                                    <ports>
+                                    <!-- Port mappings: Container internal port (which must be exposed) will be
+                                    dynamically mapped. Multiple port mapping can be specified here-->
+                                        <port>nodename2.port:5556</port>
+                                        <port>nodename2.port:5557</port>
+                                        <port>nodename2.port:5558</port>
+                                        <port>nodename2.port:10000</port>
+                                    </ports>
+                                    <net>${nodename1.net}</net>
+                                    <hostname>${A2_NODENAME}</hostname>
+                                    <log>
+                                        <enabled>true</enabled>
+                                        <date>medium</date>
+                                    </log>
+                                    <!-- block build until log shows node has started - otherwise wait and fail build -->
+                                    <wait>
+                                        <log>Node started</log>
+                                        <time>350000</time>
+                                    </wait>
+                                </run>
+                            </image>
+                            <!-- END SNIPPET: fabric8containers  -->
+                            <image>
+                                <alias>${A3_NODENAME}</alias>
+                                <name>${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest</name>
+                                <run>
+                                    <skip>${skipNode3}</skip>
+                                    <namingStrategy>alias</namingStrategy>
+                                    <env>
+                                        <NODENAME>${A3_NODENAME}</NODENAME>
+                                    </env>
+                                    <ports>
+                                        <!-- Port mappings: Container internal port (which must be exposed) will be
+                                         dynamically mapped. Multiple port mapping can be specified here -->
+                                        <port>nodename3.port:5556</port>
+                                        <port>nodename3.port:5557</port>
+                                        <port>nodename3.port:5558</port>
+                                            <port>nodename3.port:10000</port>
+                                    </ports>
+                                    <net>${nodename1.net}</net>
+                                    <hostname>${A3_NODENAME}</hostname> -->
+                                    <log>
+                                        <enabled>true</enabled>
+                                        <date>medium</date>
+                                    </log>
+                                    <!-- block build until log shows node has started - otherwise wait and fail build -->
+                                    <wait>
+                                        <log>Node started</log>
+                                        <time>350000</time>
+                                    </wait>
+                                </run>
+                            </image>
+                        </images>
+                        </configuration>
+                        <!-- Connect start/stop to pre- and
+                        post-integration-test phase, respectively if you want to start
+                        your docker containers during integration tests -->
+                        <executions>
+                            <execution>
+                                <id>build</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>containers</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>push</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>stop_clean</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                    </executions>
+                </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+
+    </profile>    
+        <profile>
+            <id>compose</id>
+            <!-- START SNIPPET: composeprops -->
+            <properties>
+                <SB_DOCKER_IMAGE>ep/docker:latest</SB_DOCKER_IMAGE>
+                <SB_REMOTE_DOCKER_IMAGE>${DOCKER_REGISTRY}/ep/${project.artifactId}:latest</SB_REMOTE_DOCKER_IMAGE>
+                <DOCKER_COMPOSE_FILE>two-node-bridge.yml</DOCKER_COMPOSE_FILE>
+                <DOCKER_COMPOSE_ENV_FILE>docker.env</DOCKER_COMPOSE_ENV_FILE>
+                <DOCKER_VOLUME_MOUNTS></DOCKER_VOLUME_MOUNTS>
+                <DOCKER_NETWORKS>${nodename1.net}</DOCKER_NETWORKS>
+                <DOCKER_NETWORK_PORTS>"5556:5556","10000:10000","10080:10080"</DOCKER_NETWORK_PORTS>
+                <DOCKER_NETWORK_MODE>bridge</DOCKER_NETWORK_MODE>
+                <SB_REGISTRY_USERNAME></SB_REGISTRY_USERNAME>
+                <SB_REGISTRY_PASSWORD></SB_REGISTRY_PASSWORD>
+            </properties>
+            <!-- END SNIPPET: composeprops -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-compose-yaml</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/staging/docker</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/test/compose</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>get-docker-compose</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="get-docker-compose" unless="dockercompose.skip.download">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker/scripts"
+                                            executable="./get-docker-compose.sh"
+                                            failonerror="true"
+                                            searchpath="true">
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <!-- START SNIPPET: composebuildimage -->
+                            <execution>
+                                <id>compose-build</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="compose-build">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="${DOCKER_COMPOSE_INSTALL_PATH}/docker-compose"
+                                            failonerror="true"
+                                            searchpath="true">
+                                            <arg line="-f local.yml build --force-rm --pull local"/>
+                                            <env key="HOSTNAME" value="${env.HOSTNAME}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <!-- END SNIPPET: composebuildimage -->
+                            <execution>
+                                <id>compose-run</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="compose-run">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="${DOCKER_COMPOSE_INSTALL_PATH}/docker-compose"
+                                            failonerror="true"
+                                            timeout="300000"
+                                            searchpath="true">
+                                            <arg line="-f local.yml run --rm -e STOP_FOREGROUND=true -e NODE_CONFIG=dynamic-node.conf local"/>
+                                            <env key="HOSTNAME" value="${env.HOSTNAME}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>docker-push</id>
+                                <phase>package</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="docker-push">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker/scripts"
+                                            executable="./docker_push.sh"
+                                            failonerror="true"
+                                            searchpath="true">
+                                            <env key="SB_REMOTE_DOCKER_IMAGE" value="${SB_REMOTE_DOCKER_IMAGE}"/>
+                                            <env key="SB_DOCKER_IMAGE" value="${SB_DOCKER_IMAGE}"/>
+                                            <env key="SB_REGISTRY_USERNAME" value="${SB_REGISTRY_USERNAME}"/>
+                                            <env key="SB_REGISTRY_PASSWORD" value="${SB_REGISTRY_PASSWORD}"/>
+                                        </exec>
+                                        </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <!-- START SNIPPET: composecontainers -->
+                            <execution>
+                                <id>compose-up</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="compose-up">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="${DOCKER_COMPOSE_INSTALL_PATH}/docker-compose"
+                                            spawn="true"
+                                            searchpath="true">
+                                            <arg line="-f ${DOCKER_COMPOSE_FILE} up --no-build --force-recreate --abort-on-container-exit --remove-orphans"/>
+                                            <env key="STOP_FOREGROUND" value="false"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <!-- END SNIPPET: composecontainers -->
+                            <execution>
+                                <id>compose-up-wait</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="compose-up-wait">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="sleep"
+                                            failonerror="true"
+                                            searchpath="true">
+                                            <arg line="120"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>compose-log</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="compose-log">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="${DOCKER_COMPOSE_INSTALL_PATH}/docker-compose"
+                                            failonerror="true"                
+                                            searchpath="true">
+                                            <arg line="-f ${DOCKER_COMPOSE_FILE} logs"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>compose-down</id>
+                                <phase>post-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="compose-down">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="${DOCKER_COMPOSE_INSTALL_PATH}/docker-compose"
+                                            failonerror="false"
+                                            searchpath="true">
+                                            <arg line="-f ${DOCKER_COMPOSE_FILE} down --remove-orphans"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>compose-down-clean</id>
+                                <phase>pre-clean</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="compose-down-clean">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="${DOCKER_COMPOSE_INSTALL_PATH}/docker-compose"
+                                            failonerror="false"
+                                            searchpath="true">
+                                            <arg line="-f ${DOCKER_COMPOSE_FILE} down --remove-orphans"/>
+                                            <env key="SB_REMOTE_DOCKER_IMAGE" value="${SB_REMOTE_DOCKER_IMAGE}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>machine</id>
+            <!-- START SNIPPET: machineprops -->
+            <properties>
+                <DOCKER_KVSTORE>dockerkvstore</DOCKER_KVSTORE>
+                <DOCKER_MACHINE_DRIVER>vmwarevsphere</DOCKER_MACHINE_DRIVER>
+                <DOCKER_COMPOSE_FILE>two-node-bridge_swarm.yml</DOCKER_COMPOSE_FILE>
+                <VSPHERE_MEMORY_SIZE>4096</VSPHERE_MEMORY_SIZE>
+                <VSPHERE_NETWORK>VM Network</VSPHERE_NETWORK>
+                <VSPHERE_VCENTER>myhostname</VSPHERE_VCENTER>
+                <VSPHERE_DATACENTER>mydatacenter</VSPHERE_DATACENTER>
+                <!-- resource pool does not work with mycluster
+                <VSPHERE_POOL>resource pool</VSPHERE_POOL> -->
+                <!-- esx host must proceed after cluster -->
+                <VSPHERE_HOSTSYSTEM>mycluster/esxhostname</VSPHERE_HOSTSYSTEM>
+                <VSPHERE_DATASTORE>mydatastore</VSPHERE_DATASTORE>
+                <VSPHERE_TEMPLATE>centos template</VSPHERE_TEMPLATE>
+                <VSPHERE_USERNAME>username</VSPHERE_USERNAME>
+                <VSPHERE_PASSWORD>password</VSPHERE_PASSWORD>
+                <SB_REMOTE_DOCKER_IMAGE>${DOCKER_REGISTRY}/ep/${project.artifactId}:latest</SB_REMOTE_DOCKER_IMAGE>
+                <DOCKER_COMPOSE_ENV_FILE>docker.env</DOCKER_COMPOSE_ENV_FILE>
+                <DOCKER_VOLUME_MOUNTS>"/docker-machine:/docker-machine"</DOCKER_VOLUME_MOUNTS>
+                <DOCKER_NETWORK_PORTS>"5556:5556","10000:10000","10080:10080"</DOCKER_NETWORK_PORTS>
+                <DOCKER_NETWORK_MODE>bridge</DOCKER_NETWORK_MODE>
+                <!-- deploy docker with the ability to pull from insecure registry -->
+                <DOCKER_INSECURE_REGISTRY>--engine-insecure-registry myregistry.domain.com</DOCKER_INSECURE_REGISTRY>
+                <DOCKER_ENVFILE>${project.build.directory}/staging/docker/docker.env</DOCKER_ENVFILE>
+                <!-- Fix this A.Y. when docker release weave plugin network driver or allows udp broadcast in its native overlay -->
+                <docker.skip.swarm>true</docker.skip.swarm>
+            </properties>
+            <!-- END SNIPPET: machineprops -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-service-envfile</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/staging/docker</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/test/machine</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-compose-yaml-swarm</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/staging/docker</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/test/compose</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>get-docker-machine</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="get-docker-machine" unless="dockermachine.skip.download">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker/scripts"
+                                            executable="./get-docker-machine.sh"
+                                            failonerror="true"
+                                            searchpath="true">
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>machine-create-swarm</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="machine-create-swarm" unless="dockermachine.skip.create">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker/scripts"
+                                            executable="./machine_create_swarm.sh"
+                                            failonerror="true"
+                                            searchpath="true">
+                                            <arg line="${nodename1} ${nodename2}"/>
+                                            <env key="VSPHERE_MEMORY_SIZE" value="${VSPHERE_MEMORY_SIZE}"/>
+                                            <env key="VSPHERE_NETWORK" value="${VSPHERE_NETWORK}"/>
+                                            <env key="VSPHERE_VCENTER" value="${VSPHERE_VCENTER}"/>
+                                            <env key="VSPHERE_HOSTSYSTEM" value="${VSPHERE_HOSTSYSTEM}"/>
+                                            <env key="VSPHERE_DATACENTER" value="${VSPHERE_DATACENTER}"/>
+                                            <env key="VSPHERE_DATASTORE" value="${VSPHERE_DATASTORE}"/>
+                                            <env key="VSPHERE_NETWORK" value="${VSPHERE_NETWORK}"/>
+                                            <env key="VSPHERE_TEMPLATE" value="${VSPHERE_TEMPLATE}"/>
+                                            <env key="VSPHERE_USERNAME" value="${VSPHERE_USERNAME}"/>
+                                            <env key="VSPHERE_PASSWORD" value="${VSPHERE_PASSWORD}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>machine-sync-target</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="machine-sync-target">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker/scripts"
+                                            executable="./docker_machine_sync.sh"
+                                            failonerror="true"
+                                            timeout="120000"
+                                            searchpath="true">
+                                            <arg line="${project.build.directory}/staging/docker ${nodename1} ${nodename2}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>docker-create-swarm</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <!-- skip this if using docker-machine swarm -->
+                                    <target name="docker-create-swarm" unless="docker.skip.swarm">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker/scripts"
+                                            executable="./docker_create_swarm.sh"
+                                            failonerror="true"
+                                            timeout="120000"
+                                            searchpath="true">
+                                            <arg line="${nodename1} ${nodename2}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>update-swarm-weave</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <!-- use weave since docker swarm overlay does not support udp broadcast yet -->
+                                    <target name="update-swarm-weave" unless="docker.skip.weave">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker/scripts"
+                                            executable="./update_swarm_weave.sh"
+                                            failonerror="true"
+                                            timeout="120000"
+                                            searchpath="true">
+                                            <arg line="${nodename1} ${nodename2}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>docker-create-service</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="docker-create-service">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker/scripts"
+                                            executable="./docker_create_service.sh"
+                                            failonerror="true"
+                                            timeout="600000"
+                                            searchpath="true">
+                                            <arg line="${nodename1}"/>
+                                            <env key="SB_DOCKER_IMAGE" value="${SB_REMOTE_DOCKER_IMAGE}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>get-swarm-master</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <exportAntProperties>true</exportAntProperties>
+                                    <target name="get-swarm-master">
+                                        <loadfile property="epmaven_hostname" srcFile="${project.build.directory}/staging/docker/scripts/SWARM_MANAGER_IP.txt"/>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                
+                            </execution>
+                            <execution>
+                                <id>docker-stop-service</id>
+                                <phase>post-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="docker-stop-service">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="${DOCKER_COMPOSE_INSTALL_PATH}/docker-compose"
+                                            failonerror="false"
+                                            timeout="120000"
+                                            searchpath="true">
+                                            <arg line="-f ${DOCKER_COMPOSE_FILE} down --remove-orphans"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>machine-stop</id>
+                                <phase>post-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="machine-stop-all">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="${DOCKER_MACHINE_INSTALL_PATH}/docker-machine"
+                                            failonerror="false"
+                                            timeout="120000"
+                                            searchpath="true">
+                                            <arg line="stop ${nodename1} ${nodename2} ${DOCKER_KVSTORE}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>machine-stop-pre-clean</id>
+                                <phase>pre-clean</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="machine-stop-all">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="${DOCKER_MACHINE_INSTALL_PATH}/docker-machine"
+                                            failonerror="false"
+                                            timeout="120000"
+                                            searchpath="true">
+                                            <arg line="stop ${nodename1} ${nodename2} ${DOCKER_KVSTORE}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>machine-remove</id>
+                                <phase>post-integration-test</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="machine-remove">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="${DOCKER_MACHINE_INSTALL_PATH}/docker-machine"
+                                            failonerror="false"
+                                            timeout="120000"
+                                            searchpath="true">
+                                            <arg line="rm -y ${nodename1} ${nodename2} ${DOCKER_KVSTORE}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>machine-remove-pre-clean</id>
+                                <phase>pre-clean</phase>
+                                <configuration>
+                                    <skip>${skipTests}</skip>
+                                    <target name="machine-remove-pre-clean">
+                                        <exec
+                                            dir="${project.build.directory}/staging/docker"
+                                            executable="${DOCKER_MACHINE_INSTALL_PATH}/docker-machine"
+                                            failonerror="false"
+                                            timeout="120000"
+                                            searchpath="true">
+                                            <arg line="rm -y ${nodename1} ${nodename2} ${DOCKER_KVSTORE}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+    </profile>
+    <profile>
+        <id>skipTestCompileAndRun</id>
+        <activation>
+            <property>
+                <name>docker.skip</name>
+                <value>true</value>
+            </property>
+        </activation>
+    </profile>    
+</profiles>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.tibco.ep</groupId>
+                <artifactId>ep-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <!-- skip default tests since we'll do this in execution steps below -->
+                    <skipTests>true</skipTests>
+                </configuration>
+
+                <executions>
+                    <!-- required since this is a pom project and so not automatically run -->
+                    <execution>
+                        <id>Install product</id>
+                        <phase>integration-test</phase>
+                        <goals><goal>install-product</goal></goals>
+                        <configuration>
+                            <skip>${skipTests}</skip>
+                        </configuration>  
+                    </execution>                    
+                    <!-- START SNIPPET: eptest  -->
+                    <execution>
+                        <id>display-nodes</id>
+                        <phase>integration-test</phase>
+                        <goals><goal>administer-nodes</goal></goals>
+                        <configuration>
+                            <skip>${skipTests}</skip>
+                            <command>display</command>
+                            <target>node</target>
+                            <hostname>${epmaven_hostname}</hostname>
+                            <serviceName>${A1_NODENAME}</serviceName>
+                            <discoveryPort>54321</discoveryPort>
+                            <userName>guest</userName>
+                            <password>guest</password>
+                            <adminport>${ADMIN_PORT}</adminport>
+                        </configuration>
+                    </execution>
+                    <!-- END SNIPPET: eptest  -->
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>copy-scripts</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <configuration>
+                                <skip>${docker.skip}</skip>
+                                <outputDirectory>${project.build.directory}/staging/docker/scripts</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>src/main/resources/scripts</directory>
+                                        <filtering>true</filtering>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+              		<artifactItems>
+                		<artifactItem>
+			                <groupId>com.tibco.ep.sb.example</groupId>
+                			<artifactId>partitioning-application</artifactId>
+                			<version>1.0.0-SNAPSHOT</version>
+                			<type>ep-application</type>					
+                            		<outputDirectory>${project.build.directory}/docker/${project.artifactId}/build/maven/opt/tibco/${SB_APP_NAME}</outputDirectory>
+                            		<overWrite>true</overWrite>
+                		</artifactItem>
+              		</artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>set-windows-perms</id>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <exportAntProperties>true</exportAntProperties>
+                            <target name="set-windows-perms" unless="${docker.skip}">
+                                <condition property="SB_TARBALL" value="platform_linux${DOCKER_SB_ARCH}.zip" else="sb/">
+                                    <os family="windows"/>
+                                </condition>
+                                <condition property="EXTRACT_RUNTIME" value="RUN cd $TIBCO_EP_HOME &amp;&amp; unzip $SB_TARBALL -d $TIBCO_EP_HOME &amp;&amp; rm $SB_TARBALL" else="">
+                                    <os family="windows"/>
+                                </condition>                                
+                                <echo message="This is ${OS_FAMILY} OS so setting SB_TARBALL var to ${SB_TARBALL}. Including extract command in Dockerfile ${EXTRACT_RUNTIME}."/> 
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>                
+                    <execution>
+                        <id>set-scripts-perms</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <target name="set-scripts-perms" unless="${docker.skip}">
+                                <exec
+                                    dir="${project.build.directory}/staging/docker"
+                                    executable="chmod"
+                                    failonerror="true"
+                                    searchpath="true">
+                                    <arg line="-R ugo+x scripts"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>    
+        </plugins>
+    </build>
+
+</project>

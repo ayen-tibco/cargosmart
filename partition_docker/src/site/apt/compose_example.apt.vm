@@ -1,0 +1,261 @@
+  ------
+  Compose Example
+  ------
+~~ %{snippet|file=pom.xml}  
+~~ Copyright 2017 TIBCO Software Inc. ALL RIGHTS RESERVED.
+
+%{toc}
+
+Introduction
+
+  The following sections provides usage information to the Maven Docker Profile
+  example docker-compose. Docker-compose information can be found here  
+  {{https://docs.docker.com/compose/}}.
+  
+  The overall goal is to build a docker image containing StreamBase Application and 
+  deploy the container(s) in a cluster locally using docker compose yaml file. 
+
+[uml/docker-compose.svg] Docker Compose Cluster Diagram
+
+  The topologies application archive will be used along with the two node active
+  configuration file. ep-maven-plugin is used to display the status of the node
+  after the container is launched.
+  
+  Complete maven lifecycle:
+  
++------------  
+mvn -Pcompose post-integration-test
++------------
+
+* Setting Profile Properties  
+
+%{snippet|id=composeprops|file=${project.basedir}/pom.xml}
+
+* Build a Docker Image
+
+  To build only the docker image:
+
++------------  
+mvn -Pcompose compile
+...
+ [INFO] --- maven-dependency-plugin:2.10:unpack (unpack-sb-docker) @ docker ---
+ [INFO] Configured Artifact: com.tibco.ep.sb.rt:platform_linuxx86_64:10.1.0-SNAPSHOT:zip
+ [INFO] Unpacking .repository/com/tibco/ep/sb/rt/platform_linuxx86_64/10.1.0-SNAPSHOT/platform_linuxx86_64-10.1.0-SNAPSHOT.zip to applications/docker/target/staging/docker/dtm with includes "" and excludes ""
+ [INFO] 
+ [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-resources) @ docker ---
+ [INFO] Using 'UTF-8' encoding to copy filtered resources.
+ [INFO] Copying 14 resources
+ [INFO] 
+ [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-node-config) @ docker ---
+ [INFO] Using 'UTF-8' encoding to copy filtered resources.
+ [INFO] Copying 2 resources
+ [INFO] 
+ [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-compose-yaml) @ docker ---
+ [INFO] Using 'UTF-8' encoding to copy filtered resources.
+ [INFO] Copying 4 resources
+ get-docker-compose:
+      [exec]   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+      [exec]                                  Dload  Upload   Total   Spent    Left  Speed
+      [exec] 
+      [exec]   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   600    0   600    0     0   2686      0 --:--:-- --:--:-- --:--:--  2690
+      [exec]   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 71 7929k   71 5654k    0     0  3978k      0  0:00:01  0:00:01 --:--:-- 5983k100 7929k  100 7929k    0     0  5084k      0  0:00:01  0:00:01 --:--:-- 7321k
+ [INFO] Executed tasks
+ [INFO] 
+ [INFO] --- maven-antrun-plugin:1.8:run (compose-build) @ docker ---
+ [INFO] Executing tasks
+ compose-build:
+      [exec] Building local
+      [exec] Step 1 : FROM centos:7
+      [exec] 7: Pulling from library/centos
+      [exec] Digest: sha256:c577af3197aacedf79c5a204cd7f493c8e07ffbce7f88f7600bf19c688c38799
+      [exec] Status: Image is up to date for centos:7
+      [exec]  ---> 67591570dd29
+...
+      [exec]  ---> Using cache
+      [exec]  ---> 8c0abd82535e
+      [exec] Step 31 : EXPOSE 10000
+      [exec]  ---> Using cache
+      [exec]  ---> 09d166597d0a
+      [exec] Step 32 : WORKDIR $TIBCO_EP_HOME/distrib/tibco/bin
+      [exec]  ---> Using cache
+      [exec]  ---> 02e8b8233e40
+      [exec] Step 33 : ENTRYPOINT ./startsb.sh Cluster1
+      [exec]  ---> Using cache
+      [exec]  ---> 70d46e4301de
+      [exec] Successfully built 70d46e4301de
++------------  
+
+%{snippet|id=composebuildimage|file=${project.basedir}/pom.xml}
+  
+* Run Containers
+
+  Prior to running containers, the docker image must be pushed out to a local registry (defaults to localhost:5000) or remote registry:
+
++------------  
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+mvn -Pcompose antrun:run@docker-push -DSB_DOCKER_IMAGE=ep/docker -DSB_REMOTE_DOCKER_IMAGE=localhost:5000/ep/docker
+...
+ [INFO] --- maven-antrun-plugin:1.8:run (docker-push) @ docker ---
+ [INFO] Executing tasks
+ docker-push:
+      [exec] The push refers to a repository [localhost:5000/ep/docker]
+      [exec] + docker tag ep/docker:latest localhost:5000/ep/docker:latest
+      [exec] + '[' -n '' ']'
+      [exec] + docker push localhost:5000/ep/docker:latest
+      [exec] fb7f3090d064: Preparing
+      [exec] 9fe4ea11a4ab: Preparing
+      [exec] c1073f70a194: Preparing
+      [exec] eb290e9d3bc5: Preparing
+...
+      [exec] fb7f3090d064: Already exists
+      [exec] Pushing tag for rev [70d46e4301de] on {http://localhost:5000/v1/repositories/ep/docker/tags/latest}
++------------
+  
+  To run all containers locally:
+
++------------
+mvn -Pcompose antrun:run@compose-up
+ compose-up:
+ [INFO] Executed tasks
+ [INFO] 
+ [INFO] --- maven-antrun-plugin:1.8:run (compose-up-wait) @ docker ---
+ [INFO] Executing tasks
+ compose-up-wait:
+ [INFO] Executed tasks
+ [INFO] 
+ [INFO] --- maven-antrun-plugin:1.8:run (compose-log) @ docker ---
+ [INFO] Executing tasks
+ compose-log:
+      [exec] Attaching to A1.topologies, A2.topologies
+      [exec] A2.topologies | + sleep 5
+      [exec] A2.topologies | + '[' -z /opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin ']'The STOP_FOREGROUND variable is not set. Defaulting to a blank string.
+      [exec] 
+      [exec] A2.topologies | + '[' -z '' ']'
+      [exec] A2.topologies | + NODE_INSTALL_PATH=/opt/tibco/sb-cep/10/deploy/nodes
+      [exec] A2.topologies | + export _JAVA_OPTIONS=-DTIBCO_EP_HOME=/opt/tibco/sb-cep/10
+      [exec] A2.topologies | + _JAVA_OPTIONS=-DTIBCO_EP_HOME=/opt/tibco/sb-cep/10
+      [exec] A2.topologies | ++ domainname -d
+      [exec] A2.topologies | + DOMAIN_NAME=
+      [exec] A2.topologies | + '[' '!' -z topologies ']'
+      [exec] A2.topologies | + '[' -z Cluster1 ']'
+      [exec] A2.topologies | ++ domainname -d
+      [exec] A2.topologies | + DOMAIN_NAME=
+      [exec] A2.topologies | + '[' '!' -z '' ']'
+      [exec] A2.topologies | + ClusterName=Cluster1
+      [exec] A2.topologies | + '[' '!' -z two-node-active-active-node.conf ']'
+      [exec] A2.topologies | + NODE_CONFIG=nodedeploy=/opt/tibco/topologies/two-node-active-active-node.conf
+      [exec] A2.topologies | + '[' '!' -z A2.topologies ']'
+      [exec] A2.topologies | + NODE_NAME=nodename=A2.topologies
+      [exec] A1.topologies | + sleep 5
+      [exec] A1.topologies | + '[' -z /opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin ']'
+      [exec] A1.topologies | + '[' -z '' ']'
+      [exec] A1.topologies | + NODE_INSTALL_PATH=/opt/tibco/sb-cep/10/deploy/nodes
+      [exec] A1.topologies | + export _JAVA_OPTIONS=-DTIBCO_EP_HOME=/opt/tibco/sb-cep/10
+      [exec] A1.topologies | + _JAVA_OPTIONS=-DTIBCO_EP_HOME=/opt/tibco/sb-cep/10
+...
+      [exec] A2.topologies | [A2.topologies] 		Service name is A2.topologies
+      [exec] A1.topologies | [A1.topologies] 	Installing node
+      [exec] A2.topologies | [A2.topologies] 	Node installed
+      [exec] A1.topologies | [A1.topologies] 		DEVELOPMENT executables
+      [exec] A2.topologies | + exit_code=0
+      [exec] A1.topologies | [A1.topologies] 		File shared memory
+      [exec] A1.topologies | [A1.topologies] 		7 concurrent allocation segments
+      [exec] A2.topologies | + '[' 0 -ne 0 ']'
+      [exec] A1.topologies | [A1.topologies] 		Host name 290a8e2c6fe4
+      [exec] A2.topologies | + /opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin adminport=5556 start node
+      [exec] A1.topologies | [A1.topologies] 		Container tibco/sb
+      [exec] A2.topologies | [A2.topologies] 	Starting node
+      [exec] A1.topologies | [A1.topologies] 		Starting container services
+      [exec] A2.topologies | [A2.topologies] 		Engine application::default-engine-for-com.tibco.ep.dtmexamples.javafragment.helloworld started
+      [exec] A1.topologies | [A1.topologies] 		Loading node configuration
+      [exec] A2.topologies | [A2.topologies] 		Loading node configuration
+      [exec] A1.topologies | [A1.topologies] 		Auditing node security
+      [exec] A2.topologies | [A2.topologies] 		Auditing node security
+      [exec] A1.topologies | [A1.topologies] 		Deploying application
+      [exec] A2.topologies | [A2.topologies] 		Host name localhost
+      [exec] A1.topologies | [A1.topologies] 			Engine default-engine-for-com.tibco.ep.dtmexamples.javafragment.helloworld
+      [exec] A2.topologies | [A2.topologies] 		Administration port is 5556
+      [exec] A1.topologies | [A1.topologies] 		Application deployed
+      [exec] A2.topologies | [A2.topologies] 		Discovery Service running on port 54321
+      [exec] A1.topologies | [A1.topologies] 		Administration port is 5556
+      [exec] A2.topologies | [A2.topologies] 		Service name is A2.topologies
+      [exec] A1.topologies | [A1.topologies] 		Discovery Service running on port 54321
+      [exec] A2.topologies | [A2.topologies] 	Node started
+      [exec] A2.topologies | + exit_code=0
+      [exec] A1.topologies | [A1.topologies] 		Service name is A1.topologies
+      [exec] A2.topologies | + '[' 0 -eq 0 ']'
+      [exec] A1.topologies | [A1.topologies] 	Node installed
+      [exec] A2.topologies | + '[' false == true ']'
+      [exec] A1.topologies | + exit_code=0
+      [exec] A1.topologies | + '[' 0 -ne 0 ']'
+      [exec] A2.topologies | + sleep 5
+      [exec] A1.topologies | + /opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin adminport=5556 start node
+      [exec] A1.topologies | [A1.topologies] 	Starting node
+      [exec] A1.topologies | [A1.topologies] 		Engine application::default-engine-for-com.tibco.ep.dtmexamples.javafragment.helloworld started
+      [exec] A1.topologies | [A1.topologies] 		Loading node configuration
+      [exec] A1.topologies | [A1.topologies] 		Auditing node security
+      [exec] A1.topologies | [A1.topologies] 		Host name localhost
+      [exec] A2.topologies | To Quit/Stop: CTRL+c. To Detach from docker Console: CTRL+p + CTRL+q.
+      [exec] A1.topologies | [A1.topologies] 		Administration port is 5556
+      [exec] A2.topologies | + trap 'echo Docker stop requested ; break' TERM INT
+      [exec] A1.topologies | [A1.topologies] 		Discovery Service running on port 54321
+      [exec] A2.topologies | + true
+      [exec] A1.topologies | [A1.topologies] 		Service name is A1.topologies
+      [exec] A2.topologies | + echo 'To Quit/Stop: CTRL+c. To Detach from docker Console: CTRL+p + CTRL+q.'
+      [exec] A1.topologies | [A1.topologies] 	Node started
+      [exec] A1.topologies | + exit_code=0
+      [exec] A2.topologies | + trap 'echo Docker stop requested ; break' TERM INT
+      [exec] A1.topologies | + '[' 0 -eq 0 ']'
+      [exec] A1.topologies | + '[' false == true ']'
+      [exec] A2.topologies | + wait
+      [exec] A1.topologies | + sleep 5
+      [exec] A2.topologies | + sleep 300
++------------
+
+Codeline:
+  
+%{snippet|id=composecontainers|file=${project.basedir}/pom.xml}
+  
+* Stop and Remove Containers
+
+  Invoking maven lifecycle clean will call docker-compose down to stop and remove the containers.
+
++------------  
+mvn -Pcompose -fn clean
++------------
+  
+  OR
+
++------------  
+mvn -Pcompose antrun:run@compose-down
+ [INFO] --- maven-antrun-plugin:1.8:run (compose-down) @ docker ---
+ [INFO] Executing tasks
+ compose-down:
+      [exec] The STOP_FOREGROUND variable is not set. Defaulting to a blank string.
+      [exec] Stopping A1.topologies ... 
+      [exec] Stopping A2.topologies ... 
+      [exec] 
+      [exec] Stopping A1.topologies ... doneStopping A2.topologies ... doneRemoving A1.topologies ... Removing A2.topologies ... 
+      [exec] 
+      [exec] Removing A2.topologies ... doneRemoving A1.topologies ... doneRemoving network docker_isolated_nw
++------------
+  
+* Tests
+  
+  ep-maven-plugin is invoked with 'display node' on the first node running inside
+  container A1.topologies.
+
++------------  
+mvn ep:administer-nodes@display-nodes
+[INFO] [5556] Running "display node"
+[INFO] Node             Node Name     Node Description Node State Host Name     Administration Port Discovery Service     Container Node Directory                                      Deployment Directories                         Install Time                  Last Start Time               Build Type  Product Version                                                                         Product Installation Directory Web Server State Web Server URLs
+[INFO] [localhost:5556] A1.topologies No description   Started    A1.topologies 5556                running on port 54321 tibco/sb  /opt/tibco/sb-cep/10/deploy/nodes/A1.topologies /opt/tibco/sb-cep/10/lib:/opt/tibco/topologies 2017-02-08 17:13:01 +0000 UTC 2017-02-08 17:13:14 +0000 UTC DEVELOPMENT TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1702011015 streambase-master-linux-327) /opt/tibco/sb-cep/10       Started          http://A1.topologies:59855
+[INFO] [5556] Finished "display node"
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------
+
+  Codeline:
+  
+%{snippet|id=eptest|file=${project.basedir}/pom.xml}

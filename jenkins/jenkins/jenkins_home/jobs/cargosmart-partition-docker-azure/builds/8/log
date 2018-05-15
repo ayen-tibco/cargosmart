@@ -1,0 +1,561 @@
+Started by user [8mha:////4LFCF2qqWvAi501ZWXfsAgXzaSAypkNcz23SGiy7qBImAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgYu/dLi1CIwAQCumwTUvwAAAA==[0madmin
+[EnvInject] - Loading node environment variables.
+[EnvInject] - Preparing an environment for the build.
+[EnvInject] - Keeping Jenkins system variables.
+[EnvInject] - Keeping Jenkins build variables.
+[EnvInject] - Injecting as environment variables the properties content 
+TIBCO_EP_HOME=/opt/tibco/sb-cep/10.2
+ANSIBLE_TAGS=prep,install,deploy,docker
+SB_DOCKER_IMAGE_TAG=latest
+CONFIG_PROP_FILE=config-docker.properties
+LD_LIBRARY_PATH=
+DOCKERDEPLOY=true
+SB_DOCKER_IMAGE=ayentibco/partition_docker
+
+[EnvInject] - Variables injected successfully.
+[EnvInject] - Injecting contributions.
+Building in workspace /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure
+ > /opt/bitnami/git/bin/git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > /opt/bitnami/git/bin/git config remote.origin.url https://github.com/ayen-tibco/oocl.git # timeout=10
+Fetching upstream changes from https://github.com/ayen-tibco/oocl.git
+ > /opt/bitnami/git/bin/git --version # timeout=10
+using GIT_ASKPASS to set credentials github
+ > /opt/bitnami/git/bin/git fetch --tags --progress https://github.com/ayen-tibco/oocl.git +refs/heads/*:refs/remotes/origin/*
+ > /opt/bitnami/git/bin/git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > /opt/bitnami/git/bin/git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 (refs/remotes/origin/master)
+ > /opt/bitnami/git/bin/git config core.sparsecheckout # timeout=10
+ > /opt/bitnami/git/bin/git checkout -f cdc041ddd3ba4245155bf21e32dce70fb15ac0a2
+Commit message: "set substitution property to blank so native sb starts up"
+ > /opt/bitnami/git/bin/git rev-list --no-walk cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 # timeout=10
+[cargosmart-partition-docker-azure] $ /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/bin/mvn -f vagrant/pom.xml -s /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/settings.xml -Pazure initialize clean -DCONFIG_PROP_FILE=config-docker.properties
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.tibco.ep.sb.sample.cloud:vagrant >----------------
+[INFO] Building Vagrant and Cloud Provisioning Examples 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product-1) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:set-resources (default-set-resources) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (install_sb) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildNumber: cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 at timestamp: 1526226278417
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (destroy-azure-vms) @ vagrant ---
+[INFO] Executing tasks
+
+destroy_azure_vms:
+     [exec] + grep -c running
+     [exec] + vagrant status
+     [exec] ERROR loader: Unknown config sources: ["20105320_machine_oocldocker1", :"22427260_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["20105320_machine_oocldocker1"]
+     [exec] ERROR loader: Unknown config sources: ["20105320_machine_oocldocker1", :"22427260_azure.box_azure", "20105320_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["20105320_machine_oocldocker1", "20105320_machine_oocldocker2"]
+     [exec] + STATUS=3
+     [exec] + [ 3 -gt 0 ]
+     [exec] + vagrant destroy -f
+     [exec] ERROR loader: Unknown config sources: ["18224560_machine_oocldocker1", :"20270900_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["18224560_machine_oocldocker1"]
+     [exec] ERROR loader: Unknown config sources: ["18224560_machine_oocldocker1", :"20270900_azure.box_azure", "18224560_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["18224560_machine_oocldocker1", "18224560_machine_oocldocker2"]
+     [exec] ==> oocldocker3: Terminating 'oocldocker3'
+     [exec] ==> oocldocker3: Deleting resource group
+     [exec] ==> oocldocker3: Resource group is deleting... Moving on.
+     [exec] ==> oocldocker3: Terminated 'oocldocker3'
+     [exec] ==> oocldocker2: Terminating 'oocldocker2'
+     [exec] ==> oocldocker2: Deleting resource group
+     [exec] ==> oocldocker2: Resource group is deleting... Moving on.
+     [exec] ==> oocldocker2: Terminated 'oocldocker2'
+     [exec] ==> oocldocker1: Terminating 'oocldocker1'
+     [exec] ==> oocldocker1: Deleting resource group
+     [exec] ==> oocldocker1: Resource group is deleting... Moving on.
+     [exec] ==> oocldocker1: Terminated 'oocldocker1'
+     [exec] + [ false == true ]
+     [exec] ./vagrant_destroy_vms.sh: 9: [: false: unexpected operator
+     [exec] + exit
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:stop-nodes (default-stop-nodes) @ vagrant ---
+[INFO] Stop and remove nodes is skipped
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ vagrant ---
+[INFO] Deleting /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 02:14 min
+[INFO] Finished at: 2018-05-13T11:46:39-04:00
+[INFO] ------------------------------------------------------------------------
+Parsing POMs
+Established TCP socket on 38405
+[vagrant] $ /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.model.JDK/jdk8u172/bin/java -cp /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven35-agent-1.12-alpha-1.jar:/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/boot/plexus-classworlds-2.5.2.jar:/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/conf/logging jenkins.maven3.agent.Maven35Main /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3 /opt/bitnami/apache-tomcat/webapps/jenkins/WEB-INF/lib/remoting-3.17.jar /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven35-interceptor-1.12-alpha-1.jar /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven3-interceptor-commons-1.12-alpha-1.jar 38405
+<===[JENKINS REMOTING CAPACITY]===>   channel started
+Executing Maven:  -B -f /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/pom.xml -s /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/settings.xml -Pazure install -DANSIBLE_TAGS=prep,install,deploy,docker -DCONFIG_PROP_FILE=config-docker.properties -DDOCKERDEPLOY=true -DSB_DOCKER_IMAGE=****/partition_docker
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.tibco.ep.sb.sample.cloud:vagrant >----------------
+[INFO] Building Vagrant and Cloud Provisioning Examples 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product-1) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:set-resources (default-set-resources) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (install_sb) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildNumber: cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 at timestamp: 1526226427581
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-dependency-plugin:3.1.0:unpack-dependencies (unpack-tgz-files) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 50 resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-compiler-plugin:3.6.1:compile (default-compile) @ vagrant ---
+[INFO] No sources to compile
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-dependency-plugin:3.1.0:copy (copy-sb-app) @ vagrant ---
+[INFO] Configured Artifact: com.tibco.ep.sb.example:partitioning-application:1.0.0-SNAPSHOT:ep-application
+[INFO] Configured Artifact: com.tibco.ep.sb.rt:platform_linuxx86_64:?:zip
+[INFO] Copying partitioning-application-1.0.0-SNAPSHOT.zip to /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/staging/azure/app/partitioning-application-1.0.0-SNAPSHOT.zip
+[INFO] Copying platform_linuxx86_64-10.2.1.zip to /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/staging/azure/app/platform_linuxx86_64.zip
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-vagrantfile) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 6 resources
+[INFO] Copying 5 resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-provisioner-scripts) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 100 resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-cloud-inventory-script) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/./src/main/azure
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-localhost-inventory) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-nodeconfig) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (install-hostmanager-plugin) @ vagrant ---
+[INFO] Executing tasks
+
+install_hostmanager_plugin:
+     [exec] Installing the 'vagrant-hostmanager' plugin. This can take a few minutes...
+     [exec] Installed the plugin 'vagrant-hostmanager (1.8.8)'!
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (get-azure-inventory-script) @ vagrant ---
+[INFO] Executing tasks
+
+get-azure-inventory-script:
+    [mkdir] Created dir: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/staging/azure/ansible/playbooks/inventory
+     [exec]   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+     [exec]                                  Dload  Upload   Total   Spent    Left  Speed
+     [exec] 
+     [exec]   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   151  100   151    0     0    966      0 --:--:-- --:--:-- --:--:--   967
+     [exec] 100 38050  100 38050    0     0   131k      0 --:--:-- --:--:-- --:--:--  131k
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (upload-sb-s3) @ vagrant ---
+[INFO] Executing tasks
+
+upload_sb_s3:
+     [exec]   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+     [exec]                                  Dload  Upload   Total   Spent    Left  Speed
+     [exec] 
+     [exec]   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 52.216.134.59...* TCP_NODELAY set
+     [exec] * Connected to sbqa.s3.amazonaws.com (52.216.134.59) port 443 (#0)
+     [exec] * ALPN, offering h2
+     [exec] * ALPN, offering http/1.1
+     [exec] * Cipher selection: ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH
+     [exec] * successfully set certificate verify locations:
+     [exec] *   CAfile: /opt/bitnami/common/openssl/certs/curl-ca-bundle.crt
+     [exec]   CApath: /etc/ssl/certs
+     [exec] * TLSv1.2 (OUT), TLS header, Certificate Status (22):
+     [exec] } [5 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS handshake, Client hello (1):
+     [exec] } [512 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Server hello (2):
+     [exec] { [87 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Certificate (11):
+     [exec] { [2514 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+     [exec] { [333 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Server finished (14):
+     [exec] { [4 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+     [exec] } [70 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS change cipher, Client hello (1):
+     [exec] } [1 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS handshake, Finished (20):
+     [exec] } [16 bytes data]
+     [exec] * TLSv1.2 (IN), TLS change cipher, Client hello (1):
+     [exec] { [1 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Finished (20):
+     [exec] { [16 bytes data]
+     [exec] * SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+     [exec] * ALPN, server did not agree to a protocol
+     [exec] * Server certificate:
+     [exec] *  subject: C=US; ST=Washington; L=Seattle; O=Amazon.com Inc.; CN=*.s3.amazonaws.com
+     [exec] *  start date: Sep 22 00:00:00 2017 GMT
+     [exec] *  expire date: Jan  3 12:00:00 2019 GMT
+     [exec] *  subjectAltName: host "sbqa.s3.amazonaws.com" matched cert's "*.s3.amazonaws.com"
+     [exec] *  issuer: C=US; O=DigiCert Inc; OU=www.digicert.com; CN=DigiCert Baltimore CA-2 G2
+     [exec] *  SSL certificate verify ok.
+     [exec] } [5 bytes data]
+     [exec] > PUT /platform_linuxx86_64.zip HTTP/1.1
+     [exec] > Host: sbqa.s3.amazonaws.com
+     [exec] > User-Agent: curl/7.52.1
+     [exec] > Accept: */*
+     [exec] > Content-Type: application/octet-stream
+     [exec] > Content-Length: 142409116
+     [exec] > Expect: 100-continue
+     [exec] > 
+     [exec] { [5 bytes data]
+     [exec] < HTTP/1.1 100 Continue
+     [exec] } [5 bytes data]
+     [exec] 
+     [exec]  15  135M    0     0   15 20.9M      0  34.9M  0:00:03 --:--:--  0:00:03 34.9M 61  135M    0     0   61 84.1M      0  52.3M  0:00:02  0:00:01  0:00:01 52.3M 98  135M    0     0   98  134M      0  51.7M  0:00:02  0:00:02 --:--:-- 51.7M* We are completely uploaded and fine{ [5 bytes data]
+     [exec] < HTTP/1.1 200 OK
+     [exec] < x-amz-id-2: 3dQsLn7C2FGlciQD0QYE0zZwODOpmyz33RqEQ/7adTVg5yM95Ipd03hFPTa2YF5+GPpmGXFYLSk=
+     [exec] < x-amz-request-id: A0356629F0C2DDD2
+     [exec] < Date: Sun, 13 May 2018 15:47:34 GMT
+     [exec] < ETag: "a111b4bb547fc66c3af5d81be8f6f97f"
+     [exec] < Content-Length: 0
+     [exec] < Server: AmazonS3
+     [exec] < 
+     [exec] * Curl_http_done: called premature == 0
+     [exec] 
+     [exec] 100  135M    0     0  100  135M      0  43.4M  0:00:03  0:00:03 --:--:-- 43.5M* Connection #0 to host sbqa.s3.amazonaws.com left intact
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (install-azure-plugin) @ vagrant ---
+[INFO] Executing tasks
+
+install_azure_plugin:
+     [exec] Installing the 'vagrant-azure' plugin. This can take a few minutes...
+     [exec] Installed the plugin 'vagrant-azure (2.0.0)'!
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (create-azure-vms) @ vagrant ---
+[INFO] Executing tasks
+
+create_azure_vms:
+     [exec] ERROR loader: Unknown config sources: ["23733600_machine_oocldocker1", :"22028700_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["23733600_machine_oocldocker1", :"22028700_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["23733600_machine_oocldocker1"]
+     [exec] ERROR loader: Unknown config sources: ["23733600_machine_oocldocker1", :"22028700_azure.box_azure", "23733600_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["23733600_machine_oocldocker1", :"22028700_azure.box_azure", "23733600_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["23733600_machine_oocldocker1", "23733600_machine_oocldocker2"]
+     [exec] Bringing machine 'oocldocker1' up with 'azure' provider...
+     [exec] Bringing machine 'oocldocker2' up with 'azure' provider...
+     [exec] Bringing machine 'oocldocker3' up with 'azure' provider...
+     [exec] ==> oocldocker1: Launching an instance with the following settings...
+     [exec] ==> oocldocker1:  -- Management Endpoint: https://management.azure.com
+     [exec] ==> oocldocker1:  -- Subscription Id: ****
+     [exec] ==> oocldocker1:  -- Resource Group Name: oocldocker
+     [exec] ==> oocldocker1:  -- Location: eastus
+     [exec] ==> oocldocker1:  -- SSH User Name: vagrant
+     [exec] ==> oocldocker1:  -- Admin Username: vagrant
+     [exec] ==> oocldocker1:  -- VM Name: oocldocker1
+     [exec] ==> oocldocker1:  -- VM Storage Account Type: Premium_LRS
+     [exec] ==> oocldocker1:  -- VM Size: Standard_DS2_v2
+     [exec] ==> oocldocker1:  -- Image URN: OpenLogic:CentOS:7.4:latest
+     [exec] ==> oocldocker1:  -- Virtual Network Name: oocldocker_vn
+     [exec] ==> oocldocker1:  -- Subnet Name: oocldocker_subnet
+     [exec] ==> oocldocker1:  -- TCP Endpoints: ["5556-5558", "10000"]
+     [exec] ==> oocldocker1:  -- DNS Label Prefix: oocldocker1
+     [exec] ==> oocldocker1:  -- Create or Update of Resource Group: oocldocker
+     [exec] ERROR warden: Error occurred: {
+     [exec]   "message": "MsRestAzure::AzureOperationError: ResourceGroupBeingDeleted: The resource group 'oocldocker' is in deprovisioning state and cannot perform this operation.",
+     [exec]   "request": {
+     [exec]     "base_uri": "https://management.azure.com",
+     [exec]     "path_template": "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}",
+     [exec]     "method": "put",
+     [exec]     "path_params": {
+     [exec]       "resourceGroupName": "oocldocker",
+     [exec]       "subscriptionId": "****"
+     [exec]     },
+     [exec]     "skip_encoding_path_params": null,
+     [exec]     "query_params": {
+     [exec]       "api-version": "2016-09-01"
+     [exec]     },
+     [exec]     "skip_encoding_query_params": null,
+     [exec]     "headers": {
+     [exec]       "Content-Type": "application/json; charset=utf-8",
+     [exec]       "accept-language": "en-US",
+     [exec]       "x-ms-client-request-id": "7c037ddb-ee9d-48f8-aa01-be470abbca23"
+     [exec]     },
+     [exec]     "body": "{\"location\":\"eastus\"}",
+     [exec]     "middlewares": [
+     [exec]       [
+     [exec]         "MsRest::RetryPolicyMiddleware",
+     [exec]         {
+     [exec]           "times": 3,
+     [exec]           "retry": 0.02
+     [exec]         }
+     [exec]       ],
+     [exec]       [
+     [exec]         "cookie_jar"
+     [exec]       ]
+     [exec]     ],
+     [exec]     "log": null
+     [exec]   },
+     [exec]   "response": {
+     [exec]     "body": "{\"error\":{\"code\":\"ResourceGroupBeingDeleted\",\"message\":\"The resource group 'oocldocker' is in deprovisioning state and cannot perform this operation.\"}}",
+     [exec]     "headers": {
+     [exec]       "cache-control": "no-cache",
+     [exec]       "pragma": "no-cache",
+     [exec]       "content-length": "152",
+     [exec]       "content-type": "application/json; charset=utf-8",
+     [exec]       "expires": "-1",
+     [exec]       "x-ms-failure-cause": "gateway",
+     [exec]       "x-ms-ratelimit-remaining-subscription-writes": "1199",
+     [exec]       "x-ms-request-id": "d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "x-ms-correlation-request-id": "d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "x-ms-routing-request-id": "EASTUS2:20180513T154748Z:d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "strict-transport-security": "max-age=31536000; includeSubDomains",
+     [exec]       "x-content-type-options": "nosniff",
+     [exec]       "date": "Sun, 13 May 2018 15:47:47 GMT",
+     [exec]       "connection": "close"
+     [exec]     },
+     [exec]     "status": 409
+     [exec]   }
+     [exec] }
+     [exec] ERROR warden: Error occurred: {
+     [exec]   "message": "MsRestAzure::AzureOperationError: ResourceGroupBeingDeleted: The resource group 'oocldocker' is in deprovisioning state and cannot perform this operation.",
+     [exec]   "request": {
+     [exec]     "base_uri": "https://management.azure.com",
+     [exec]     "path_template": "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}",
+     [exec]     "method": "put",
+     [exec]     "path_params": {
+     [exec]       "resourceGroupName": "oocldocker",
+     [exec]       "subscriptionId": "****"
+     [exec]     },
+     [exec]     "skip_encoding_path_params": null,
+     [exec]     "query_params": {
+     [exec]       "api-version": "2016-09-01"
+     [exec]     },
+     [exec]     "skip_encoding_query_params": null,
+     [exec]     "headers": {
+     [exec]       "Content-Type": "application/json; charset=utf-8",
+     [exec]       "accept-language": "en-US",
+     [exec]       "x-ms-client-request-id": "7c037ddb-ee9d-48f8-aa01-be470abbca23"
+     [exec]     },
+     [exec]     "body": "{\"location\":\"eastus\"}",
+     [exec]     "middlewares": [
+     [exec]       [
+     [exec]         "MsRest::RetryPolicyMiddleware",
+     [exec]         {
+     [exec]           "times": 3,
+     [exec]           "retry": 0.02
+     [exec]         }
+     [exec]       ],
+     [exec]       [
+     [exec]         "cookie_jar"
+     [exec]       ]
+     [exec]     ],
+     [exec]     "log": null
+     [exec]   },
+     [exec]   "response": {
+     [exec]     "body": "{\"error\":{\"code\":\"ResourceGroupBeingDeleted\",\"message\":\"The resource group 'oocldocker' is in deprovisioning state and cannot perform this operation.\"}}",
+     [exec]     "headers": {
+     [exec]       "cache-control": "no-cache",
+     [exec]       "pragma": "no-cache",
+     [exec]       "content-length": "152",
+     [exec]       "content-type": "application/json; charset=utf-8",
+     [exec]       "expires": "-1",
+     [exec]       "x-ms-failure-cause": "gateway",
+     [exec]       "x-ms-ratelimit-remaining-subscription-writes": "1199",
+     [exec]       "x-ms-request-id": "d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "x-ms-correlation-request-id": "d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "x-ms-routing-request-id": "EASTUS2:20180513T154748Z:d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "strict-transport-security": "max-age=31536000; includeSubDomains",
+     [exec]       "x-content-type-options": "nosniff",
+     [exec]       "date": "Sun, 13 May 2018 15:47:47 GMT",
+     [exec]       "connection": "close"
+     [exec]     },
+     [exec]     "status": 409
+     [exec]   }
+     [exec] }
+     [exec] ERROR warden: Error occurred: {
+     [exec]   "message": "MsRestAzure::AzureOperationError: ResourceGroupBeingDeleted: The resource group 'oocldocker' is in deprovisioning state and cannot perform this operation.",
+     [exec]   "request": {
+     [exec]     "base_uri": "https://management.azure.com",
+     [exec]     "path_template": "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}",
+     [exec]     "method": "put",
+     [exec]     "path_params": {
+     [exec]       "resourceGroupName": "oocldocker",
+     [exec]       "subscriptionId": "****"
+     [exec]     },
+     [exec]     "skip_encoding_path_params": null,
+     [exec]     "query_params": {
+     [exec]       "api-version": "2016-09-01"
+     [exec]     },
+     [exec]     "skip_encoding_query_params": null,
+     [exec]     "headers": {
+     [exec]       "Content-Type": "application/json; charset=utf-8",
+     [exec]       "accept-language": "en-US",
+     [exec]       "x-ms-client-request-id": "7c037ddb-ee9d-48f8-aa01-be470abbca23"
+     [exec]     },
+     [exec]     "body": "{\"location\":\"eastus\"}",
+     [exec]     "middlewares": [
+     [exec]       [
+     [exec]         "MsRest::RetryPolicyMiddleware",
+     [exec]         {
+     [exec]           "times": 3,
+     [exec]           "retry": 0.02
+     [exec]         }
+     [exec]       ],
+     [exec]       [
+     [exec]         "cookie_jar"
+     [exec]       ]
+     [exec]     ],
+     [exec]     "log": null
+     [exec]   },
+     [exec]   "response": {
+     [exec]     "body": "{\"error\":{\"code\":\"ResourceGroupBeingDeleted\",\"message\":\"The resource group 'oocldocker' is in deprovisioning state and cannot perform this operation.\"}}",
+     [exec]     "headers": {
+     [exec]       "cache-control": "no-cache",
+     [exec]       "pragma": "no-cache",
+     [exec]       "content-length": "152",
+     [exec]       "content-type": "application/json; charset=utf-8",
+     [exec]       "expires": "-1",
+     [exec]       "x-ms-failure-cause": "gateway",
+     [exec]       "x-ms-ratelimit-remaining-subscription-writes": "1199",
+     [exec]       "x-ms-request-id": "d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "x-ms-correlation-request-id": "d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "x-ms-routing-request-id": "EASTUS2:20180513T154748Z:d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "strict-transport-security": "max-age=31536000; includeSubDomains",
+     [exec]       "x-content-type-options": "nosniff",
+     [exec]       "date": "Sun, 13 May 2018 15:47:47 GMT",
+     [exec]       "connection": "close"
+     [exec]     },
+     [exec]     "status": 409
+     [exec]   }
+     [exec] }
+     [exec] /home/tomcat/.vagrant.d/gems/2.4.4/gems/azure_mgmt_resources-0.10.0/lib/generated/azure_mgmt_resources/resource_groups.rb:293:in `block in create_or_update_async': { (MsRestAzure::AzureOperationError)
+     [exec]   "message": "MsRestAzure::AzureOperationError: ResourceGroupBeingDeleted: The resource group 'oocldocker' is in deprovisioning state and cannot perform this operation.",
+     [exec]   "request": {
+     [exec]     "base_uri": "https://management.azure.com",
+     [exec]     "path_template": "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}",
+     [exec]     "method": "put",
+     [exec]     "path_params": {
+     [exec]       "resourceGroupName": "oocldocker",
+     [exec]       "subscriptionId": "****"
+     [exec]     },
+     [exec]     "skip_encoding_path_params": null,
+     [exec]     "query_params": {
+     [exec]       "api-version": "2016-09-01"
+     [exec]     },
+     [exec]     "skip_encoding_query_params": null,
+     [exec]     "headers": {
+     [exec]       "Content-Type": "application/json; charset=utf-8",
+     [exec]       "accept-language": "en-US",
+     [exec]       "x-ms-client-request-id": "7c037ddb-ee9d-48f8-aa01-be470abbca23"
+     [exec]     },
+     [exec]     "body": "{\"location\":\"eastus\"}",
+     [exec]     "middlewares": [
+     [exec]       [
+     [exec]         "MsRest::RetryPolicyMiddleware",
+     [exec]         {
+     [exec]           "times": 3,
+     [exec]           "retry": 0.02
+     [exec]         }
+     [exec]       ],
+     [exec]       [
+     [exec]         "cookie_jar"
+     [exec]       ]
+     [exec]     ],
+     [exec]     "log": null
+     [exec]   },
+     [exec]   "response": {
+     [exec]     "body": "{\"error\":{\"code\":\"ResourceGroupBeingDeleted\",\"message\":\"The resource group 'oocldocker' is in deprovisioning state and cannot perform this operation.\"}}",
+     [exec]     "headers": {
+     [exec]       "cache-control": "no-cache",
+     [exec]       "pragma": "no-cache",
+     [exec]       "content-length": "152",
+     [exec]       "content-type": "application/json; charset=utf-8",
+     [exec]       "expires": "-1",
+     [exec]       "x-ms-failure-cause": "gateway",
+     [exec]       "x-ms-ratelimit-remaining-subscription-writes": "1199",
+     [exec]       "x-ms-request-id": "d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "x-ms-correlation-request-id": "d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "x-ms-routing-request-id": "EASTUS2:20180513T154748Z:d48dc5af-2a4b-4c10-a0ea-e25bcc5ba25f",
+     [exec]       "strict-transport-security": "max-age=31536000; includeSubDomains",
+     [exec]       "x-content-type-options": "nosniff",
+     [exec]       "date": "Sun, 13 May 2018 15:47:47 GMT",
+     [exec]       "connection": "close"
+     [exec]     },
+     [exec]     "status": 409
+     [exec]   }
+     [exec] }
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/promise.rb:501:in `block in on_fulfill'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/executor/safe_task_executor.rb:24:in `block in execute'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/synchronization/mri_lockable_object.rb:38:in `block in synchronize'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/synchronization/mri_lockable_object.rb:38:in `synchronize'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/synchronization/mri_lockable_object.rb:38:in `synchronize'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/executor/safe_task_executor.rb:19:in `execute'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/promise.rb:531:in `block in realize'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/executor/ruby_thread_pool_executor.rb:348:in `run_task'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/executor/ruby_thread_pool_executor.rb:337:in `block (3 levels) in create_worker'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/executor/ruby_thread_pool_executor.rb:320:in `loop'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/executor/ruby_thread_pool_executor.rb:320:in `block (2 levels) in create_worker'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/executor/ruby_thread_pool_executor.rb:319:in `catch'
+     [exec] 	from /home/tomcat/.vagrant.d/gems/2.4.4/gems/concurrent-ruby-1.0.5/lib/concurrent/executor/ruby_thread_pool_executor.rb:319:in `block in create_worker'
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 52.518 s
+[INFO] Finished at: 2018-05-13T11:47:46-04:00
+[INFO] ------------------------------------------------------------------------
+Waiting for Jenkins to finish collecting data[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] Failed to execute goal org.apache.maven.plugins:maven-antrun-plugin:1.8:run (create-azure-vms) on project vagrant: An Ant BuildException has occured: exec returned: 1
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] around Ant part ...<exec failonerror="true" dir="/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/staging/azure" executable="vagrant" searchpath="true">... @ 4:185 in /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/antrun/build-create_azure_vms.xml
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] -> [Help 1]
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] 
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] 
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+
+[JENKINS] Archiving /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/pom.xml to com.tibco.ep.sb.sample.cloud/vagrant/1.0.0-SNAPSHOT/vagrant-1.0.0-SNAPSHOT.pom
+channel stopped
+Finished: FAILURE

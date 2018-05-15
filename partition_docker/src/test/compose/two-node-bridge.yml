@@ -1,0 +1,28 @@
+# use in conjuction with SB10 two node configurations
+version: '${DOCKER_COMPOSE_VERSION}'
+services:
+    node1:
+        image: ${SB_REMOTE_DOCKER_IMAGE}
+        container_name: ${A1_NODENAME}
+        # expose network ports for epadmin to access first node to perform tests/diags
+        ports: [${DOCKER_NETWORK_PORTS}]
+        networks: [${DOCKER_NETWORKS}]
+        volumes: [${DOCKER_VOLUME_MOUNTS}]
+        links: [node2]
+        depends_on: [node2]
+        environment:
+            - NODENAME=${A1_NODENAME}
+            - STOP_FOREGROUND=${STOP_FOREGROUND}
+        env_file: ${DOCKER_COMPOSE_ENV_FILE}
+    node2:
+        image: ${SB_REMOTE_DOCKER_IMAGE}
+        container_name: ${A2_NODENAME}
+        networks: [${DOCKER_NETWORKS}]
+        volumes: [${DOCKER_VOLUME_MOUNTS}]
+        environment:
+            - NODENAME=${A2_NODENAME}
+            - STOP_FOREGROUND=${STOP_FOREGROUND}
+        env_file: ${DOCKER_COMPOSE_ENV_FILE}
+networks:
+    isolated_nw:
+        driver: ${DOCKER_NETWORK_MODE}

@@ -1,0 +1,11 @@
+commit 9071dee0b599ed6e3849142b32db919b586abf4f
+tree 50049bdae38b7a3fceb165a42a22b1b8a5e81cd8
+parent 21fd3c5728951d02cc10254725d4ee86e2fa7188
+author ayen <ayen@tibco.com> 2018-05-13 20:37:14 -0400
+committer ayen <ayen@tibco.com> 2018-05-13 20:37:14 -0400
+
+    move elastic.conf to test permanently so to use deployment node conf
+
+
+
+:100644 100644 71b448ffa5ed89078860024bb9ac6b6a1c821a4b 71b448ffa5ed89078860024bb9ac6b6a1c821a4b R100	partitioning-application/src/main/configurations/elastic.conf	partitioning-application/src/test/configurations/elastic.conf

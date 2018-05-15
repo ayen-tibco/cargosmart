@@ -1,0 +1,1372 @@
+Started by user [8mha:////4LFCF2qqWvAi501ZWXfsAgXzaSAypkNcz23SGiy7qBImAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgYu/dLi1CIwAQCumwTUvwAAAA==[0madmin
+[EnvInject] - Loading node environment variables.
+[EnvInject] - Preparing an environment for the build.
+[EnvInject] - Keeping Jenkins system variables.
+[EnvInject] - Keeping Jenkins build variables.
+[EnvInject] - Injecting as environment variables the properties content 
+TIBCO_EP_HOME=/opt/tibco/sb-cep/10.2
+ANSIBLE_TAGS=prep,install,deploy
+LD_LIBRARY_PATH=
+DOCKERDEPLOY=false
+
+[EnvInject] - Variables injected successfully.
+[EnvInject] - Injecting contributions.
+Building in workspace /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure
+ > /opt/bitnami/git/bin/git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > /opt/bitnami/git/bin/git config remote.origin.url https://github.com/ayen-tibco/oocl.git # timeout=10
+Fetching upstream changes from https://github.com/ayen-tibco/oocl.git
+ > /opt/bitnami/git/bin/git --version # timeout=10
+using GIT_ASKPASS to set credentials github
+ > /opt/bitnami/git/bin/git fetch --tags --progress https://github.com/ayen-tibco/oocl.git +refs/heads/*:refs/remotes/origin/*
+ > /opt/bitnami/git/bin/git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > /opt/bitnami/git/bin/git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 (refs/remotes/origin/master)
+ > /opt/bitnami/git/bin/git config core.sparsecheckout # timeout=10
+ > /opt/bitnami/git/bin/git checkout -f cdc041ddd3ba4245155bf21e32dce70fb15ac0a2
+Commit message: "set substitution property to blank so native sb starts up"
+ > /opt/bitnami/git/bin/git rev-list --no-walk cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 # timeout=10
+[cargosmart-partition-native-azure] $ /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/bin/mvn -f vagrant/pom.xml -s /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/settings.xml -Pazure initialize clean
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.tibco.ep.sb.sample.cloud:vagrant >----------------
+[INFO] Building Vagrant and Cloud Provisioning Examples 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product-1) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:set-resources (default-set-resources) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (install_sb) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant
+[INFO] Storing buildNumber: cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 at timestamp: 1526108456620
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (destroy-azure-vms) @ vagrant ---
+[INFO] Executing tasks
+
+destroy_azure_vms:
+     [exec] + + vagrant status
+     [exec] grep -c running
+     [exec] ERROR loader: Unknown config sources: ["20325780_machine_oocl-1", :"18385020_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["20325780_machine_oocl-1", :"18385020_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["20325780_machine_oocl-1"]
+     [exec] ERROR loader: Unknown config sources: ["20325780_machine_oocl-1", :"18385020_azure.box_azure", "20325780_machine_oocl-2"]
+     [exec] ERROR loader: Unknown config sources: ["20325780_machine_oocl-1", :"18385020_azure.box_azure", "20325780_machine_oocl-2"]
+     [exec] ERROR loader: Unknown config sources: ["20325780_machine_oocl-1", "20325780_machine_oocl-2"]
+     [exec] ERROR loader: Unknown config sources: [:"18385020_azure.box_azure", "20325780_machine_oocl-2", "20325780_machine_oocl-3"]
+     [exec] ERROR loader: Unknown config sources: ["20325780_machine_oocl-1", :"18385020_azure.box_azure", "20325780_machine_oocl-3"]
+     [exec] ERROR loader: Unknown config sources: ["20325780_machine_oocl-1", :"18385020_azure.box_azure", "20325780_machine_oocl-2"]
+     [exec] + STATUS=0
+     [exec] + [ 0 -gt 0 ]
+     [exec] + [ false == true ]
+     [exec] ./vagrant_destroy_vms.sh: 9: [: false: unexpected operator
+     [exec] + exit
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:stop-nodes (default-stop-nodes) @ vagrant ---
+[INFO] Stop and remove nodes is skipped
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ vagrant ---
+[INFO] Deleting /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/target
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 21.202 s
+[INFO] Finished at: 2018-05-12T03:01:04-04:00
+[INFO] ------------------------------------------------------------------------
+Parsing POMs
+Modules changed, recalculating dependency graph
+Established TCP socket on 44309
+[vagrant] $ /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.model.JDK/jdk8u172/bin/java -cp /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven35-agent-1.12-alpha-1.jar:/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/boot/plexus-classworlds-2.5.2.jar:/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/conf/logging jenkins.maven3.agent.Maven35Main /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3 /opt/bitnami/apache-tomcat/webapps/jenkins/WEB-INF/lib/remoting-3.17.jar /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven35-interceptor-1.12-alpha-1.jar /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven3-interceptor-commons-1.12-alpha-1.jar 44309
+<===[JENKINS REMOTING CAPACITY]===>   channel started
+Executing Maven:  -B -f /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/pom.xml -s /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/settings.xml -Pazure install -DDOCKERDEPLOY=false -DANSIBLE_TAGS=prep,install,deploy
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.tibco.ep.sb.sample.cloud:vagrant >----------------
+[INFO] Building Vagrant and Cloud Provisioning Examples 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product-1) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:set-resources (default-set-resources) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (install_sb) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant
+[INFO] Storing buildNumber: cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 at timestamp: 1526108492782
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-dependency-plugin:3.1.0:unpack-dependencies (unpack-tgz-files) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 50 resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-compiler-plugin:3.6.1:compile (default-compile) @ vagrant ---
+[INFO] No sources to compile
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-dependency-plugin:3.1.0:copy (copy-sb-app) @ vagrant ---
+[INFO] Configured Artifact: com.tibco.ep.sb.example:partitioning-application:1.0.0-SNAPSHOT:ep-application
+[INFO] Configured Artifact: com.tibco.ep.sb.rt:platform_linuxx86_64:?:zip
+[INFO] Copying partitioning-application-1.0.0-SNAPSHOT.zip to /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/target/staging/azure/app/partitioning-application-1.0.0-SNAPSHOT.zip
+[INFO] Copying platform_linuxx86_64-10.2.1.zip to /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/target/staging/azure/app/platform_linuxx86_64.zip
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-vagrantfile) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 6 resources
+[INFO] Copying 5 resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-provisioner-scripts) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 100 resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-cloud-inventory-script) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/./src/main/azure
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-localhost-inventory) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-nodeconfig) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (install-hostmanager-plugin) @ vagrant ---
+[INFO] Executing tasks
+
+install_hostmanager_plugin:
+     [exec] Installing the 'vagrant-hostmanager' plugin. This can take a few minutes...
+     [exec] Installed the plugin 'vagrant-hostmanager (1.8.8)'!
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (get-azure-inventory-script) @ vagrant ---
+[INFO] Executing tasks
+
+get-azure-inventory-script:
+    [mkdir] Created dir: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/target/staging/azure/ansible/playbooks/inventory
+     [exec]   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+     [exec]                                  Dload  Upload   Total   Spent    Left  Speed
+     [exec] 
+     [exec]   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   151  100   151    0     0   1172      0 --:--:-- --:--:-- --:--:--  1179
+     [exec] 100 38050  100 38050    0     0   188k      0 --:--:-- --:--:-- --:--:--  188k
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (upload-sb-s3) @ vagrant ---
+[INFO] Executing tasks
+
+upload_sb_s3:
+     [exec]   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+     [exec]                                  Dload  Upload   Total   Spent    Left  Speed
+     [exec] 
+     [exec]   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 52.216.130.35...* TCP_NODELAY set
+     [exec] * Connected to sbqa.s3.amazonaws.com (52.216.130.35) port 443 (#0)
+     [exec] * ALPN, offering h2
+     [exec] * ALPN, offering http/1.1
+     [exec] * Cipher selection: ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH
+     [exec] * successfully set certificate verify locations:
+     [exec] *   CAfile: /opt/bitnami/common/openssl/certs/curl-ca-bundle.crt
+     [exec]   CApath: /etc/ssl/certs
+     [exec] * TLSv1.2 (OUT), TLS header, Certificate Status (22):
+     [exec] } [5 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS handshake, Client hello (1):
+     [exec] } [512 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Server hello (2):
+     [exec] { [87 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Certificate (11):
+     [exec] { [2514 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+     [exec] { [333 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Server finished (14):
+     [exec] { [4 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+     [exec] } [70 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS change cipher, Client hello (1):
+     [exec] } [1 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS handshake, Finished (20):
+     [exec] } [16 bytes data]
+     [exec] * TLSv1.2 (IN), TLS change cipher, Client hello (1):
+     [exec] { [1 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Finished (20):
+     [exec] { [16 bytes data]
+     [exec] * SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+     [exec] * ALPN, server did not agree to a protocol
+     [exec] * Server certificate:
+     [exec] *  subject: C=US; ST=Washington; L=Seattle; O=Amazon.com Inc.; CN=*.s3.amazonaws.com
+     [exec] *  start date: Sep 22 00:00:00 2017 GMT
+     [exec] *  expire date: Jan  3 12:00:00 2019 GMT
+     [exec] *  subjectAltName: host "sbqa.s3.amazonaws.com" matched cert's "*.s3.amazonaws.com"
+     [exec] *  issuer: C=US; O=DigiCert Inc; OU=www.digicert.com; CN=DigiCert Baltimore CA-2 G2
+     [exec] *  SSL certificate verify ok.
+     [exec] } [5 bytes data]
+     [exec] > PUT /platform_linuxx86_64.zip HTTP/1.1
+     [exec] > Host: sbqa.s3.amazonaws.com
+     [exec] > User-Agent: curl/7.52.1
+     [exec] > Accept: */*
+     [exec] > Content-Type: application/octet-stream
+     [exec] > Content-Length: 142409116
+     [exec] > Expect: 100-continue
+     [exec] > 
+     [exec] { [5 bytes data]
+     [exec] < HTTP/1.1 100 Continue
+     [exec] } [5 bytes data]
+     [exec] 
+     [exec]  41  135M    0     0   41 56.1M      0  56.9M  0:00:02 --:--:--  0:00:02 56.9M 72  135M    0     0   72 98.8M      0  49.5M  0:00:02  0:00:01  0:00:01 49.5M* We are completely uploaded and fine{ [5 bytes data]
+     [exec] < HTTP/1.1 200 OK
+     [exec] < x-amz-id-2: 8vtGpft6z/XzIKeZa5kds/VHzJFDW8CZDqO0jIUKKn8tqw/OuqrnroFh7LO3RNFwP9nkPtp/CSA=
+     [exec] < x-amz-request-id: 70DA3A023B4CD7D4
+     [exec] < Date: Sat, 12 May 2018 07:01:55 GMT
+     [exec] < ETag: "a111b4bb547fc66c3af5d81be8f6f97f"
+     [exec] < Content-Length: 0
+     [exec] < Server: AmazonS3
+     [exec] < 
+     [exec] * Curl_http_done: called premature == 0
+     [exec] 
+     [exec] 100  135M    0     0  100  135M      0  49.2M  0:00:02  0:00:02 --:--:-- 49.2M* Connection #0 to host sbqa.s3.amazonaws.com left intact
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (install-azure-plugin) @ vagrant ---
+[INFO] Executing tasks
+
+install_azure_plugin:
+     [exec] Installing the 'vagrant-azure' plugin. This can take a few minutes...
+     [exec] Installed the plugin 'vagrant-azure (2.0.0)'!
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (create-azure-vms) @ vagrant ---
+[INFO] Executing tasks
+
+create_azure_vms:
+     [exec] ERROR loader: Unknown config sources: ["20974180_machine_oocl-1", :"19168600_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["20974180_machine_oocl-1", :"19168600_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["20974180_machine_oocl-1"]
+     [exec] ERROR loader: Unknown config sources: ["20974180_machine_oocl-1", :"19168600_azure.box_azure", "20974180_machine_oocl-2"]
+     [exec] ERROR loader: Unknown config sources: ["20974180_machine_oocl-1", :"19168600_azure.box_azure", "20974180_machine_oocl-2"]
+     [exec] ERROR loader: Unknown config sources: ["20974180_machine_oocl-1", "20974180_machine_oocl-2"]
+     [exec] Bringing machine 'oocl-1' up with 'azure' provider...
+     [exec] Bringing machine 'oocl-2' up with 'azure' provider...
+     [exec] Bringing machine 'oocl-3' up with 'azure' provider...
+     [exec] ==> oocl-1: Launching an instance with the following settings...
+     [exec] ==> oocl-1:  -- Management Endpoint: https://management.azure.com
+     [exec] ==> oocl-1:  -- Subscription Id: ****
+     [exec] ==> oocl-1:  -- Resource Group Name: oocl
+     [exec] ==> oocl-1:  -- Location: eastus
+     [exec] ==> oocl-1:  -- SSH User Name: vagrant
+     [exec] ==> oocl-1:  -- Admin Username: vagrant
+     [exec] ==> oocl-1:  -- VM Name: oocl-1
+     [exec] ==> oocl-1:  -- VM Storage Account Type: Premium_LRS
+     [exec] ==> oocl-1:  -- VM Size: Standard_DS2_v2
+     [exec] ==> oocl-1:  -- Image URN: OpenLogic:CentOS:7.4:latest
+     [exec] ==> oocl-1:  -- Virtual Network Name: oocl_vn
+     [exec] ==> oocl-1:  -- Subnet Name: oocl_subnet
+     [exec] ==> oocl-1:  -- TCP Endpoints: ["5556-5558", "10000"]
+     [exec] ==> oocl-1:  -- DNS Label Prefix: oocl-1
+     [exec] ==> oocl-1:  -- Create or Update of Resource Group: oocl
+     [exec] ==> oocl-1:  -- Starting deployment
+     [exec] ==> oocl-1:  -- Finished deploying
+     [exec] ==> oocl-1: Waiting for SSH to become available...
+     [exec] ==> oocl-1: Machine is booted and ready for use!
+     [exec] ==> oocl-1: Running provisioner: shell...
+     [exec]     oocl-1: Running: inline script
+     [exec]     oocl-1: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocl-1: Preparing...                          
+     [exec]     oocl-1: ########################################
+     [exec]     oocl-1: Updating / installing...
+     [exec]     oocl-1: epel-release-7-9                      
+     [exec]     oocl-1: #####
+     [exec]     oocl-1: #
+     [exec]     oocl-1: #####
+     [exec]     oocl-1: #############################
+     [exec]     oocl-1: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-1: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocl-1: 0 metadata files removed
+     [exec]     oocl-1: 0 sqlite files removed
+     [exec]     oocl-1: 0 metadata files removed
+     [exec]     oocl-1: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-1: http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/92f7f5ee211ecffbc0de646a4a9f19c7949dd7c455e6b65ee3654e01ac9ce610-updateinfo.xml.bz2: [Errno 12] Timeout on http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/92f7f5ee211ecffbc0de646a4a9f19c7949dd7c455e6b65ee3654e01ac9ce610-updateinfo.xml.bz2: (28, 'Connection timed out after 30001 milliseconds')
+     [exec]     oocl-1: Trying other mirror.
+     [exec]     oocl-1: Determining fastest mirrors
+     [exec]     oocl-1:  * epel: epel.mirror.constant.com
+     [exec]     oocl-1: Metadata Cache Created
+     [exec] ==> oocl-2: Launching an instance with the following settings...
+     [exec] ==> oocl-2:  -- Management Endpoint: https://management.azure.com
+     [exec] ==> oocl-2:  -- Subscription Id: ****
+     [exec] ==> oocl-2:  -- Resource Group Name: oocl
+     [exec] ==> oocl-2:  -- Location: eastus
+     [exec] ==> oocl-2:  -- SSH User Name: vagrant
+     [exec] ==> oocl-2:  -- Admin Username: vagrant
+     [exec] ==> oocl-2:  -- VM Name: oocl-2
+     [exec] ==> oocl-2:  -- VM Storage Account Type: Premium_LRS
+     [exec] ==> oocl-2:  -- VM Size: Standard_DS2_v2
+     [exec] ==> oocl-2:  -- Image URN: OpenLogic:CentOS:7.4:latest
+     [exec] ==> oocl-2:  -- Virtual Network Name: oocl_vn
+     [exec] ==> oocl-2:  -- Subnet Name: oocl_subnet
+     [exec] ==> oocl-2:  -- TCP Endpoints: ["5556-5558", "10000"]
+     [exec] ==> oocl-2:  -- DNS Label Prefix: oocl-2
+     [exec] ==> oocl-2:  -- Create or Update of Resource Group: oocl
+     [exec] ==> oocl-2:  -- Starting deployment
+     [exec] ==> oocl-2:  -- Finished deploying
+     [exec] ==> oocl-2: Waiting for SSH to become available...
+     [exec] ==> oocl-2: Machine is booted and ready for use!
+     [exec] ==> oocl-2: Running provisioner: shell...
+     [exec]     oocl-2: Running: inline script
+     [exec]     oocl-2: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocl-2: Preparing...                          
+     [exec]     oocl-2: ########################################
+     [exec]     oocl-2: Updating / installing...
+     [exec]     oocl-2: epel-release-7-9                      
+     [exec]     oocl-2: ###
+     [exec]     oocl-2: ##
+     [exec]     oocl-2: ###################################
+     [exec]     oocl-2: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-2: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocl-2: 0 metadata files removed
+     [exec]     oocl-2: 0 sqlite files removed
+     [exec]     oocl-2: 0 metadata files removed
+     [exec]     oocl-2: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-2: http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/repomd.xml: [Errno 12] Timeout on http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/repomd.xml: (28, 'Connection timed out after 30001 milliseconds')
+     [exec]     oocl-2: Trying other mirror.
+     [exec]     oocl-2: Determining fastest mirrors
+     [exec]     oocl-2:  * epel: ewr.edge.kernel.org
+     [exec]     oocl-2: Metadata Cache Created
+     [exec] ==> oocl-2: Running provisioner: shell...
+     [exec]     oocl-2: Running: inline script
+     [exec]     oocl-2: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocl-2: Preparing...                          ########################################
+     [exec]     oocl-2: 	package epel-release-7-9.noarch is already installed
+     [exec]     oocl-2: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-2: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocl-2: 17 metadata files removed
+     [exec]     oocl-2: 10 sqlite files removed
+     [exec]     oocl-2: 0 metadata files removed
+     [exec]     oocl-2: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-2: Loading mirror speeds from cached hostfile
+     [exec]     oocl-2:  * epel: ewr.edge.kernel.org
+     [exec]     oocl-2: Metadata Cache Created
+     [exec] ==> oocl-3: Launching an instance with the following settings...
+     [exec] ==> oocl-3:  -- Management Endpoint: https://management.azure.com
+     [exec] ==> oocl-3:  -- Subscription Id: ****
+     [exec] ==> oocl-3:  -- Resource Group Name: oocl
+     [exec] ==> oocl-3:  -- Location: eastus
+     [exec] ==> oocl-3:  -- SSH User Name: vagrant
+     [exec] ==> oocl-3:  -- Admin Username: vagrant
+     [exec] ==> oocl-3:  -- VM Name: oocl-3
+     [exec] ==> oocl-3:  -- VM Storage Account Type: Premium_LRS
+     [exec] ==> oocl-3:  -- VM Size: Standard_DS2_v2
+     [exec] ==> oocl-3:  -- Image URN: OpenLogic:CentOS:7.4:latest
+     [exec] ==> oocl-3:  -- Virtual Network Name: oocl_vn
+     [exec] ==> oocl-3:  -- Subnet Name: oocl_subnet
+     [exec] ==> oocl-3:  -- TCP Endpoints: ["5556-5558", "10000"]
+     [exec] ==> oocl-3:  -- DNS Label Prefix: oocl-3
+     [exec] ==> oocl-3:  -- Create or Update of Resource Group: oocl
+     [exec] ==> oocl-3:  -- Starting deployment
+     [exec] ==> oocl-3:  -- Finished deploying
+     [exec] ==> oocl-3: Waiting for SSH to become available...
+     [exec] ==> oocl-3: Machine is booted and ready for use!
+     [exec] ==> oocl-3: Running provisioner: shell...
+     [exec]     oocl-3: Running: inline script
+     [exec]     oocl-3: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocl-3: Preparing...                          
+     [exec]     oocl-3: ########################################
+     [exec]     oocl-3: Updating / installing...
+     [exec]     oocl-3: epel-release-7-9                      
+     [exec]     oocl-3: ###
+     [exec]     oocl-3: ##
+     [exec]     oocl-3: #
+     [exec]     oocl-3: #####
+     [exec]     oocl-3: #############################
+     [exec]     oocl-3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-3: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocl-3: 0 metadata files removed
+     [exec]     oocl-3: 0 sqlite files removed
+     [exec]     oocl-3: 0 metadata files removed
+     [exec]     oocl-3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-3: http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/92f7f5ee211ecffbc0de646a4a9f19c7949dd7c455e6b65ee3654e01ac9ce610-updateinfo.xml.bz2: [Errno 12] Timeout on http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/92f7f5ee211ecffbc0de646a4a9f19c7949dd7c455e6b65ee3654e01ac9ce610-updateinfo.xml.bz2: (28, 'Connection timed out after 30000 milliseconds')
+     [exec]     oocl-3: Trying other mirror.
+     [exec]     oocl-3: Determining fastest mirrors
+     [exec]     oocl-3:  * epel: mirror.math.princeton.edu
+     [exec]     oocl-3: Metadata Cache Created
+     [exec] ==> oocl-3: Running provisioner: shell...
+     [exec]     oocl-3: Running: inline script
+     [exec]     oocl-3: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocl-3: Preparing...                          
+     [exec]     oocl-3: ########################################
+     [exec]     oocl-3: 	package epel-release-7-9.noarch is already installed
+     [exec]     oocl-3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-3: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocl-3: 17 metadata files removed
+     [exec]     oocl-3: 10 sqlite files removed
+     [exec]     oocl-3: 0 metadata files removed
+     [exec]     oocl-3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-3: Loading mirror speeds from cached hostfile
+     [exec]     oocl-3:  * epel: mirror.math.princeton.edu
+     [exec]     oocl-3: Metadata Cache Created
+     [exec] ==> oocl-3: Running provisioner: shell...
+     [exec]     oocl-3: Running: inline script
+     [exec]     oocl-3: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocl-3: Preparing...                          
+     [exec]     oocl-3: ########################################
+     [exec]     oocl-3: 	package epel-release-7-9.noarch is already installed
+     [exec]     oocl-3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-3: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocl-3: 17 metadata files removed
+     [exec]     oocl-3: 10 sqlite files removed
+     [exec]     oocl-3: 0 metadata files removed
+     [exec]     oocl-3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocl-3: Loading mirror speeds from cached hostfile
+     [exec]     oocl-3:  * epel: mirror.math.princeton.edu
+     [exec]     oocl-3: Metadata Cache Created
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (execute-azure-hostmanager-remote) @ vagrant ---
+[INFO] Executing tasks
+
+execute-azure-hostmanager-remote:
+     [exec] ERROR loader: Unknown config sources: ["16964200_machine_oocl-1", :"17873360_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["16964200_machine_oocl-1"]
+     [exec] ERROR loader: Unknown config sources: ["16964200_machine_oocl-1", :"17873360_azure.box_azure", "16964200_machine_oocl-2"]
+     [exec] ERROR loader: Unknown config sources: ["16964200_machine_oocl-1", "16964200_machine_oocl-2"]
+     [exec] [vagrant-hostmanager:guest] Updating hosts file on the virtual machine oocl-1...
+     [exec] [vagrant-hostmanager:guest] Updating hosts file on the virtual machine oocl-2...
+     [exec] [vagrant-hostmanager:guest] Updating hosts file on the virtual machine oocl-3...
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (provision-azure-firewall) @ vagrant ---
+[INFO] Executing tasks
+
+provision_azure_firewall:
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:testResources (default-testResources) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/src/test/resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-compiler-plugin:3.6.1:testCompile (default-testCompile) @ vagrant ---
+[INFO] No sources to compile
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:start-nodes (default-start-nodes) @ vagrant ---
+[INFO] Start and install nodes is skipped
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:test-java-fragment (default-test-java-fragment) @ vagrant ---
+[INFO] Tests are skipped
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:stop-nodes (default-stop-nodes-1) @ vagrant ---
+[INFO] Stop and remove nodes is skipped
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (prepare-package) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant
+[INFO] Storing buildNumber: cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 at timestamp: 1526109300096
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ vagrant ---
+[INFO] Building jar: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/target/vagrant-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] >>> maven-source-plugin:3.0.1:jar (attach-sources) > generate-sources @ vagrant >>>
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product-1) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:set-resources (default-set-resources) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (install_sb) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant
+[INFO] Storing buildNumber: cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 at timestamp: 1526109302645
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ vagrant ---
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Failed to getClass for org.apache.maven.plugins.source.SourceJarMojo
+[INFO] 
+[INFO] <<< maven-source-plugin:3.0.1:jar (attach-sources) < generate-sources @ vagrant <<<
+[INFO] 
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-source-plugin:3.0.1:jar (attach-sources) @ vagrant ---
+[INFO] Building jar: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/target/vagrant-1.0.0-SNAPSHOT-sources.jar
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-javadoc-plugin:2.10.4:jar (attach-javadocs) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (execute-azure-rsync) @ vagrant ---
+[INFO] Executing tasks
+
+execute-azure-rsync:
+     [exec] ERROR loader: Unknown config sources: ["21501140_machine_oocl-1", :"20996940_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["21501140_machine_oocl-1"]
+     [exec] ERROR loader: Unknown config sources: ["21501140_machine_oocl-1", :"20996940_azure.box_azure", "21501140_machine_oocl-2"]
+     [exec] ERROR loader: Unknown config sources: ["21501140_machine_oocl-1", "21501140_machine_oocl-2"]
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (provision-sb-azure) @ vagrant ---
+[INFO] Executing tasks
+
+provision_sb_azure:
+     [exec] ./parallel_provision.sh: 3: [: ansible: unexpected operator
+     [exec] ERROR loader: Unknown config sources: ["23509080_machine_oocl-1", :"23097960_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["23509080_machine_oocl-1"]
+     [exec] ERROR loader: Unknown config sources: ["23509080_machine_oocl-1", :"23097960_azure.box_azure", "23509080_machine_oocl-2"]
+     [exec] ERROR loader: Unknown config sources: ["23509080_machine_oocl-1", "23509080_machine_oocl-2"]
+     [exec] ==> oocl-3: Running provisioner: ansible...
+     [exec] Vagrant has automatically selected the compatibility mode '2.0'
+     [exec] according to the Ansible version installed (2.5.2).
+     [exec] 
+     [exec] Alternatively, the compatibility mode can be specified in your Vagrantfile:
+     [exec] https://www.vagrantup.com/docs/provisioning/ansible_common.html#compatibility_mode
+     [exec]     oocl-3: Running ansible-playbook...
+     [exec] [DEPRECATION WARNING]: docker is kept for backwards compatibility but usage is 
+     [exec] discouraged. The module documentation details page may explain more about this 
+     [exec] rationale.. This feature will be removed in a future release. Deprecation 
+     [exec] warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.
+     [exec] 
+     [exec] PLAY [localhost] ***************************************************************
+     [exec] 
+     [exec] TASK [Gathering Facts] *********************************************************
+     [exec] ok: [127.0.0.1]
+     [exec] 
+     [exec] PLAY [tag_ClusterName_partition] ***********************************************
+     [exec] 
+     [exec] TASK [Gathering Facts] *********************************************************
+     [exec] ok: [oocl-2]
+     [exec] ok: [oocl-3]
+     [exec] ok: [oocl-1]
+     [exec] 
+     [exec] TASK [common : Install python setup tools for Linux] ***************************
+     [exec] ok: [oocl-1 -> localhost]
+     [exec] 
+     [exec] TASK [common : Install python setup tools for MacOSX] **************************
+     [exec] skipping: [oocl-1]
+     [exec] 
+     [exec] TASK [common : Install Pypi] ***************************************************
+     [exec] ok: [oocl-1 -> localhost]
+     [exec] 
+     [exec] TASK [common : install pyhocon] ************************************************
+     [exec] ok: [oocl-1 -> localhost]
+     [exec] 
+     [exec] TASK [common : install dnspython for dig lookup for local host file] ***********
+     [exec] ok: [oocl-1 -> localhost]
+     [exec] 
+     [exec] TASK [common : convert node config file] ***************************************
+     [exec] changed: [oocl-1 -> localhost]
+     [exec] 
+     [exec] TASK [common : load hocon vars] ************************************************
+     [exec] ok: [oocl-1 -> localhost]
+     [exec] 
+     [exec] TASK [common : create node array] **********************************************
+     [exec] ok: [oocl-1 -> localhost]
+     [exec] 
+     [exec] TASK [common : update node array] **********************************************
+     [exec] ok: [oocl-1 -> localhost] => (item=A.partition)
+     [exec] ok: [oocl-1 -> localhost] => (item=B.partition)
+     [exec] ok: [oocl-1 -> localhost] => (item=C.partition)
+     [exec] 
+     [exec] TASK [common : update number of nodes] *****************************************
+     [exec] ok: [oocl-1 -> localhost]
+     [exec] 
+     [exec] TASK [common : update node assignment file] ************************************
+     [exec] changed: [oocl-1 -> localhost]
+     [exec] 
+     [exec] TASK [common : load existing node assignment] **********************************
+     [exec] ok: [oocl-1 -> localhost]
+     [exec] 
+     [exec] TASK [common : update Cluster inventory file] **********************************
+     [exec] changed: [oocl-2 -> localhost]
+     [exec] ok: [oocl-1 -> localhost]
+     [exec] ok: [oocl-3 -> localhost]
+     [exec] 
+     [exec] TASK [centosinstall : clean yum cache] *****************************************
+     [exec]  [WARNING]: Consider using the yum module rather than running yum.  If you need
+     [exec] to use command because yum is insufficient you can add warn=False to this
+     [exec] command task or set command_warnings=False in ansible.cfg to get rid of this
+     [exec] message.
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-3]
+     [exec] 
+     [exec] TASK [centosinstall : clean yum metadata] **************************************
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-3]
+     [exec] 
+     [exec] TASK [centosinstall : install ntpd] ********************************************
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : install java dependency package] *************************
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : install java-devel dependency package] *******************
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : install perl dependency package] *************************
+     [exec] ok: [oocl-2]
+     [exec] ok: [oocl-3]
+     [exec] ok: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : install wget dependency package] *************************
+     [exec] ok: [oocl-2]
+     [exec] ok: [oocl-3]
+     [exec] ok: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : install tar dependency packages] *************************
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : install unzip dependency packages] ***********************
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : install sysstat/sar dependency packages] *****************
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : install dns utils dependency packages] *******************
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : install tcpdump dependency packages] *********************
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : install net-tootls dependency packages] ******************
+     [exec] ok: [oocl-2]
+     [exec] ok: [oocl-3]
+     [exec] ok: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : install hostname dependency packages] ********************
+     [exec] ok: [oocl-2]
+     [exec] ok: [oocl-3]
+     [exec] ok: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : service] *************************************************
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-3]
+     [exec] 
+     [exec] TASK [centosinstall : libselinux-python] ***************************************
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : disable selinux] *****************************************
+     [exec]  [WARNING]: SELinux state temporarily changed from 'enforcing' to 'permissive'.
+     [exec] State change will take effect next reboot.
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [centosinstall : disable dnsmasq] *****************************************
+     [exec] fatal: [oocl-1]: FAILED! => {"changed": false, "msg": "Could not find the requested service dnsmasq: host"}
+     [exec] ...ignoring
+     [exec] fatal: [oocl-2]: FAILED! => {"changed": false, "msg": "Could not find the requested service dnsmasq: host"}
+     [exec] ...ignoring
+     [exec] fatal: [oocl-3]: FAILED! => {"changed": false, "msg": "Could not find the requested service dnsmasq: host"}
+     [exec] ...ignoring
+     [exec] 
+     [exec] TASK [ubuntuinstall : clean up old packages] ***********************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : clean unncessary packages] *******************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install ntpd] ********************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install perl dependency package] *************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install wget dependency package] *************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install tar dependency packages] *************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install unzip dependency packages] ***********************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install sysstat/sar dependency packages] *****************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install dns utils dependency packages] *******************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install tcpdump dependency packages] *********************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install net-tootls dependency packages] ******************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install hostname dependency packages] ********************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : service] *************************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : add jave 8 deb repo] *************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : apt update] **********************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install java 8] ******************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : backup local /etc/hosts] ********************************
+     [exec] changed: [oocl-1 -> localhost]
+     [exec] changed: [oocl-2 -> localhost]
+     [exec] changed: [oocl-3 -> localhost]
+     [exec] 
+     [exec] TASK [tibcosbinstall : update local hosts file for admin] **********************
+     [exec] changed: [oocl-1 -> localhost]
+     [exec] 
+     [exec] TASK [tibcosbinstall : update remote hosts file for discovery] *****************
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create sbusers group] ***********************************
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create sbusers group] ***********************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create sbuser user account] *****************************
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [tibcosbinstall : add sbuser into docker group] ***************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : add sb env var to bashrc] *******************************
+     [exec] changed: [oocl-2] => (item={'value': u'platform_linuxx86_64.zip', 'key': u'SB_TARBALL'})
+     [exec] changed: [oocl-3] => (item={'value': u'platform_linuxx86_64.zip', 'key': u'SB_TARBALL'})
+     [exec] changed: [oocl-1] => (item={'value': u'platform_linuxx86_64.zip', 'key': u'SB_TARBALL'})
+     [exec] changed: [oocl-2] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'STREAMBASE_HOME'})
+     [exec] changed: [oocl-1] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'STREAMBASE_HOME'})
+     [exec] changed: [oocl-3] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'STREAMBASE_HOME'})
+     [exec] changed: [oocl-2] => (item={'value': u'/opt/tibco/partitioning-application', 'key': u'SB_APP_DIR'})
+     [exec] changed: [oocl-3] => (item={'value': u'/opt/tibco/partitioning-application', 'key': u'SB_APP_DIR'})
+     [exec] changed: [oocl-1] => (item={'value': u'/opt/tibco/partitioning-application', 'key': u'SB_APP_DIR'})
+     [exec] changed: [oocl-2] => (item={'value': u'/opt/tibco/highavailability', 'key': u'SB_HA_DIR'})
+     [exec] changed: [oocl-1] => (item={'value': u'/opt/tibco/highavailability', 'key': u'SB_HA_DIR'})
+     [exec] changed: [oocl-3] => (item={'value': u'/opt/tibco/highavailability', 'key': u'SB_HA_DIR'})
+     [exec] changed: [oocl-2] => (item={'value': u'/opt/tibco/sb-cep/10/distrib/tibco/bin', 'key': u'TIBCO_EP_BIN'})
+     [exec] changed: [oocl-3] => (item={'value': u'/opt/tibco/sb-cep/10/distrib/tibco/bin', 'key': u'TIBCO_EP_BIN'})
+     [exec] changed: [oocl-1] => (item={'value': u'/opt/tibco/sb-cep/10/distrib/tibco/bin', 'key': u'TIBCO_EP_BIN'})
+     [exec] changed: [oocl-2] => (item={'value': u'partition', 'key': u'CLUSTER_NAME'})
+     [exec] changed: [oocl-3] => (item={'value': u'partition', 'key': u'CLUSTER_NAME'})
+     [exec] changed: [oocl-2] => (item={'value': u'C.partition.partition', 'key': u'A3_NODENAME'})
+     [exec] changed: [oocl-1] => (item={'value': u'partition', 'key': u'CLUSTER_NAME'})
+     [exec] changed: [oocl-3] => (item={'value': u'C.partition.partition', 'key': u'A3_NODENAME'})
+     [exec] changed: [oocl-1] => (item={'value': u'C.partition.partition', 'key': u'A3_NODENAME'})
+     [exec] changed: [oocl-2] => (item={'value': u'PRODUCTION', 'key': u'BUILDTYPE'})
+     [exec] changed: [oocl-3] => (item={'value': u'PRODUCTION', 'key': u'BUILDTYPE'})
+     [exec] changed: [oocl-1] => (item={'value': u'PRODUCTION', 'key': u'BUILDTYPE'})
+     [exec] changed: [oocl-2] => (item={'value': u"'-DTIBCO_EP_HOME=/opt/tibco/sb-cep/10 -Xms512m -Xmx2048m'", 'key': u'JAVA_OPTIONS'})
+     [exec] changed: [oocl-3] => (item={'value': u"'-DTIBCO_EP_HOME=/opt/tibco/sb-cep/10 -Xms512m -Xmx2048m'", 'key': u'JAVA_OPTIONS'})
+     [exec] changed: [oocl-1] => (item={'value': u"'-DTIBCO_EP_HOME=/opt/tibco/sb-cep/10 -Xms512m -Xmx2048m'", 'key': u'JAVA_OPTIONS'})
+     [exec] changed: [oocl-2] => (item={'value': 10, 'key': u'SB_CEP_VERSION'})
+     [exec] changed: [oocl-3] => (item={'value': 10, 'key': u'SB_CEP_VERSION'})
+     [exec] changed: [oocl-1] => (item={'value': 10, 'key': u'SB_CEP_VERSION'})
+     [exec] changed: [oocl-2] => (item={'value': u'/opt/tibco/nodes', 'key': u'NODE_INSTALL_DIR'})
+     [exec] changed: [oocl-3] => (item={'value': u'/opt/tibco/nodes', 'key': u'NODE_INSTALL_DIR'})
+     [exec] changed: [oocl-2] => (item={'value': u'/opt/tibco', 'key': u'TIBCO_INSTALL_DIR'})
+     [exec] changed: [oocl-1] => (item={'value': u'/opt/tibco/nodes', 'key': u'NODE_INSTALL_DIR'})
+     [exec] changed: [oocl-3] => (item={'value': u'/opt/tibco', 'key': u'TIBCO_INSTALL_DIR'})
+     [exec] changed: [oocl-2] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'TIBCO_EP_HOME'})
+     [exec] changed: [oocl-1] => (item={'value': u'/opt/tibco', 'key': u'TIBCO_INSTALL_DIR'})
+     [exec] changed: [oocl-3] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'TIBCO_EP_HOME'})
+     [exec] changed: [oocl-2] => (item={'value': 5556, 'key': u'SB_ADMIN_PORT'})
+     [exec] changed: [oocl-1] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'TIBCO_EP_HOME'})
+     [exec] changed: [oocl-3] => (item={'value': 5556, 'key': u'SB_ADMIN_PORT'})
+     [exec] changed: [oocl-2] => (item={'value': u'B.partition.partition', 'key': u'A2_IPADDR'})
+     [exec] changed: [oocl-3] => (item={'value': u'B.partition.partition', 'key': u'A2_IPADDR'})
+     [exec] changed: [oocl-1] => (item={'value': 5556, 'key': u'SB_ADMIN_PORT'})
+     [exec] changed: [oocl-2] => (item={'value': u'/etc/alternatives/java_sdk_1.8.0', 'key': u'JAVA_HOME'})
+     [exec] changed: [oocl-3] => (item={'value': u'/etc/alternatives/java_sdk_1.8.0', 'key': u'JAVA_HOME'})
+     [exec] changed: [oocl-1] => (item={'value': u'B.partition.partition', 'key': u'A2_IPADDR'})
+     [exec] changed: [oocl-2] => (item={'value': u'sbuser', 'key': u'SBUSER'})
+     [exec] changed: [oocl-3] => (item={'value': u'sbuser', 'key': u'SBUSER'})
+     [exec] changed: [oocl-1] => (item={'value': u'/etc/alternatives/java_sdk_1.8.0', 'key': u'JAVA_HOME'})
+     [exec] changed: [oocl-2] => (item={'value': u'partitioning-application-1.0.0-SNAPSHOT.zip', 'key': u'SB_APP_FILE'})
+     [exec] changed: [oocl-3] => (item={'value': u'partitioning-application-1.0.0-SNAPSHOT.zip', 'key': u'SB_APP_FILE'})
+     [exec] changed: [oocl-2] => (item={'value': u'/opt/tibco/sb-cep/10/lib:/opt/tibco/partitioning-application/java-bin:/vagrant', 'key': u'DEPLOYDIR'})
+     [exec] changed: [oocl-1] => (item={'value': u'sbuser', 'key': u'SBUSER'})
+     [exec] changed: [oocl-3] => (item={'value': u'/opt/tibco/sb-cep/10/lib:/opt/tibco/partitioning-application/java-bin:/vagrant', 'key': u'DEPLOYDIR'})
+     [exec] changed: [oocl-2] => (item={'value': u'three-node-static-proxy-azure-node.conf', 'key': u'NODE_CONFIG'})
+     [exec] changed: [oocl-1] => (item={'value': u'partitioning-application-1.0.0-SNAPSHOT.zip', 'key': u'SB_APP_FILE'})
+     [exec] changed: [oocl-3] => (item={'value': u'three-node-static-proxy-azure-node.conf', 'key': u'NODE_CONFIG'})
+     [exec] changed: [oocl-2] => (item={'value': None, 'key': u'SUBSTITUTIONS'})
+     [exec] changed: [oocl-1] => (item={'value': u'/opt/tibco/sb-cep/10/lib:/opt/tibco/partitioning-application/java-bin:/vagrant', 'key': u'DEPLOYDIR'})
+     [exec] changed: [oocl-3] => (item={'value': None, 'key': u'SUBSTITUTIONS'})
+     [exec] changed: [oocl-2] => (item={'value': u'A.partition.partition', 'key': u'A1_IPADDR'})
+     [exec] changed: [oocl-1] => (item={'value': u'three-node-static-proxy-azure-node.conf', 'key': u'NODE_CONFIG'})
+     [exec] changed: [oocl-3] => (item={'value': u'A.partition.partition', 'key': u'A1_IPADDR'})
+     [exec] changed: [oocl-2] => (item={'value': u'C.partition.partition', 'key': u'A3_IPADDR'})
+     [exec] changed: [oocl-1] => (item={'value': None, 'key': u'SUBSTITUTIONS'})
+     [exec] changed: [oocl-3] => (item={'value': u'C.partition.partition', 'key': u'A3_IPADDR'})
+     [exec] changed: [oocl-2] => (item={'value': 5557, 'key': u'A1_DATATRANSPORTPORT'})
+     [exec] changed: [oocl-1] => (item={'value': u'A.partition.partition', 'key': u'A1_IPADDR'})
+     [exec] changed: [oocl-3] => (item={'value': 5557, 'key': u'A1_DATATRANSPORTPORT'})
+     [exec] changed: [oocl-2] => (item={'value': u'test', 'key': u'SB_APP_CONFIG'})
+     [exec] changed: [oocl-1] => (item={'value': u'C.partition.partition', 'key': u'A3_IPADDR'})
+     [exec] changed: [oocl-3] => (item={'value': u'test', 'key': u'SB_APP_CONFIG'})
+     [exec] changed: [oocl-2] => (item={'value': u'B.partition.partition', 'key': u'A2_NODENAME'})
+     [exec] changed: [oocl-1] => (item={'value': 5557, 'key': u'A1_DATATRANSPORTPORT'})
+     [exec] changed: [oocl-2] => (item={'value': u'A.partition.partition', 'key': u'A1_NODENAME'})
+     [exec] changed: [oocl-3] => (item={'value': u'B.partition.partition', 'key': u'A2_NODENAME'})
+     [exec] changed: [oocl-1] => (item={'value': u'test', 'key': u'SB_APP_CONFIG'})
+     [exec] changed: [oocl-2] => (item={'value': u'partitioning-application', 'key': u'SB_APP_NAME'})
+     [exec] changed: [oocl-3] => (item={'value': u'A.partition.partition', 'key': u'A1_NODENAME'})
+     [exec] changed: [oocl-1] => (item={'value': u'B.partition.partition', 'key': u'A2_NODENAME'})
+     [exec] changed: [oocl-2] => (item={'value': 5557, 'key': u'A3_DATATRANSPORTPORT'})
+     [exec] changed: [oocl-3] => (item={'value': u'partitioning-application', 'key': u'SB_APP_NAME'})
+     [exec] changed: [oocl-1] => (item={'value': u'A.partition.partition', 'key': u'A1_NODENAME'})
+     [exec] changed: [oocl-2] => (item={'value': 5557, 'key': u'A2_DATATRANSPORTPORT'})
+     [exec] changed: [oocl-3] => (item={'value': 5557, 'key': u'A3_DATATRANSPORTPORT'})
+     [exec] changed: [oocl-1] => (item={'value': u'partitioning-application', 'key': u'SB_APP_NAME'})
+     [exec] changed: [oocl-3] => (item={'value': 5557, 'key': u'A2_DATATRANSPORTPORT'})
+     [exec] changed: [oocl-1] => (item={'value': 5557, 'key': u'A3_DATATRANSPORTPORT'})
+     [exec] changed: [oocl-1] => (item={'value': 5557, 'key': u'A2_DATATRANSPORTPORT'})
+     [exec] 
+     [exec] TASK [tibcosbinstall : set sbuser path to epadmin] *****************************
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create SB install directory] ****************************
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-2]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create SB node install directory] ***********************
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : download and extract sb] ********************************
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create app directory] ***********************************
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : download application] ***********************************
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : copy node config] ***************************************
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create SB user option directory] ************************
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : copy dtm option file] ***********************************
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : copy startsb script] ************************************
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-3]
+     [exec] changed: [oocl-1]
+     [exec] 
+     [exec] TASK [tibcosbinstall : set script attribues] ***********************************
+     [exec] changed: [oocl-2]
+     [exec] changed: [oocl-1]
+     [exec] changed: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : create docker user dir] *********************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : copy docker auth file] **********************************
+     [exec] 
+     [exec] TASK [Cluster_Docker : count how many containers are running] ******************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : set_fact] ***********************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : debug] **************************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : set_fact] ***********************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : docker login] *******************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : set weave head node ip hostname] ************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : debug] **************************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : debug] **************************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : check weave status] *************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : start weave on head node instance] **********************
+     [exec] skipping: [oocl-1]
+     [exec] 
+     [exec] TASK [Cluster_Docker : connect weave to head node] *****************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : send weave concensus] ***********************************
+     [exec] skipping: [oocl-1]
+     [exec] 
+     [exec] TASK [Cluster_Docker : get weave status] ***************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : debug] **************************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : docker login] *******************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : pull image] *********************************************
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : load existing node assignment if undefined] *************
+     [exec] skipping: [oocl-1]
+     [exec] 
+     [exec] TASK [Cluster_Docker : start SB container] *************************************
+     [exec] skipping: [oocl-1] => (item=A.partition) 
+     [exec] skipping: [oocl-2] => (item=B.partition) 
+     [exec] skipping: [oocl-3] => (item=C.partition) 
+     [exec] 
+     [exec] TASK [Cluster_Docker : wait and verify sb mgmt port is running] ****************
+     [exec] skipping: [oocl-1] => (item=A.partition) 
+     [exec] skipping: [oocl-2] => (item=B.partition) 
+     [exec] skipping: [oocl-3] => (item=C.partition) 
+     [exec] 
+     [exec] TASK [partition : count how many sb nodes already exists] **********************
+     [exec] fatal: [oocl-1]: FAILED! => {"changed": true, "cmd": ["pgrep", "-xc", "swcoord"], "delta": "0:00:00.038859", "end": "2018-05-12 07:20:51.470058", "msg": "non-zero return code", "rc": 1, "start": "2018-05-12 07:20:51.431199", "stderr": "", "stderr_lines": [], "stdout": "0", "stdout_lines": ["0"]}
+     [exec] ...ignoring
+     [exec] fatal: [oocl-2]: FAILED! => {"changed": true, "cmd": ["pgrep", "-xc", "swcoord"], "delta": "0:00:00.030190", "end": "2018-05-12 07:20:51.553454", "msg": "non-zero return code", "rc": 1, "start": "2018-05-12 07:20:51.523264", "stderr": "", "stderr_lines": [], "stdout": "0", "stdout_lines": ["0"]}
+     [exec] ...ignoring
+     [exec] fatal: [oocl-3]: FAILED! => {"changed": true, "cmd": ["pgrep", "-xc", "swcoord"], "delta": "0:00:00.036844", "end": "2018-05-12 07:20:51.693144", "msg": "non-zero return code", "rc": 1, "start": "2018-05-12 07:20:51.656300", "stderr": "", "stderr_lines": [], "stdout": "0", "stdout_lines": ["0"]}
+     [exec] ...ignoring
+     [exec] 
+     [exec] TASK [partition : set_fact] ****************************************************
+     [exec] ok: [oocl-1]
+     [exec] ok: [oocl-2]
+     [exec] ok: [oocl-3]
+     [exec] 
+     [exec] TASK [partition : set_fact] ****************************************************
+     [exec] ok: [oocl-1]
+     [exec] ok: [oocl-2]
+     [exec] ok: [oocl-3]
+     [exec] 
+     [exec] TASK [partition : debug] *******************************************************
+     [exec] ok: [oocl-2] => {
+     [exec]     "sb_exist_nodes": "0"
+     [exec] }
+     [exec] ok: [oocl-1] => {
+     [exec]     "sb_exist_nodes": "0"
+     [exec] }
+     [exec] ok: [oocl-3] => {
+     [exec]     "sb_exist_nodes": "0"
+     [exec] }
+     [exec] 
+     [exec] TASK [partition : do not set default admin port if multi-node deployment is enabled] ***
+     [exec] skipping: [oocl-1]
+     [exec] skipping: [oocl-2]
+     [exec] skipping: [oocl-3]
+     [exec] 
+     [exec] TASK [partition : set nodename suffix and index] *******************************
+     [exec] ok: [oocl-1]
+     [exec] ok: [oocl-2]
+     [exec] ok: [oocl-3]
+     [exec] 
+     [exec] TASK [partition : install/start sb node and then launch application] ***********
+     [exec] changed: [oocl-3] => (item=C.partition)
+     [exec] changed: [oocl-2] => (item=B.partition)
+     [exec] changed: [oocl-1] => (item=A.partition)
+     [exec] 
+     [exec] TASK [partition : collect port numbers] ****************************************
+     [exec] changed: [oocl-1] => (item=A.partition)
+     [exec] changed: [oocl-2] => (item=B.partition)
+     [exec] changed: [oocl-3] => (item=C.partition)
+     [exec] 
+     [exec] TASK [partition : debug] *******************************************************
+     [exec] ok: [oocl-1] => {
+     [exec]     "sb_ports": {
+     [exec]         "changed": true, 
+     [exec]         "msg": "All items completed", 
+     [exec]         "results": [
+     [exec]             {
+     [exec]                 "_ansible_ignore_errors": null, 
+     [exec]                 "_ansible_item_result": true, 
+     [exec]                 "_ansible_no_log": false, 
+     [exec]                 "_ansible_parsed": true, 
+     [exec]                 "changed": true, 
+     [exec]                 "cmd": [
+     [exec]                     "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin", 
+     [exec]                     "getadminport", 
+     [exec]                     "node", 
+     [exec]                     "installpath=/opt/tibco/nodes/A.partition"
+     [exec]                 ], 
+     [exec]                 "delta": "0:00:00.007669", 
+     [exec]                 "end": "2018-05-12 07:21:46.985468", 
+     [exec]                 "failed": false, 
+     [exec]                 "invocation": {
+     [exec]                     "module_args": {
+     [exec]                         "_raw_params": "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin getadminport node installpath=/opt/tibco/nodes/A.partition", 
+     [exec]                         "_uses_shell": false, 
+     [exec]                         "chdir": null, 
+     [exec]                         "creates": null, 
+     [exec]                         "executable": null, 
+     [exec]                         "removes": null, 
+     [exec]                         "stdin": null, 
+     [exec]                         "warn": true
+     [exec]                     }
+     [exec]                 }, 
+     [exec]                 "item": "A.partition", 
+     [exec]                 "rc": 0, 
+     [exec]                 "start": "2018-05-12 07:21:46.977799", 
+     [exec]                 "stderr": "", 
+     [exec]                 "stderr_lines": [], 
+     [exec]                 "stdout": "5556", 
+     [exec]                 "stdout_lines": [
+     [exec]                     "5556"
+     [exec]                 ]
+     [exec]             }
+     [exec]         ]
+     [exec]     }
+     [exec] }
+     [exec] ok: [oocl-2] => {
+     [exec]     "sb_ports": {
+     [exec]         "changed": true, 
+     [exec]         "msg": "All items completed", 
+     [exec]         "results": [
+     [exec]             {
+     [exec]                 "_ansible_ignore_errors": null, 
+     [exec]                 "_ansible_item_result": true, 
+     [exec]                 "_ansible_no_log": false, 
+     [exec]                 "_ansible_parsed": true, 
+     [exec]                 "changed": true, 
+     [exec]                 "cmd": [
+     [exec]                     "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin", 
+     [exec]                     "getadminport", 
+     [exec]                     "node", 
+     [exec]                     "installpath=/opt/tibco/nodes/B.partition"
+     [exec]                 ], 
+     [exec]                 "delta": "0:00:00.008001", 
+     [exec]                 "end": "2018-05-12 07:21:47.055285", 
+     [exec]                 "failed": false, 
+     [exec]                 "invocation": {
+     [exec]                     "module_args": {
+     [exec]                         "_raw_params": "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin getadminport node installpath=/opt/tibco/nodes/B.partition", 
+     [exec]                         "_uses_shell": false, 
+     [exec]                         "chdir": null, 
+     [exec]                         "creates": null, 
+     [exec]                         "executable": null, 
+     [exec]                         "removes": null, 
+     [exec]                         "stdin": null, 
+     [exec]                         "warn": true
+     [exec]                     }
+     [exec]                 }, 
+     [exec]                 "item": "B.partition", 
+     [exec]                 "rc": 0, 
+     [exec]                 "start": "2018-05-12 07:21:47.047284", 
+     [exec]                 "stderr": "", 
+     [exec]                 "stderr_lines": [], 
+     [exec]                 "stdout": "5556", 
+     [exec]                 "stdout_lines": [
+     [exec]                     "5556"
+     [exec]                 ]
+     [exec]             }
+     [exec]         ]
+     [exec]     }
+     [exec] }
+     [exec] ok: [oocl-3] => {
+     [exec]     "sb_ports": {
+     [exec]         "changed": true, 
+     [exec]         "msg": "All items completed", 
+     [exec]         "results": [
+     [exec]             {
+     [exec]                 "_ansible_ignore_errors": null, 
+     [exec]                 "_ansible_item_result": true, 
+     [exec]                 "_ansible_no_log": false, 
+     [exec]                 "_ansible_parsed": true, 
+     [exec]                 "changed": true, 
+     [exec]                 "cmd": [
+     [exec]                     "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin", 
+     [exec]                     "getadminport", 
+     [exec]                     "node", 
+     [exec]                     "installpath=/opt/tibco/nodes/C.partition"
+     [exec]                 ], 
+     [exec]                 "delta": "0:00:00.006998", 
+     [exec]                 "end": "2018-05-12 07:21:47.051838", 
+     [exec]                 "failed": false, 
+     [exec]                 "invocation": {
+     [exec]                     "module_args": {
+     [exec]                         "_raw_params": "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin getadminport node installpath=/opt/tibco/nodes/C.partition", 
+     [exec]                         "_uses_shell": false, 
+     [exec]                         "chdir": null, 
+     [exec]                         "creates": null, 
+     [exec]                         "executable": null, 
+     [exec]                         "removes": null, 
+     [exec]                         "stdin": null, 
+     [exec]                         "warn": true
+     [exec]                     }
+     [exec]                 }, 
+     [exec]                 "item": "C.partition", 
+     [exec]                 "rc": 0, 
+     [exec]                 "start": "2018-05-12 07:21:47.044840", 
+     [exec]                 "stderr": "", 
+     [exec]                 "stderr_lines": [], 
+     [exec]                 "stdout": "5556", 
+     [exec]                 "stdout_lines": [
+     [exec]                     "5556"
+     [exec]                 ]
+     [exec]             }
+     [exec]         ]
+     [exec]     }
+     [exec] }
+     [exec] 
+     [exec] TASK [partition : wait and verify sb mgmt port is running] *********************
+     [exec] ok: [oocl-1] => (item={'_ansible_parsed': True, 'stderr_lines': [], '_ansible_item_result': True, u'end': u'2018-05-12 07:21:46.985468', '_ansible_no_log': False, u'stdout': u'5556', u'cmd': [u'/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin', u'getadminport', u'node', u'installpath=/opt/tibco/nodes/A.partition'], u'rc': 0, 'item': u'A.partition', u'delta': u'0:00:00.007669', u'stderr': u'', u'changed': True, u'invocation': {u'module_args': {u'creates': None, u'executable': None, u'_uses_shell': False, u'_raw_params': u'/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin getadminport node installpath=/opt/tibco/nodes/A.partition', u'removes': None, u'warn': True, u'chdir': None, u'stdin': None}}, 'stdout_lines': [u'5556'], u'start': u'2018-05-12 07:21:46.977799', '_ansible_ignore_errors': None, 'failed': False})
+     [exec] ok: [oocl-2] => (item={'_ansible_parsed': True, 'stderr_lines': [], '_ansible_item_result': True, u'end': u'2018-05-12 07:21:47.055285', '_ansible_no_log': False, u'stdout': u'5556', u'cmd': [u'/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin', u'getadminport', u'node', u'installpath=/opt/tibco/nodes/B.partition'], u'rc': 0, 'item': u'B.partition', u'delta': u'0:00:00.008001', u'stderr': u'', u'changed': True, u'invocation': {u'module_args': {u'creates': None, u'executable': None, u'_uses_shell': False, u'_raw_params': u'/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin getadminport node installpath=/opt/tibco/nodes/B.partition', u'removes': None, u'warn': True, u'chdir': None, u'stdin': None}}, 'stdout_lines': [u'5556'], u'start': u'2018-05-12 07:21:47.047284', '_ansible_ignore_errors': None, 'failed': False})
+     [exec] ok: [oocl-3] => (item={'_ansible_parsed': True, 'stderr_lines': [], '_ansible_item_result': True, u'end': u'2018-05-12 07:21:47.051838', '_ansible_no_log': False, u'stdout': u'5556', u'cmd': [u'/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin', u'getadminport', u'node', u'installpath=/opt/tibco/nodes/C.partition'], u'rc': 0, 'item': u'C.partition', u'delta': u'0:00:00.006998', u'stderr': u'', u'changed': True, u'invocation': {u'module_args': {u'creates': None, u'executable': None, u'_uses_shell': False, u'_raw_params': u'/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin getadminport node installpath=/opt/tibco/nodes/C.partition', u'removes': None, u'warn': True, u'chdir': None, u'stdin': None}}, 'stdout_lines': [u'5556'], u'start': u'2018-05-12 07:21:47.044840', '_ansible_ignore_errors': None, 'failed': False})
+     [exec] 
+     [exec] PLAY RECAP *********************************************************************
+     [exec] 127.0.0.1                  : ok=1    changed=0    unreachable=0    failed=0   
+     [exec] oocl-1                     : ok=57   changed=35   unreachable=0    failed=0   
+     [exec] oocl-2                     : ok=45   changed=33   unreachable=0    failed=0   
+     [exec] oocl-3                     : ok=45   changed=32   unreachable=0    failed=0   
+     [exec] 
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (sb-azure-wait) @ vagrant ---
+[INFO] Executing tasks
+
+main:
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:administer-nodes (display_nodes) @ vagrant ---
+[INFO] [5556] Running "display node"
+[INFO] Node               Node Name   Node Description Node State Host Name Administration Port Discovery Service     Container Node Directory               Deployment Directories                                                                                    Install Time                  Last Start Time               Build Type Product Version                                    Product Installation Directory Web Server State Web Server URLs          
+[INFO] [A.partition:5556] A.partition No description   Started    oocl-1    5556                running on port 54321 tibco/sb  /opt/tibco/nodes/A.partition /opt/tibco/sb-cep/10/lib:/opt/tibco/partitioning-application:/opt/tibco/partitioning-application/java-bin 2018-05-12 07:21:09 +0000 UTC 2018-05-12 07:21:19 +0000 UTC PRODUCTION TIBCO StreamBase Runtime 10.2.1 (build 1801311149) /opt/tibco/sb-cep/10           Started          http://A.partition:34113 
+[INFO] [5556] Finished "display node"
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-install-plugin:2.5.2:install (default-install) @ vagrant ---
+[INFO] Installing /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/target/vagrant-1.0.0-SNAPSHOT.jar to /home/tomcat/.m2/repository/com/tibco/ep/sb/sample/cloud/vagrant/1.0.0-SNAPSHOT/vagrant-1.0.0-SNAPSHOT.jar
+[INFO] Installing /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/pom.xml to /home/tomcat/.m2/repository/com/tibco/ep/sb/sample/cloud/vagrant/1.0.0-SNAPSHOT/vagrant-1.0.0-SNAPSHOT.pom
+[INFO] Installing /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/target/vagrant-1.0.0-SNAPSHOT-sources.jar to /home/tomcat/.m2/repository/com/tibco/ep/sb/sample/cloud/vagrant/1.0.0-SNAPSHOT/vagrant-1.0.0-SNAPSHOT-sources.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 21:38 min
+[INFO] Finished at: 2018-05-12T03:22:57-04:00
+[INFO] ------------------------------------------------------------------------
+Waiting for Jenkins to finish collecting data
+[JENKINS] Archiving /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/pom.xml to com.tibco.ep.sb.sample.cloud/vagrant/1.0.0-SNAPSHOT/vagrant-1.0.0-SNAPSHOT.pom
+[JENKINS] Archiving /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/target/vagrant-1.0.0-SNAPSHOT.jar to com.tibco.ep.sb.sample.cloud/vagrant/1.0.0-SNAPSHOT/vagrant-1.0.0-SNAPSHOT.jar
+[JENKINS] Archiving /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/target/vagrant-1.0.0-SNAPSHOT-sources.jar to com.tibco.ep.sb.sample.cloud/vagrant/1.0.0-SNAPSHOT/vagrant-1.0.0-SNAPSHOT-sources.jar
+[cargosmart-partition-native-azure] $ /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/bin/mvn -f vagrant/pom.xml -s /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/settings.xml -Pazure initialize clean
+channel stopped
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.tibco.ep.sb.sample.cloud:vagrant >----------------
+[INFO] Building Vagrant and Cloud Provisioning Examples 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product-1) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:set-resources (default-set-resources) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (install_sb) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant
+[INFO] Storing buildNumber: cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 at timestamp: 1526109796312
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (destroy-azure-vms) @ vagrant ---
+[INFO] Executing tasks
+
+destroy_azure_vms:
+     [exec] + grep -c running
+     [exec] + vagrant status
+     [exec] ERROR loader: Unknown config sources: ["14286220_machine_oocl-1", :"14676400_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["14286220_machine_oocl-1"]
+     [exec] ERROR loader: Unknown config sources: ["14286220_machine_oocl-1", :"14676400_azure.box_azure", "14286220_machine_oocl-2"]
+     [exec] ERROR loader: Unknown config sources: ["14286220_machine_oocl-1", "14286220_machine_oocl-2"]
+     [exec] + STATUS=3
+     [exec] + [ 3 -gt 0 ]
+     [exec] + vagrant destroy -f
+     [exec] ERROR loader: Unknown config sources: ["9759460_machine_oocl-1", :"11935280_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["9759460_machine_oocl-1"]
+     [exec] ERROR loader: Unknown config sources: ["9759460_machine_oocl-1", :"11935280_azure.box_azure", "9759460_machine_oocl-2"]
+     [exec] ERROR loader: Unknown config sources: ["9759460_machine_oocl-1", "9759460_machine_oocl-2"]
+     [exec] ==> oocl-3: Terminating 'oocl-3'
+     [exec] ==> oocl-3: Deleting resource group
+     [exec] ==> oocl-3: Resource group is deleting... Moving on.
+     [exec] ==> oocl-3: Terminated 'oocl-3'
+     [exec] ==> oocl-2: Terminating 'oocl-2'
+     [exec] ==> oocl-2: Deleting resource group
+     [exec] ==> oocl-2: Resource group is deleting... Moving on.
+     [exec] ==> oocl-2: Terminated 'oocl-2'
+     [exec] ==> oocl-1: Terminating 'oocl-1'
+     [exec] ==> oocl-1: Deleting resource group
+     [exec] ==> oocl-1: Resource group is deleting... Moving on.
+     [exec] ==> oocl-1: Terminated 'oocl-1'
+     [exec] + [ false == true ]
+     [exec] ./vagrant_destroy_vms.sh: 9: [: false: unexpected operator
+     [exec] + exit
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:stop-nodes (default-stop-nodes) @ vagrant ---
+[INFO] Stop and remove nodes is skipped
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ vagrant ---
+[INFO] Deleting /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-native-azure/vagrant/target
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 02:11 min
+[INFO] Finished at: 2018-05-12T03:25:14-04:00
+[INFO] ------------------------------------------------------------------------
+Finished: SUCCESS

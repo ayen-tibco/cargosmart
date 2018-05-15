@@ -1,0 +1,245 @@
+  ------
+  Vagrant AWS Example
+  ------
+~~ %{snippet|file=pom.xml}  
+~~ Copyright 2017 TIBCO Software Inc. ALL RIGHTS RESERVED.
+
+%{toc}
+
+Introduction
+
+  The following sections provides usage information to the Vagrant AWS EC2 example.
+  The {{{https://github.com/mitchellh/vagrant-aws}Vagrant-aws plugin}} is 
+  used as the provider and ansible as the provisioner.
+  
+  The goal is to create EC2 compute instances with Vagrant 
+  and provision the instances with Ansible.  Vagrant utilizes Ansible to remotely
+  deploy docker containers running StreamBase Application.
+
+  The topologies application archive will be used along with the {{{../../applications/topologies/index.html}two node active}} 
+  configuration.  Two VMs are created to host each docker container. ep-maven-plugin is 
+  used to display the status of the node after the container is launched.
+
+  Complete Maven lifecycle will create instances, deploy SB10, run ep-maven test,
+  and remove the instances.
+
++------------
+mvn -Paws post-integration-test
++------------
+  
+  Maven target directory target/staging/aws will be created for Vagrant to bootstrap
+  and deploy with the necessary support files.
+
+* Setting Profile Properties
+
+  Profile properties file are used and are located at src/main/resources/profiles/<provider>/config.properties.
+  In Maven, profile id represents the provider. The Maven <<initialize>> lifecycle is used
+  to load the config.properties for antrun shell scripts. Also filtering are set to use 
+  the profile properties file when copying resource files like Vagrantfile and scripts.
+
+  The filtering customizes the Vagrantfile with AWS specific settings, hostnames, 
+  number of VMs to be deployed, etc.
+  
+  In addition to these settings, AWS credentials and settings are required
+  for VMs to be provisioned. Vagrant AWS plugin allows AWS credentials to be set via
+  environment variables or inside the Vagrantfile.  For flexibility and convenience,
+  these variables can also be set in the config.properties.
+  
+  To customize the profile properties file, do the following:
+
++------------
+cp src/main/resources/profiles/aws/config.properties src/main/resources/profile/aws/config_myversion.properties
+vi src/main/resources/profile/aws/config_myversion.properties
+mvn -Pvsphere post-integration-test -DCONFIG_PROP_FILE=config_myversion.properties
++------------
+  
+  config.properties
+  
+%{snippet|file=${project.basedir}/src/main/resources/profiles/aws/config.properties}
+
+  The following custom property variables MUST be set prior to running Maven lifecycles.
+
+*------------------------*------------------------------------------*---------------------------------------*
+| <<Variable Name>>      | <<Description>>                          | <<Example Value(s)>>                  |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_TARBALL_URL         |Location to retreive StreamBase Linux     |<https://bucketname.s3.amazonaws.com>  |
+|                        |binary. For Cloud remote deployment, use  | OR                                    |
+|                        |S3 to save bandwidth. Otherwise edit      |</vagrant>                             |
+|                        |Vagrantfile to allow rsync for            |                                       |
+|                        |<<SB_TARBALL>>.                          |                                       |
+|                        |                                          |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|AWS_ACCESS_KEY_ID       |AWS credentials necessary to create EC2   |                                       |
+|AWS_SECRET_ACCESS_KEY   |resources.                                |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|REGIONS                 |EC2 resources settings are required.      |                                       |
+|AVAIL_ZONE              |Prior to launching, Security Group and    |                                       |
+|SECURITY_GROUPS         |Subnet ID should exist already in the     |                                       |
+|SUBNET_ID               |appropriate Region and Availability Zone. |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|SSH_KEY_NAME            |Name of SSH Key on EC2 to use for         |<ec2_sbtest> (default)                |
+|                        |instances. This coincides to the          |                                       |
+|                        |aws/example_box/vagrant_private.key       |                                       |
+|                        |in the Vagrantfile.                       |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_DOCKER_IMAGE         |Custom StreamBase App and Binary Docker   |                                       |
+|SB_DOCKER_IMAGE_TAG     |image and tag (default latest).           |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY         |Private or public registry.               | <docker.io> (default) |
+|                       |                                           | OR
+|                       |                                           | myprivaterepo.domain.com:5000 |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY_USERNAME|Docker credentials. Can be blank if not   |                                       |
+|DOCKER_REGISTRY_PASSWORD|require by registry                       |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+Required Custom Property Settings for AWS Deployment
+
+* Summary of Steps for Quick Launch
+
+  [[1]] Install required software on control host. See {{{./index.html}Introduction}} .
+
+  [[2]] Copy aws/example_box/vagrant_private.key to AWS EC2. Give it the name ec2_sbtest.
+
+  [[3]] Upload StreamBase App Docker Image to public Repo (i.e. Docker Hub). See {{{../docker/usage.html}Docker Usage}} .
+
+  [[4]] Set required custom property variables in profiles/aws/config.properties.
+
+  [[5]] Execute Maven lifecycle to provision and deploy
+
++------------
+mvn -Paws post-integration-test
++------------
+
+
+* Create and provision VMs
+
+  The <<compile>> goal copies the AWS custom Vagrant and supporting script files. 
+  It downloads the ec2.py from ansible github repository. It then installs the 
+  vagrant-aws plugin and hostmanager plugin fron the internet.
+  The hostmanager plugin is needed to update /etc/hosts file locally and remotely with
+  the name of the VMs.  This allows the local Vagrant host to access the remote VMs
+  by name.
+  
+  <<<vagrant up >>> is called with basic shell provisioning like setting linux repo.
+  
++------------  
+$ mvn -Paws compile
++------------
+  
+* Custom Provision and Run Containers
+
+  The antrun target <provision-sb-aws> executes <<<vagrant provision>>> script calling either Ansible by default or Puppet.
+  This assume previous compile lifecycle has been executed.
+
++------------
+$ mvn -Paws antrun:run@provision-sb-aws antrun:run@provision-sb-aws -DUPDATEHOSTSREMOTE=true
+...
+22:50:46 [INFO] --- maven-antrun-plugin:1.8:run (create-aws-vms) @ vagrant ---
+22:50:47 [INFO] Executing tasks
+22:50:47 
+22:50:47 create_aws_vms:
+22:50:51      [exec] ERROR loader: Unknown config sources: ["18174760_machine_A1", :"20550220_aws.box_aws"]
+22:50:51      [exec] ERROR loader: Unknown config sources: ["18174760_machine_A1", :"20550220_aws.box_aws"]
+22:50:51      [exec] ERROR loader: Unknown config sources: ["18174760_machine_A1"]
+22:50:51      [exec] ERROR loader: Unknown config sources: [:"20550220_aws.box_aws", "18174760_machine_A2"]
+22:50:51      [exec] ERROR loader: Unknown config sources: ["18174760_machine_A1", :"20550220_aws.box_aws"]
+22:50:52      [exec] Bringing machine 'A1' up with 'aws' provider...
+22:50:52      [exec] Bringing machine 'A2' up with 'aws' provider...
+22:50:52      [exec] ==> A1: Warning! The AWS provider doesn't support any of the Vagrant
+22:50:52      [exec] ==> A1: high-level network configurations (`config.vm.network`). They
+22:50:52      [exec] ==> A1: will be silently ignored.
+22:50:52      [exec] ==> A1: Warning! You're launching this instance into a VPC without an
+22:50:52      [exec] ==> A1: elastic IP. Please verify you're properly connected to a VPN so
+22:50:52      [exec] ==> A1: you can access this machine, otherwise Vagrant will not be able
+22:50:52      [exec] ==> A1: to SSH into it.
+22:50:52      [exec] ==> A1: Launching an instance with the following settings...
+22:50:52      [exec] ==> A1:  -- Type: m3.large
+22:50:52      [exec] ==> A1:  -- AMI: ami-72667b65
+22:50:52      [exec] ==> A1:  -- Region: us-east-1
+22:50:52      [exec] ==> A1:  -- Keypair: ec2_sbtest
+22:50:52      [exec] ==> A1:  -- Subnet ID: subnet-cd7f6484
+22:50:52      [exec] ==> A1:  -- User Data: yes
+22:50:52      [exec] ==> A1:  -- Security Groups: ["sg-fe5db981"]
+22:50:52      [exec] ==> A1:  -- User Data: #!/bin/bash
+22:50:52      [exec] ==> A1: sed -i.orig -e 's/^Defaults.*requiretty/# Defaults requiretty/g' /etc/sudoers
+22:50:52      [exec] ==> A1:  -- Block Device Mapping: [{"DeviceName"=>"/dev/sda1", "Ebs.DeleteOnTermination"=>true}]
+22:50:52      [exec] ==> A1:  -- Terminate On Shutdown: false
+22:50:52      [exec] ==> A1:  -- Monitoring: false
+22:50:52      [exec] ==> A1:  -- EBS optimized: false
+22:50:52      [exec] ==> A1:  -- Source Destination check: 
+22:50:52      [exec] ==> A1:  -- Assigning a public IP address in a VPC: true
+22:50:52      [exec] ==> A1:  -- VPC tenancy specification: default
+22:50:54      [exec] ==> A1: Waiting for instance to become "ready"...
+22:51:08      [exec] ==> A1: Waiting for SSH to become available...
+22:52:16      [exec] ==> A1: Machine is booted and ready for use!
+22:52:20      [exec] ==> A1: Rsyncing folder: applications/vagrant/target/staging/aws/ => /vagrant
+22:52:20      [exec] ==> A1:   - Exclude: [".vagrant/", "sb", "platform_linuxx86_64.zip"]
+22:52:22      [exec] ==> A1: Running provisioner: shell...
+22:52:23      [exec]     A1: Running: inline script
+22:52:40      [exec] ==> A1: Loaded plugins: fastestmirror
+22:52:40      [exec] ==> A1: 
+22:52:40      [exec] base                                                     | 3.6 kB     00:00     ==> A1: 
+22:52:40      [exec] epel/x86_64/metalink                                     |  12 kB     00:00     ==> A1: 
+22:52:40      [exec] epel                                                     | 4.3 kB     00:00     ==> A1: 
+22:52:40      [exec] extras                                                   | 3.4 kB     00:00     ==> A1: 
+22:52:40      [exec] updates
++------------
+    
+* Stop and Remove Containers
+
+  Invoking maven lifecycle <<clean>> will run <<<vagrant destroy>>> script to remove the VMs.
+
++------------  
+mvn -Paws -fn initialize clean
++------------
+  
+  OR
+  
++------------  
+mvn -Paws antrun:run@destroy-aws-vms -DVAGRANT_PROVIDER=aws
+23:07:13 destroy_aws_vms:
+23:07:13      [exec] ++ vagrant global-status --prune
+23:07:13      [exec] ++ grep aws
+23:07:13      [exec] ++ awk '{ print $1 }'
+23:07:18      [exec] + for i in '`vagrant global-status --prune | grep aws | awk '\''{ print $1 }'\''`'
+23:07:18      [exec] + vagrant destroy -f 91a2a05
+23:07:22      [exec] ==> A1: Terminating the instance...
+23:07:22      [exec] ==> A1: Updating /etc/hosts file on host machine (password may be required)...
+23:07:22      [exec] ERROR loader: Unknown config sources: ["17390960_machine_A1", :"20816020_aws.box_aws"]
+23:07:23      [exec] ERROR loader: Unknown config sources: ["17390960_machine_A1"]
+23:07:24      [exec] + for i in '`vagrant global-status --prune | grep aws | awk '\''{ print $1 }'\''`'
+23:07:24      [exec] + vagrant destroy -f bbd259e
+23:07:28      [exec] ==> A2: Terminating the instance...
+23:07:28      [exec] ==> A2: Updating /etc/hosts file on host machine (password may be required)...
+23:07:28      [exec] Vagrant id b4059a42-b44a-4068-8ef8-c240704c8441 not found in /etc/hosts file.
+23:07:28      [exec] + '[' true == true ']'
+23:07:28      [exec] + '[' -f .vagrant/hostmanager/id ']'
+23:07:28      [exec] ++ cat .vagrant/hostmanager/id
+23:07:28      [exec] + vid=b4059a42-b44a-4068-8ef8-c240704c8441
+23:07:28      [exec] + grep -q b4059a42-b44a-4068-8ef8-c240704c8441 /etc/hosts
+23:07:28      [exec] + echo 'Vagrant id b4059a42-b44a-4068-8ef8-c240704c8441 not found in /etc/hosts file.'
+23:07:28 [INFO] Executed tasks
+23:07:28 [INFO] ------------------------------------------------------------------------
+23:07:28 [INFO] BUILD SUCCESS
+23:07:28 [INFO] ------------------------------------------------------------------------
++------------
+  
+* Tests
+  
+  ep-maven-plugin is invoked with 'display node' on the first node running inside
+  container A1.topologies.
+
++------------  
+mvn initialize ep:administer-nodes@display-nodes
+[INFO] [5556] Running "display node"
+[INFO] Node             Node Name     Node Description Node State Host Name     Administration Port Discovery Service     Container Node Directory                                      Deployment Directories                         Install Time                  Last Start Time               Build Type  Product Version                                                                         Product Installation Directory Web Server State Web Server URLs
+[INFO] [localhost:5556] A1.topologies No description   Started    A1.topologies 5556                running on port 54321 tibco/sb  /opt/tibco/sb-cep/10/deploy/nodes/A1.topologies /opt/tibco/sb-cep/10/lib:/opt/tibco/topologies 2017-02-08 17:13:01 +0000 UTC 2017-02-08 17:13:14 +0000 UTC DEVELOPMENT TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1702011015 streambase-master-linux-327) /opt/tibco/sb-cep/10       Started          http://A1.topologies:59855
+[INFO] [5556] Finished "display node"
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------
+  
+  Codeline :
+  
+%{snippet|id=eptest|file=${project.basedir}/pom.xml}

@@ -1,0 +1,24 @@
+version: '${DOCKER_COMPOSE_VERSION}'
+services:
+    node1:
+        image: ${SB_REMOTE_DOCKER_IMAGE}
+        container_name: ${A1_NODENAME}
+        hostname: ${A1_NODENAME}.local
+# need to specify bridge so weave net udp broadcast can work properly https://github.com/weaveworks/guides/issues/178
+        ports: [${DOCKER_NETWORK_PORTS}]
+        network_mode: "bridge"
+        volumes: [${DOCKER_VOLUME_MOUNTS}]
+        environment:
+            - NODENAME=${A1_NODENAME}
+            - "constraint:node==${nodename1}"
+        env_file: ${DOCKER_COMPOSE_ENV_FILE}
+    node2:
+        image: ${SB_REMOTE_DOCKER_IMAGE}
+        container_name: ${A2_NODENAME}
+        hostname: ${A2_NODENAME}.local
+        network_mode: "bridge"
+        volumes: [${DOCKER_VOLUME_MOUNTS}]
+        environment:
+            - NODENAME=${A2_NODENAME}
+            - "constraint:node==${nodename2}"
+        env_file: ${DOCKER_COMPOSE_ENV_FILE}

@@ -1,0 +1,16 @@
+# local node startup only
+version: '${DOCKER_COMPOSE_VERSION}'
+services:
+    local:
+        build: .
+        image: ${SB_DOCKER_IMAGE}
+        container_name: ${A1_NODENAME}
+        networks: [${DOCKER_NETWORKS}]
+        ports: [${DOCKER_NETWORK_PORTS}]
+        volumes: ["${project.build.directory}/staging/docker:${SB_APP_DIR}"]
+        environment:
+            - NODENAME=${A1_NODENAME}
+        env_file: ${DOCKER_COMPOSE_ENV_FILE}        
+networks:
+    isolated_nw:
+        driver: ${DOCKER_NETWORK_MODE}

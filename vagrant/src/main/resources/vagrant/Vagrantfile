@@ -1,0 +1,114 @@
+#Copyright (c) 2017 TIBCO Software Inc.
+#
+# Vagrantfile for VirtualBox
+# This guide is optimized for Vagrant 1.7 and above.
+# Although versions 1.6.x should behave very similarly, it is recommended
+# to upgrade instead of disabling the requirement below.
+Vagrant.require_version ">= 1.7.0"
+
+PUPPET_DOMAIN="${PUPPET_DOMAIN}"
+cluster_machine_names=Array.new
+# forwarded port with virtualbox
+host_admin_ports=[${A1_ADMINPORT},${A2_ADMINPORT},${A3_ADMINPORT}]
+
+Vagrant.configure(2) do |config|
+
+    # Disable the new default behavior introduced in Vagrant 1.7, to
+    # ensure that all Vagrant machines will use the same SSH key pair.
+    # See https://github.com/mitchellh/vagrant/issues/5005
+    config.ssh.insert_key = false
+    config.ssh.username = "${ANSIBLE_REMOTE_USER}"
+    config.ssh.private_key_path = './example_box/vagrant_private.key'
+    config.ssh.pty = true
+    config.vm.network "private_network", type: "dhcp"
+    config.vm.box = "${VAGRANT_PROVIDER}.box"
+    config.vm.box_url = "example_box/${VAGRANT_PROVIDER}.box"
+    config.vm.synced_folder "./app","${TIBCO_INSTALL_DIR}/${SB_APP_NAME}", type: "rsync",
+        rsync__exclude:"sb", rsync__chown: false
+    # hostmanage plugin to manage /etc/host file for puppet
+    config.hostmanager.enabled = true
+    #config.hostmanager.manage_host = true
+    config.hostmanager.manage_guest = true
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
+
+    # Vsphere defaults
+    config.vm.provider :${VAGRANT_PROVIDER} do |${VAGRANT_PROVIDER}|
+        ${VAGRANT_PROVIDER}.host = '${VSPHERE_VCENTER_HOST}'
+        ${VAGRANT_PROVIDER}.data_center_name = '${VSPHERE_DATA_CENTER_NAME}'
+        ${VAGRANT_PROVIDER}.compute_resource_name = '${VSPHERE_COMPUTE_RESOURCE_NAME}'
+        ${VAGRANT_PROVIDER}.resource_pool_name = '${VSPHERE_RESOURCE_POOL_NAME}'
+        ${VAGRANT_PROVIDER}.template_name = '${VSPHERE_TEMPLATE}'
+        ${VAGRANT_PROVIDER}.user = '${VSPHERE_USERNAME}'
+        ${VAGRANT_PROVIDER}.password = '${VSPHERE_PASSWORD}'
+        # If you don't have SSL configured correctly, set this to 'true'
+        ${VAGRANT_PROVIDER}.insecure = true
+        ${VAGRANT_PROVIDER}.memory_mb = ${VM_MEMORY}
+        ${VAGRANT_PROVIDER}.cpu_count = ${VM_CPU}
+    end
+
+    N=${INSTANCE_COUNT}
+    (1..N).each do |i|
+        config.vm.define "${NODENAME_PREFIX}#{i}" do |instance|
+            instance.vm.hostname = "${NODENAME_PREFIX}#{i}"
+            cluster_machine_names << "${NODENAME_PREFIX}#{i}"
+            instance.vm.network "forwarded_port", guest: 5556, host: host_admin_ports[N], auto_correct: true
+            instance.vm.provider :${VAGRANT_PROVIDER} do |${VAGRANT_PROVIDER}|
+                ${VAGRANT_PROVIDER}.name = "${NODENAME_PREFIX}#{i}"
+            end
+
+            # puppet shell bootstrap provisioning
+            if i==1 and "${VAGRANT_PROVISIONER}" == "puppet_server"
+                instance.hostmanager.aliases = "${NODENAME_PREFIX}#{i}.#{PUPPET_DOMAIN}"
+                instance.vm.provision "shell", path: "puppet_server.sh"
+            elsif "${VAGRANT_PROVISIONER}" == "puppet_server"
+                instance.hostmanager.aliases = "${NODENAME_PREFIX}#{i}.#{PUPPET_DOMAIN}"
+                instance.vm.provision "shell", path: "puppet_agent.sh"
+            end
+
+            # puppet agent provisioning
+            if "${VAGRANT_PROVISIONER}" == "puppet_server"
+                instance.vm.provision "${VAGRANT_PROVISIONER}" do |${VAGRANT_PROVISIONER}|
+                    ${VAGRANT_PROVISIONER}.puppet_server = "${NODENAME_PREFIX}1.${PUPPET_DOMAIN}".downcase
+                    ${VAGRANT_PROVISIONER}.puppet_node = "${NODENAME_PREFIX}#{i}.${PUPPET_DOMAIN}".downcase
+                    ${VAGRANT_PROVISIONER}.options = ${PUPPET_OPS}
+                end
+            elsif "${VAGRANT_PROVISIONER}" == "puppet"  # puppet apply local - does not support parallelism in loop
+                ${VAGRANT_PROVISIONER}.environment = "${PUPPET_ENV}"                        
+                ${VAGRANT_PROVISIONER}.environment_path = "puppet/environments"
+                #${VAGRANT_PROVISIONER}.module_path = "puppet/environments/production/modules:/etc/puppetlabs/code/environments/production/modules:/opt/puppetlabs/puppet/modules"
+                ${VAGRANT_PROVISIONER}.options = ${PUPPET_OPS}
+            elsif "${VAGRANT_PROVISIONER}" == "ansible"
+                $shell_script= <<SCRIPT
+                # Install the EPEL repo
+                yum makecache fast
+                rpm -Uvh http://download.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm; true
+SCRIPT
+                config.vm.provision "shell", inline: $shell_script
+
+                # trick to get playbook run only once with parrallelism
+                if i == N
+                    instance.vm.provision "${VAGRANT_PROVISIONER}" do |${VAGRANT_PROVISIONER}|
+                        #ansible.verbose = "v"
+                        ansible.limit = "all"
+                        ansible.groups = { "${CLUSTERNAME}" => cluster_machine_names }
+                        if "${ANSIBLE_TAGS}" == "redeploy"
+                            ansible.playbook = "ansible/playbooks/Redeploy_Nodes.yml"
+                        elsif "${ANSIBLE_TAGS}" == "update"
+                            ansible.playbook = "ansible/playbooks/Update_Cluster_Config.yml"
+                        elsif "${ANSIBLE_TAGS}" == "display"
+                            ansible.playbook = "ansible/playbooks/Display_All_Nodes.yml"
+                        elsif "${ANSIBLE_TAGS}" == "remove"
+                            ansible.playbook = "ansible/playbooks/Remove_All_Nodes.yml"
+                        else
+                            # perform the entire deployment or custom tags
+                            ansible.playbook = "${ANSIBLE_PLAYBOOK}"
+                            ansible.tags = "${ANSIBLE_TAGS}"
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+

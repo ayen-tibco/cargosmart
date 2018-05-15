@@ -1,0 +1,8 @@
+vagrant_settings_mine.sh
+*.zip
+*.tgz
+*.mine
+vsphere_docker.sh
+vsphere_puppetserver.sh
+aws_puppetserver.sh
+aws_docker.sh
