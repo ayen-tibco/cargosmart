@@ -1,0 +1,42 @@
+# roles/centosinstall/tasks/main.yml
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+   # fix for error "Package does not match intended download" for next yum installs
+   - name: clean yum cache
+     command: yum clean all
+   - name: clean yum metadata
+     command: yum --enablerepo=updates clean metadata
+   - name: install ntpd
+     yum: name=ntp state=latest
+   - name: install java dependency package
+     yum: name=java-1.8.0-openjdk state=latest
+   - name: install java-devel dependency package
+     yum: name=java-1.8.0-openjdk-devel state=latest
+   - name: install perl dependency package
+     yum: name=perl state=latest
+   - name: install wget dependency package
+     yum: name=wget state=latest
+   - name: install tar dependency packages
+     yum: name=tar state=latest
+   - name: install unzip dependency packages
+     yum: name=unzip state=latest
+   - name: install sysstat/sar dependency packages
+     yum: name=sysstat state=latest
+   - name: install dns utils dependency packages
+     yum: name=bind-utils state=latest
+   - name: install tcpdump dependency packages
+     yum: name=tcpdump state=latest
+   - name: install net-tootls dependency packages
+     yum: name=net-tools state=latest
+   - name: install hostname dependency packages
+     yum: name=hostname state=latest
+
+   - service: name=ntpd state=started
+   - name: libselinux-python
+     yum: name=libselinux-python state=latest
+   - name: disable selinux
+     selinux: state=disabled
+   - name: disable dnsmasq # collides with weave
+     service: name=dnsmasq state=stopped
+     ignore_errors: yes

@@ -1,0 +1,13 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: Remove_Docker_Swarm.yml - remove docker swarm cluster
+- hosts: ${ANSIBLE_HOST_GROUP}
+  remote_user: ${ANSIBLE_REMOTE_USER}
+  gather_facts: true
+  become: yes
+  # default plays run as linear - good for debugging 
+  # All hosts will run each task before any host starts the next task, using the number of forks (default 5) to parallelize. Other options include 'serial' and 'free'
+  strategy: linear
+  tasks:
+     - include: roles/dockerinstall/tasks/remove_swarm.yml 

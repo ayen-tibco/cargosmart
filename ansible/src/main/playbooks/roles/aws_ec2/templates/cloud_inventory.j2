@@ -1,0 +1,10 @@
+{# Copyright (c) 2017 TIBCO Software Inc.#}
+[{{ CLUSTER_NAME}}]
+{% for host in ec2.results[0].tagged_instances %}
+{{ host.public_ip }}
+{% endfor %}
+
+[{{ CLUSTER_NAME}}:vars]
+ansible_ssh_user={{ ssh_user }}
+ansible_ssh_private_key_file=~/.ssh/id_rsa_{{ ssh_key }}
+

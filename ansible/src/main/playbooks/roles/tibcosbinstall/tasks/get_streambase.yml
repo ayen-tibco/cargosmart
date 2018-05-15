@@ -1,0 +1,7 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+   - name: download and extract sb
+     become: True
+     become_user: root
+     unarchive: src={{ SB_TARBALL_URL }}/{{ SB_TARBALL }} dest={{ TIBCO_EP_HOME }} copy=no owner={{ SBUSER }} group=sbusers
+

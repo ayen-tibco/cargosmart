@@ -1,0 +1,25 @@
+# Copyright (c) 2018 TIBCO Software Inc.
+#
+    - name: "backup local /etc/hosts"
+      command: "cp /etc/hosts /etc/hosts.bak"
+      delegate_to: 127.0.0.1
+      tags: update_local_hostsfile
+      become: true
+
+    - name: update local hosts file for admin
+      become: true
+      become_user: root
+      blockinfile:
+        dest: /etc/hosts
+        content: "{{ lookup('template', 'templates/localhosts.j2') }}"
+        state: present
+      delegate_to: 127.0.0.1
+      run_once: true
+      tags: update_local_hostsfile  
+
+    - name: update remote hosts file for discovery
+      become: true
+      blockinfile:
+        dest: /etc/hosts
+        content: "{{ lookup('template', 'templates/hosts.j2') }}"
+        state: present

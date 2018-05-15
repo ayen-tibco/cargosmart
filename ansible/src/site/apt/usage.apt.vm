@@ -1,0 +1,330 @@
+  ------
+  Usage
+  ------
+~~ %{snippet|file=pom.xml}  
+~~ Copyright 2017 TIBCO Software Inc. ALL RIGHTS RESERVED.
+
+Usage
+
+%{toc}
+
+  The following sections provides usage information for {{{https://docs.ansible.com/ansible/guide_aws.html}Ansible AWS EC2}} 
+  and {{{https://docs.ansible.com/ansible/guide_azure.html}Ansible Azure}} deployments.
+  This example includes the use of Ansible StreamBase playbooks, 
+  {{{https://docs.ansible.com/ansible/list_of_cloud_modules.html}Ansible Azure Modules}} and {{{https://docs.ansible.com/ansible/list_of_cloud_modules.html}Ansible AWS Modules}}.
+  The ansible-maven-plugin is used in the pom.xml to call the Ansible playbooks.
+  
+  The goal is to (i) create Cloud compute instances, (ii) provision the instances, (iii) deploy StreamBase Docker image with Ansible.
+  Currently Weave is utilized to interconnect the Docker Containers as Docker overlay network still does not support UDP Broadcast
+  for StreamBase autodiscovery.
+
+  The topologies application archive will be used along with the {{{../topologies/index.html#a2-node_active-active}two node active}} 
+  configuration.  Two instances are created to host each docker container. ep-maven-plugin is 
+  used to display the status of the node after the container is launched.
+
+  Complete Maven lifecycle will install the cloud provider's dynamic inventory script, create Cloud instances, deploy SB10 Docker application, run ep-maven test,
+  and remove the instances.
+  
+  Example for AWS EC2 deployment:
+  
++------------
+export EC2_INI_PATH=/path/to/target/staging/ansible/aws/ec2.ini
+mvn post-integration-test
++------------
+  
+  Maven target directory target/staging/ansible/<provider> will be created for Ansible to bootstrap
+  and deploy with the necessary support files. Playbooks directory will be also copied into the target staging directory.
+
+* SSH Key and Authentication
+
+  Because Ansible utilize ssh for remote provisioning and fact gathering, SSH keys need to be setup
+  properly for remote deployment. By default, the Ansible role <<common>> and tag <<install>> will automatically set
+  in the inventory file the default ssh key ~/.ssh/id_rsa_<SSH_KEY_NAME> to be used to reach your remote hosts.
+
+
++------------  
+ssh-add -L
+Could not open a connection to your authentication agent.
+ssh-agent bash
+ssh-add ~/.ssh/id_rsa_ec2_sbtest
++------------
+
+  Another option is to use the --private-key parameter to point to your SSH private key when invoking a play.
+
++------------
+ansible-playbook --private-key=~/.ssh/mysshprivatekey -i ./inventory topologies.yml -t "prep,install,deploy,docker"
++------------
+
+** AWS EC2 SSH Key
+
+  As a prequesite, you will need to create a key pair on EC2. Follow the instructions for 
+  {{{http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair}Creating AWS EC2 Key Pair}}.
+  The key pair name must be the same value as SSH_KEY_NAME in config.properties used by Maven. For simplicity, Ansible uses the same
+  name as the ssh private key filename.
+  
+  
+* Setting Default Properties
+
+  Profile properties file are used and are located at profiles/<provider>/config.properties.
+  Default src/main/resources/profiles/<provider>/config.properties file is utilized in this pom.xml.
+  
+%{snippet|id=globalprops|file=${project.basedir}/pom.xml}
+
+  In Maven, profile id represents the provider. The Maven <<<initialize>>> lifecycle is used
+  to load the config.properties for antrun shell scripts. Also filtering are set to use 
+  the profile properties file when copying resource files like Puppet and bash scripts.
+
+  The filtering customizes the ansible scripts with cloud specific settings, hostnames, 
+  number of instances to be deployed, etc.
+  
+  In addition to these settings, cloud provider credentials and settings are required
+  for instances to be provisioned. Often cloud providers allows credentials to be set via
+  environment variables.  For flexibility and convenience, these variables are set in the config.properties.
+  
+  To customize the profile properties file, do the following:
+
++------------
+cp src/main/resources/profiles/<provider>/config.properties profile/<provider>/config_myversion.properties
+vi src/main/resources/profile/<provider>/config_myversion.properties
+mvn post-integration-test -DCONFIG_PROP_FILE=config_myversion.properties
++------------
+  
+  AWS EC2 config.properties
+  
+%{snippet|file=${project.basedir}/src/main/resources/profiles/aws/config.properties}
+
+  The following custom property variables MUST be set prior to running Maven lifecycles.
+  See {{{../vagrant/vagrant_aws_example.html}Required Custom Property Settings for AWS Deployment}} or
+  {{{../vagrant/vagrant_azure_example.html}Required Custom Property Settings for Azure Deployment}} for further information.
+
+*------------------------*------------------------------------------*---------------------------------------*
+| <<Variable Name>>      | <<Description>>                          | <<Example Value(s)>>                  |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_TARBALL_URL         |Location to retreive StreamBase Linux     |<https://bucketname.s3.amazonaws.com>  |
+|                        |binary. For Cloud remote deployment, use  | OR                                    |
+|                        |S3 to save bandwidth. Otherwise copy      |<files>|
+|                        |the tarball to the proper ansible role    |                                       |
+|                        |file directory.                           |                                       |
+|                        |                                          |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_DOCKER_IMAGE         |Custom StreamBase App and Binary Docker   |                                       |
+|SB_DOCKER_IMAGE_TAG     |image and tag (default latest).           |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY         |Private or public registry.               | <docker.io> (default) |
+|                       |                                           | OR
+|                       |                                           | myprivaterepo.domain.com:5000 |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY_USERNAME|Docker credentials. Can be blank if not   |                                       |
+|DOCKER_REGISTRY_PASSWORD|required by registry                       |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+Required Custom Property Settings
+
+* Dependencies and Ansible Playbooks
+
+   After setting the config.properties file with your cloud credentials and settings, initiate Maven lifecycle
+  <<<compile>>> to create Cloud resources.
+  
+  Defaults to AWS EC2 provider:
+  
++------------
+$ mvn compile
++------------
+
+  OR
+
++------------
+$ mvn -Pazure compile
++------------
+
+* Cloud Resource Provisioning
+
+  After copying the ansible playbooks to the target directory, initiate cloud provisioning.  
+  Cloud instances/VMs, networks, and Security groups will be created.
+  By default, two instances are created to host the StreamBase Application based on the two node configuration.
+
++------------
+$ mvn initialize ansible:playbook@aws-cloud-provision
++------------
+
+  OR
+  
++------------
+$ mvn -Pazure initialize ansible:playbook@azure-cloud-provision
++------------
+
+  RESULT:
+
++------------
+[INFO] --- ansible-maven-plugin:1.3.0:playbook (aws-cloud-provision) @ ansible ---
+[INFO] Command: [ansible-playbook, -i, ansible/target/staging/ansible/aws/playbooks/inventory, -e, CLUSTER_NAME=topologies, -v, ansible/target/staging/ansible/aws/playbooks/ec2_provision.yml]
+[INFO] Working directory: ansible/target/staging/ansible/aws/playbooks
+[INFO] Using ansible/target/staging/ansible/aws/playbooks/ansible.cfg as config file
+[INFO]
+[INFO] PLAY [Create a SB Cluster environment in EC2] *********************************
+[INFO]
+[INFO] TASK [aws_ec2 : Create EC2 SSH Key] ********************************************
+[INFO] ok: [localhost] => {"changed": false, "key": {"fingerprint": "75:82:62:24:3c:f8:3d:8d:f7:5e:5f:54:37:13:4a:7e:1d:a5:e3:61", "name": "ec2_sbtest"}}
+[INFO]
+[INFO] TASK [aws_ec2 : copy] **********************************************************
+[INFO] skipping: [localhost] => {"changed": false, "skip_reason": "Conditional check failed", "skipped": true}
+[INFO]
+[INFO] TASK [aws_ec2 : file] **********************************************************
+[INFO] skipping: [localhost] => {"changed": false, "skip_reason": "Conditional check failed", "skipped": true}
+[INFO]
+[INFO] TASK [aws_ec2 : create a vpc to be used in different availability zones] *******
+[INFO] changed: [localhost] => {"changed": true, "igw_id": "igw-f4b98193", "subnets": [{"az": "us-east-1c", "cidr": "10.101.0.0/24", "id": "subnet-cd7f6484", "resource_tags": {"ClusterName": "topologies", "Environment": "Development"}}], "vpc": {"cidr_block": "10.101.0.0/16", "dhcp_options_id": "dopt-1aa7b778", "id": "vpc-f59fdb93", "region": "us-east-1", "state": "pending"}, "vpc_id": "vpc-f59fdb93"}
+[INFO]
+[INFO] TASK [aws_ec2 : set_fact] ******************************************************
+[INFO] ok: [localhost] => {"ansible_facts": {"vpc_id": "vpc-f59fdb93"}, "changed": false}
+[INFO]
+[INFO] TASK [aws_ec2 : set_fact] ******************************************************
+[INFO] ok: [localhost] => {"ansible_facts": {"vpc_region": "us-east-1"}, "changed": false}
+[INFO]
+[INFO] TASK [aws_ec2 : debug] *********************************************************
+[INFO] ok: [localhost] => {
+[INFO]     "Cluster_vpc": {
+[INFO]         "changed": true,
+[INFO]         "igw_id": "igw-f4b98193",
+[INFO]         "subnets": [
+[INFO]             {
+[INFO]                 "az": "us-east-1c",
+[INFO]                 "cidr": "10.101.0.0/24",
+[INFO]                 "id": "subnet-cd7f6484",
+[INFO]                 "resource_tags": {
+[INFO]                     "ClusterName": "topologies",
+...
+[INFO] TASK [aws_ec2 : create security group to allow network traffic flow in and out of the instances] ***
+[INFO] changed: [localhost] => {"changed": true, "group_id": "sg-fe5db981"}
+[INFO]
+[INFO] TASK [aws_ec2 : Launch instances] **********************************************
+[INFO] changed: [localhost] => (item={u'resource_tags': {u'ClusterName': u'topologies', u'Environment': u'Development'}, u'cidr': u'10.101.0.0/24', u'az': u'us-east-1c', u'id': u'subnet-cd7f6484'}) => {"changed": true, "instance_ids": ["i-0dde44f1f693be2e4", "i-078e2938b0db3a965"], "instances": [{"ami_launch_index": "1", "architecture": "x86_64", "block_device_mapping": {"/dev/sda1": {"delete_on_termination": true, "status": "attached", "volume_id": "vol-0c299eb981ee51db1"}}, "dns_name": "ec2-54-84-176-75.compute-1.amazonaws.com", "ebs_optimized": false, "groups": {"sg-fe5db981": "sb_topologies"}, "hypervisor": "xen", "id": "i-0dde44f1f693be2e4", "image_id": "ami-72667b65", "instance_type": "m3.large", "kernel": null, "key_name": "ec2_sbtest", "launch_time": "2017-03-02T18:28:50.000Z", "placement": "us-east-1c", "private_dns_name": "ip-10-101-0-5.ec2.internal", "private_ip": "10.101.0.5", "public_dns_name": "ec2-54-84-176-75.compute-1.amazonaws.com", "public_ip": "54.84.176.75", "ramdisk": null, "region": "us-east-1", "root_device_name": "/dev/sda1", "root_device_type": "ebs", "state": "running", "state_code": 16, "tags": {"ClusterName": "topologies"}, "tenancy": "default", "virtualization_type": "hvm"}, {"ami_launch_index": "0", "architecture": "x86_64", "block_device_mapping": {"/dev/sda1": {"delete_on_termination": true, "status": "attached", "volume_id": "vol-0ceaf0a09418174af"}}, "dns_name": "ec2-54-174-176-166.compute-1.amazonaws.com", "ebs_optimized": false, "groups": {"sg-fe5db981": "sb_topologies"}, "hypervisor": "xen", "id": "i-078e2938b0db3a965", "image_id": "ami-72667b65", "instance_type": "m3.large", "kernel": null, "key_name": "ec2_sbtest", "launch_time": "2017-03-02T18:28:50.000Z", "placement": "us-east-1c", "private_dns_name": "ip-10-101-0-152.ec2.internal", "private_ip": "10.101.0.152", "public_dns_name": "ec2-54-174-176-166.compute-1.amazonaws.com", "public_ip": "54.174.176.166", "ramdisk": null, "region": "us-east-1", "root_device_name": "/dev/sda1", "root_device_type": "ebs", "state": "running", "state_code": 16, "tags": {"ClusterName": "topologies"}, "tenancy": "default", "virtualization_type": "hvm"}], "item": {"az": "us-east-1c", "cidr": "10.101.0.0/24", "id": "subnet-cd7f6484", "resource_tags": {"ClusterName": "topologies", "Environment": "Development"}}, "tagged_instances": [{"ami_launch_index": "1", "architecture": "x86_64", "block_device_mapping": {"/dev/sda1": {"delete_on_termination": true, "status": "attached", "volume_id": "vol-0c299eb981ee51db1"}}, "dns_name": "ec2-54-84-176-75.compute-1.amazonaws.com", "ebs_optimized": false, "groups": {"sg-fe5db981": "sb_topologies"}, "hypervisor": "xen", "id": "i-0dde44f1f693be2e4", "image_id": "ami-72667b65", "instance_type": "m3.large", "kernel": null, "key_name": "ec2_sbtest", "launch_time": "2017-03-02T18:28:50.000Z", "placement": "us-east-1c", "private_dns_name": "ip-10-101-0-5.ec2.internal", "private_ip": "10.101.0.5", "public_dns_name": "ec2-54-84-176-75.compute-1.amazonaws.com", "public_ip": "54.84.176.75", "ramdisk": null, "region": "us-east-1", "root_device_name": "/dev/sda1", "root_device_type": "ebs", "state": "running", "state_code": 16, "tags": {"ClusterName": "topologies"}, "tenancy": "default", "virtualization_type": "hvm"}, {"ami_launch_index": "0", "architecture": "x86_64", "block_device_mapping": {"/dev/sda1": {"delete_on_termination": true, "status": "attached", "volume_id": "vol-0ceaf0a09418174af"}}, "dns_name": "ec2-54-174-176-166.compute-1.amazonaws.com", "ebs_optimized": false, "groups": {"sg-fe5db981": "sb_topologies"}, "hypervisor": "xen", "id": "i-078e2938b0db3a965", "image_id": "ami-72667b65", "instance_type": "m3.large", "kernel": null, "key_name": "ec2_sbtest", "launch_time": "2017-03-02T18:28:50.000Z", "placement": "us-east-1c", "private_dns_name": "ip-10-101-0-152.ec2.internal", "private_ip": "10.101.0.152", "public_dns_name": "ec2-54-174-176-166.compute-1.amazonaws.com", "public_ip": "54.174.176.166", "ramdisk": null, "region": "us-east-1", "root_device_name": "/dev/sda1", "root_device_type": "ebs", "state": "running", "state_code": 16, "tags": {"ClusterName": "topologies"}, "tenancy": "default", "virtualization_type": "hvm"}]}
+[INFO]
+[INFO] TASK [aws_ec2 : Add all instance public IPs to host group] *********************
+...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------
+
+  Codeline :
+  
+  The ansible-maven-plugin is used to execute a cloud provisioning playbook. 
+  By default, it binds to the maven lifecycle phase <<<pre-integration-test>>>.
+
+%{snippet|id=cloudprovision|file=${project.basedir}/pom.xml}
+
+    
+* Provison and Deploy StreamBase
+
+  To initiate StreamBase Application provisioning and deployment using Docker:
+  
++------------
+$ mvn initialize ansible:playbook@aws-sb-provision
++------------
+
+  OR
+  
++------------
+$ mvn -Pazure initialize ansible:playbook@azure-sb-provision
++------------
+
+  To initiate StreamBase Application provisioning and deployment natively, set DOCKERDEPLOY to false and
+  NODE_CONFIG to two-node-static-proxy_aws_ec2-node.conf.  Cloud providers currently does not support auto discovery
+  between instances/VMs. Maven <<<compile>>> has to be executed again for
+  the node configuration file to be copied over to the target staging directory.
+
++------------
+$ mvn compile ansible:playbook@aws-sb-provision -DDOCKERDEPLOY=false -DNODE_CONFIG=two-node-static-proxy_aws_ec2-node.conf
++------------  
+
+  RESULT: 
+
++------------
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Ansible AWS Deployment 3.1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO]
+[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ ansible ---
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Ansible AWS Deployment 3.1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO]
+[INFO] --- ansible-maven-plugin:1.3.0:playbook (aws-sb-provision) @ ansible ---
+[INFO] Command: [ansible-playbook, -i, ansible/target/staging/ansible/aws/playbooks/inventory, -e, CLUSTER_NAME=topologies, -e, DOCKERDEPLOY=true, -t, install,docker,deploy, -v, ansible/target/staging/ansible/aws/playbooks/topologies.yml]
+[INFO] Working directory: ansible/target/staging/ansible/aws/playbooks
+[INFO] Using ansible/target/staging/ansible/aws/playbooks/ansible.cfg as config file
+[INFO]
+[INFO] PLAY [tag_ClusterName_topologies] **********************************************
+[INFO]
+[INFO] TASK [setup] *******************************************************************
+[INFO] ok: [54.174.176.166]
+[INFO] ok: [54.84.176.75]
+[INFO]
+[INFO] TASK [common : Install python setup tools] *************************************
+...
+[INFO] TASK [Cluster_Docker : docker login] *******************************************
+[INFO] changed: [54.84.176.75] => {"actions": ["Logged into docker.io", "Updated config file /.docker/config.json with new authorization for docker.io"], "changed": true, "login_result": {"IdentityToken": "", "Status": "Login Succeeded"}}
+[INFO] changed: [54.174.176.166] => {"actions": ["Logged into docker.io", "Updated config file /.docker/config.json with new authorization for docker.io"], "changed": true, "login_result": {"IdentityToken": "", "Status": "Login Succeeded"}}
+[INFO]
+[INFO] TASK [Cluster_Docker : pull image] *********************************************
+[INFO] changed: [54.174.176.166] => {"actions": ["Pulled image docker.io/username/ep-docker:latest"], "changed": true, "image": null}
+[INFO] changed: [54.84.176.75] => {"actions": ["Pulled image docker.io/username/ep-docker:latest"], "changed": true, "image": null}
+[INFO]
+[INFO] TASK [Cluster_Docker : load existing node assignment if undefined] *************
+[INFO] skipping: [54.84.176.75] => {"changed": false, "skip_reason": "Conditional check failed", "skipped": true}
+[INFO]
+[INFO] TASK [Cluster_Docker : start SB container] *************************************
+[INFO] changed: [54.174.176.166] => (item=A2.topologies) => {"ansible_facts": {"docker_containers": [{"AppArmorProfile": "", "Args": ["./startsb.sh", "Cluster1"], "Config": {"AttachStderr": false, "AttachStdin": false, "AttachStdout": false, "Cmd": null, "Domainname": "", "Entrypoint": ["/w/w", "./startsb.sh", "Cluster1"], "Env": ["NODENAME=A2.topologies", "SB_APP_FILE=topologies-3.1.0-SNAPSHOT.zip", "SB_APP_DIR=/opt/tibco/topologies", "SUBSTITUTIONS=GOLDYLOCKS_EPPORT=10000", "CLUSTER_NAME=topologies", "NODE_CONFIG=two-node-active-active-node.conf", "PATH=/opt/tibco/sb-cep/10/distrib/tibco/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", "TIBCO_INSTALL_DIR=/opt/tibco", "SB_CEP_VERSION=10", "STREAMBASE_HOME=/opt/tibco/sb-cep/10", "TIBCO_EP_HOME=/opt/tibco/sb-cep/10/", "INSTALL_NODE_PATH=/opt/tibco/deploy/nodes", "ADMINISTRATOR=/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin"
+...
+[INFO] TASK [Cluster_Docker : wait and verify sb mgmt port is running] ***************
+[INFO] FAILED - RETRYING: TASK: Cluster_Docker : wait and verify sb mgmt port is running (5 retries left).
+[INFO] FAILED - RETRYING: TASK: Cluster_Docker : wait and verify sb mgmt port is running (5 retries left).
+[INFO] changed: [54.84.176.75] => (item=A1.topologies) => {"changed": true, "cmd": ["docker", "exec", "A1.topologies", "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin", "servicename=A1.topologies", "display", "node"], "delta": "0:00:00.081531", "end": "2017-03-02 20:51:43.324661", "item": "A1.topologies", "rc": 0, "start": "2017-03-02 20:51:43.243130", "stderr": "", "stdout": "[A1.topologies] Node Name = A1.topologies\n[A1.topologies] Node Description = No description\n[A1.topologies] Node State = Started\n[A1.topologies] Host Name = A1.topologies.local\n[A1.topologies] Administration Port = 5556\n[A1.topologies] Discovery Service = running on port 54321\n[A1.topologies] Container = tibco/sb\n[A1.topologies] Node Directory = /opt/tibco/sb-cep/10/deploy/nodes/A1.topologies\n[A1.topologies] Deployment Directories = /opt/tibco/sb-cep/10/lib:/opt/tibco/topologies\n[A1.topologies] Install Time = 2017-03-02 20:51:18 +0000 UTC\n[A1.topologies] Last Start Time = 2017-03-02 20:51:30 +0000 UTC\n[A1.topologies] Build Type = DEVELOPMENT\n[A1.topologies] Product Version = TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1702011015 streambase-master-linux-327)\n[A1.topologies] Product Installation Directory = /opt/tibco/sb-cep/10/sb\n[A1.topologies] Web Server State = Started\n[A1.topologies] Web Server URLs = http://A1.topologies.local:45456", "stdout_lines": ["[A1.topologies] Node Name = A1.topologies", "[A1.topologies] Node Description = No description", "[A1.topologies] Node State = Started", "[A1.topologies] Host Name = A1.topologies.local", "[A1.topologies] Administration Port = 5556", "[A1.topologies] Discovery Service = running on port 54321", "[A1.topologies] Container = tibco/sb", "[A1.topologies] Node Directory = /opt/tibco/sb-cep/10/deploy/nodes/A1.topologies", "[A1.topologies] Deployment Directories = /opt/tibco/sb-cep/10/lib:/opt/tibco/topologies", "[A1.topologies] Install Time = 2017-03-02 20:51:18 +0000 UTC", "[A1.topologies] Last Start Time = 2017-03-02 20:51:30 +0000 UTC", "[A1.topologies] Build Type = DEVELOPMENT", "[A1.topologies] Product Version = TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1702011015 streambase-master-linux-327)", "[A1.topologies] Product Installation Directory = /opt/tibco/sb-cep/10", "[A1.topologies] Web Server State = Started", "[A1.topologies] Web Server URLs = http://A1.topologies.local:45456"], "warnings": []}
+[INFO] changed: [54.174.176.166] => (item=A2.topologies) => {"changed": true, "cmd": ["docker", "exec", "A2.topologies", "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin", "servicename=A2.topologies", "display", "node"], "delta": "0:00:00.087489", "end": "2017-03-02 20:51:43.357076", "item": "A2.topologies", "rc": 0, "start": "2017-03-02 20:51:43.269587", "stderr": "", "stdout": "[A2.topologies] Node Name = A2.topologies\n[A2.topologies] Node Description = No description\n[A2.topologies] Node State = Started\n[A2.topologies] Host Name = A2.topologies.local\n[A2.topologies] Administration Port = 5556\n[A2.topologies] Discovery Service = running on port 54321\n[A2.topologies] Container = tibco/sb\n[A2.topologies] Node Directory = /opt/tibco/sb-cep/10/deploy/nodes/A2.topologies\n[A2.topologies] Deployment Directories = /opt/tibco/sb-cep/10/lib:/opt/tibco/topologies\n[A2.topologies] Install Time = 2017-03-02 20:51:18 +0000 UTC\n[A2.topologies] Last Start Time = 2017-03-02 20:51:30 +0000 UTC\n[A2.topologies] Build Type = DEVELOPMENT\n[A2.topologies] Product Version = TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1702011015 streambase-master-linux-327)\n[A2.topologies] Product Installation Directory = /opt/tibco/sb-cep/10/\n[A2.topologies] Web Server State = Started\n[A2.topologies] Web Server URLs = http://A2.topologies.local:42934", "stdout_lines": ["[A2.topologies] Node Name = A2.topologies", "[A2.topologies] Node Description = No description", "[A2.topologies] Node State = Started", "[A2.topologies] Host Name = A2.topologies.local", "[A2.topologies] Administration Port = 5556", "[A2.topologies] Discovery Service = running on port 54321", "[A2.topologies] Container = tibco/sb", "[A2.topologies] Node Directory = /opt/tibco/sb-cep/10/deploy/nodes/A2.topologies", "[A2.topologies] Deployment Directories = /opt/tibco/sb-cep/10/lib:/opt/tibco/topologies", "[A2.topologies] Install Time = 2017-03-02 20:51:18 +0000 UTC", "[A2.topologies] Last Start Time = 2017-03-02 20:51:30 +0000 UTC", "[A2.topologies] Build Type = DEVELOPMENT", "[A2.topologies] Product Version = TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1702011015 streambase-master-linux-327)", "[A2.topologies] Product Installation Directory = /opt/tibco/sb-cep/10", "[A2.topologies] Web Server State = Started", "[A2.topologies] Web Server URLs = http://A2.topologies.local:42934"], "warnings": []}
+[INFO]
+...
+[INFO] PLAY RECAP *********************************************************************
+[INFO] 54.174.176.166             : ok=45   changed=26   unreachable=0    failed=0
+[INFO] 54.84.176.75               : ok=57   changed=28   unreachable=0    failed=0
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------
+
+* Stop and Destroy Instances/VMs
+
+  Invoking maven lifecycle <<<clean>>> OR ansible plugin will call stop and destroy the instances.
+
++------------
+$ mvn -Pazure initialize clean
++------------
+
+  OR
+  
++------------
+$ mvn -Pazure initialize ansible:playbook@azure-destroy
++------------
+
+* Tests
+  
+  ep-maven-plugin is invoked with 'display node' on the first node running inside
+  container B1.topologies.
+
++------------  
+mvn initialize ep:administer-nodes@display-nodes
+16:12:41 [INFO] [5556] Running "display node"
+16:12:41 [INFO] Node      Node Name     Node Description Node State Host Name Administration Port Discovery Service     Container Node Directory                        Deployment Directories                                    Install Time                  Last Start Time               Build Type  Product Version                                                                         Product Installation Directory Web Server State Web Server URLs 
+16:12:41 [INFO] [B1:5556] B1.topologies No description   Started    B1        5556                running on port 54321 tibco/sb  /opt/tibco/deploy/nodes/B1.topologies /lib:/opt/tibco/topologies:/opt/tibco/topologies/java-bin 2017-02-17 16:10:53 -0500 UTC 2017-02-17 16:11:04 -0500 UTC DEVELOPMENT TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1701101138 streambase-master-linux-264) /opt/tibco/sb-cep/10/       Started          http://B1:32890 
+16:12:41 [INFO] [5556] Finished "display node"
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------
+  
+  Codeline :
+  
+%{snippet|id=eptest|file=${project.basedir}/pom.xml}

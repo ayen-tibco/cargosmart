@@ -1,0 +1,30 @@
+---
+# Copyright (c) 2018 TIBCO Software Inc.
+#
+# file: topologies.yml
+- hosts: localhost
+  gather_facts: true
+  tasks:
+- hosts: ${ANSIBLE_HOST_GROUP}
+  remote_user: ${ANSIBLE_REMOTE_USER}
+  gather_facts: True
+  # including tasks below fix template bug found in https://github.com/ansible/ansible-examples/issues/155
+  tasks: []
+  become: yes
+  # default plays run as linear - good for debugging 
+  # All hosts will run each task before any host starts the next task, using the number of forks (default 5) to parallelize. Other options include 'serial' and 'free'
+  strategy: linear
+  vars_files:
+  - roles/tibcosbinstall/defaults/main.yml
+  - roles/${CLUSTERNAME}/defaults/main.yml
+  environment: "{{ sb_env }}"
+  roles:
+    - { role: common, tags: ['install', 'docker'] }
+    - { role: centosinstall, tags: prep, when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'}
+    - { role: ubuntuinstall, tags: prep, when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'}
+    - { role: tibcosbinstall, tags: install }
+    - { role: dockerinstall, tags: docker, when: DOCKERDEPLOY }
+    - { role: weaveinstall, tags: docker, when: DOCKERDEPLOY }
+    - { role: Cluster_Docker, tags: deploy, when: DOCKERDEPLOY }
+    - { role: ${CLUSTERNAME}, tags: deploy, when: DOCKERDEPLOY==false }
+

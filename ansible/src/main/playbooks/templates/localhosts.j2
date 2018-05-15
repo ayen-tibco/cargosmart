@@ -1,0 +1,8 @@
+{# https://gist.github.com/rothgar/8793800 - use blockinfile#}
+{% for item in ansible_play_batch %}
+{% set short_name = item.split('.') %}
+{% set fqdn = hostvars[item]['ansible_host'] %}
+{% set hostipaddr = lookup('dig',fqdn) %}
+{{ hostipaddr }} {{ item }}  {{ short_name[0] }} {% for nodename in nodes_assignment[item] -%}{{ nodename }}{%- endfor %}
+
+{% endfor %}

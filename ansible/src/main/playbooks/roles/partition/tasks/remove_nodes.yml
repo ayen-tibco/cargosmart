@@ -1,0 +1,38 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# remove_nodes.yml - remove all nodes from an instance given Cluster suffix
+
+- name: call backup
+  include: backup_node_installpath.yml target_dir=.
+
+- name: stop all sb nodes
+  command: "{{ EP_ADMIN_BIN }} servicename={{ servicename }} username=guest password=guest stop node"
+  register: stop_node_result
+  ignore_errors: true
+
+- debug: var=stop_node_result.stdout_lines
+
+- debug: msg="{{ stop_node_result.stderr }}"
+
+- name: stop all sb nodes with adminport
+  command: "{{ EP_ADMIN_BIN }} adminport=5556 stop node"
+  when: stop_node_result.failed is defined
+  ignore_errors: true
+
+- name: remove sb nodes
+  command: "{{ EP_ADMIN_BIN }} servicename={{ servicename }} username=guest password=guest remove node"
+  register: remove_node_result
+  ignore_errors: true
+
+- debug: var=remove_node_result
+
+- name: remove sb nodes with adminport
+  command: "{{ EP_ADMIN_BIN }} adminport=5556 username=guest password=guest remove node"
+  register: remove_adminport_result
+  when: remove_node_result.failed is defined
+  ignore_errors: true
+
+- name: kill sb nodes with pkill
+  shell: pkill swcoord && rm -rf {{ NODE_INSTALL_DIR }}/*
+  when: remove_adminport_result.failed is defined
+

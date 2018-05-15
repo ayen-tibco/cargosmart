@@ -1,0 +1,18 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: Cluster_Docker_Weave.yml
+- hosts: "${ANSIBLE_HOST_GROUP}"
+  gather_facts: true
+  remote_user: ${ANSIBLE_REMOTE_USER}
+  become: yes
+  # default plays run as linear - good for debugging 
+  # All hosts will run each task before any host starts the next task, using the number of forks (default 5) to parallelize. Other options include 'serial' and 'free'
+  strategy: linear
+  environment: "{{ sb_env }}"
+  roles:
+    - { role: centosinstall, tags: prep }
+    - { role: tibcosbinstall, tags: install }
+    - { role: dockerinstall, tags: docker}
+    - { role: weaveinstall, tags: docker,weave}
+    - { role: Cluster_Docker, tags: deploy}

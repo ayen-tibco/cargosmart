@@ -1,0 +1,38 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# Azure Destroy Script
+# Remove Networks, Instance Security Group, and existing SB instances
+# Leave Resource Group alone
+   - name: Delete instances and all associated resources
+     azure_rm_virtualmachine:
+       resource_group: ${RESOURCE_GROUP}
+       name: "{{ item }}"
+       state: absent
+       remove_on_absent: all
+     with_sequence: count="{{ instance_count }}" format="{{CLUSTER_NAME}}vm%02x"
+     register: azure_vms
+    
+   - debug: var=azure_vms
+
+#   - name: delete security group
+#     azure_rm_securitygroup:
+#        resource_group: ${RESOURCE_GROUP}
+#        name: "{{ security_group }}"
+#        state: absent
+#     register: azure_sg
+
+#   - name: Delete the subnet
+#     azure_rm_subnet:
+#       name: ${RESOURCE_GROUP}_subnet
+#       virtual_network_name: ${RESOURCE_GROUP}_vn
+#       resource_group: ${RESOURCE_GROUP}
+#       state: absent
+
+#   - name: delete virtual network
+#     azure_rm_virtualnetwork:
+#       name: ${RESOURCE_GROUP}_vn
+#       resource_group: ${RESOURCE_GROUP}
+#       state: absent
+
+

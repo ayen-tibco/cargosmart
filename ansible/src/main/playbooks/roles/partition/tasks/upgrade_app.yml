@@ -1,0 +1,13 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# upgrade_app.yml update application bits and perform application node upgrade
+# must pass in nodename and run as sbuser
+# until upgrade.jar is available on SB, auto upgrade process is unavailable https://devzone.tibco.com/jira/browse/FLUENCY-8383
+- name: backup app dir
+  command: "cp -rp {{ SB_APP_DIR }} {{ SB_APP_DIR }}_{{ ansible_date }}_{{ ansible_hour }}{{ ansible_minute }}{{ ansible_second }}"
+# update app from source
+- include: get_application
+- name: upgrade the node
+  command: "{{ TIBCO_EP_BIN }}/administrator servicename={{ nodename }} upgrade node upgradefile={{ UPGRADE_FILE }} execute=true
+  register: node_upgrade
+

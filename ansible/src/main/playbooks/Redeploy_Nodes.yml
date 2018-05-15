@@ -1,0 +1,4 @@
+- include: ./Remove_All_Nodes.yml
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+- include: ./Deploy_All_Nodes.yml

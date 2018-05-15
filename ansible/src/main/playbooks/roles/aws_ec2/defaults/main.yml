@@ -1,0 +1,20 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# define cluster for each EC2 region
+# enter your own keypair name here
+ssh_key: ${SSH_KEY_NAME}
+groupname: ${CLUSTERNAME}
+# total ec2 instances with tags in each region
+instance_count: ${INSTANCE_COUNT}
+# for now we only need one sb node per instance_count
+node_count: ${NODE_COUNT}
+regions: ${REGIONS}
+availzones:
+   - us-east-1a
+   - us-east-1b
+   - us-east-1c
+security_group: sb_${CLUSTERNAME}
+instance_type: ${INSTANCE_TYPE}
+image_id: ${IMAGE_ID}
+tags: { "ClusterName": "${CLUSTERNAME}" }
+hostgroup: sb_${CLUSTERNAME}

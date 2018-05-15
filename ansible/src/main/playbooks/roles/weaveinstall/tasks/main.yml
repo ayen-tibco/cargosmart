@@ -1,0 +1,29 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# tasks file for weaveinstall
+- name: Download and Install Weave command line
+  get_url: url={{ weave_url }} dest={{weave_bin }}
+
+- name: Setup Weave Permissions 
+  file: path={{ weave_bin }} mode="u+rx,g+rx,o+rwx"
+
+- name: check if weave docker plugin is installed
+  shell: "docker plugin ls -f capability='networkdriver' | grep {{weaveplugin}}"
+  register: weaveplugin_result
+
+- name: Install Weave plugin for docker
+  command: docker plugin install --grant-all-permissions weaveworks/net-plugin:latest_release
+  when: weaveplugin_result.stdout == ""
+
+- name: enable weave plugin if disabled
+  command: docker plugin enable {{weaveplugin}}
+  when: '"false" in weaveplugin_result.stdout'
+
+- name: create sbweave network by default in swarm
+  docker_network:
+    name: sbweave
+    driver: weaveworks/net-plugin:latest_release
+    state: present
+    force: yes
+  when: inventory_hostname == hostvars['swarm_manager']

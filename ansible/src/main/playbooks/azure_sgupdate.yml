@@ -1,0 +1,19 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# SB10 Azure Security Update Playbook Script
+# Updates Azure Network Security Groups for SB Cluster
+# Required: already existing inventory of Azure computes and Network Security Groups
+#
+# Usage: ansible-playbook azure_sgupdate.yml -i inventory --extra-vars "CLUSTER_NAME=topologies,sgsuffix=-vagrantNSG"
+#
+- hosts: "{{ CLUSTER_NAME }}"
+  connection: local
+  remote_user: centos
+  gather_facts: false
+  vars_files:
+  - roles/azure/defaults/main.yml
+
+  tasks:
+    - include: roles/azure/tasks/securitygroup.yml
+      tags: azuresg

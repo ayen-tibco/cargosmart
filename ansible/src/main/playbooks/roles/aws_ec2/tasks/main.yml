@@ -1,0 +1,114 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# SB AWS EC2 Provisioning Script
+# Creates a VPC/Subnets, Instance Security Group, and Launch three instances for SB Cluster
+# Configured with groupvars found in group_vars/Cluster1
+   - include: create_sshkey.yml
+   - name: create a vpc to be used in different availability zones
+     ec2_vpc:
+        state: present
+#       region: "{{ item[0] }}"
+        region: "{{ regions }}"
+        internet_gateway: True
+        resource_tags: { "Environment":"Development","ClusterName" : "{{CLUSTER_NAME}}" }
+        cidr_block: 10.101.0.0/16
+        wait: yes
+        wait_timeout: 300
+        subnets:
+          - cidr: 10.101.0.0/24
+#             az: "{{ item.[1] }}"
+            az: us-east-1c
+            resource_tags: { "Environment":"Development", "ClusterName" : "{{CLUSTER_NAME}}" }
+        route_tables:
+          - subnets:
+              - 10.101.0.0/24
+            routes:
+              - dest: 0.0.0.0/0
+                gw: igw
+#     with_nested:
+#        - "{{ regions }}"
+#        - "{{ availzones }}"
+     register: Cluster_vpc
+   - set_fact: vpc_id={{ Cluster_vpc.vpc_id }}
+   - set_fact: vpc_region={{ Cluster_vpc.vpc.region }}
+   - debug: var=Cluster_vpc
+
+   - name: create security group to allow network traffic flow in and out of the instances
+     ec2_group:
+        name: "{{ security_group }}"
+        description: SB {{ CLUSTER_NAME }} Security Group
+        region: "{{ regions }}"
+        rules:
+           - proto: tcp
+             from_port: 22
+             to_port: 22
+             cidr_ip: 0.0.0.0/0
+           - proto: tcp
+             from_port: 5556
+             to_port: 5556
+             cidr_ip: 0.0.0.0/0
+           - proto: tcp
+             from_port: 5557
+             to_port: 5557
+             cidr_ip: 0.0.0.0/0
+           - proto: tcp
+             from_port: 5558
+             to_port: 5558
+             cidr_ip: 0.0.0.0/0
+           - proto: tcp
+             from_port: 10000
+             to_port: 10000
+             cidr_ip: 0.0.0.0/0
+           - proto: tcp
+             from_port: 10080
+             to_port: 10080
+             cidr_ip: 0.0.0.0/0
+           - proto: udp
+             from_port: 54321
+             to_port: 54321
+             cidr_ip: 0.0.0.0/0
+# add weave ports
+           - proto: tcp
+             from_port: 6783
+             to_port: 6783
+             cidr_ip: 0.0.0.0/0
+           - proto: udp
+             from_port: 6783
+             to_port: 6784
+             cidr_ip: 0.0.0.0/0
+        vpc_id: "{{ vpc_id }}"
+
+
+   - name: Launch instances
+     ec2:
+       key_name: "{{ ssh_key }}"
+       instance_type: "{{ instance_type }}"
+       instance_tags: "{{ tags }}"
+#      image: "{{ centos_image.results[0].ami_id }}"
+       image: "{{ image_id }}"
+       wait: yes
+       group: "{{ security_group }}"
+       region: "{{ vpc_region }}"
+       zone: "{{ item.az }}"
+       exact_count: "{{ instance_count }}"
+       count_tag: 
+          ClusterName: "{{ CLUSTER_NAME }}"
+       monitoring: yes 
+       vpc_subnet_id: "{{ item.id }}"
+       assign_public_ip: yes
+     with_items: Cluster_vpc.subnets
+     register: ec2
+#     - debug: var=ec2.results[0].tagged_instances[0].public_ip
+   - name: Add all instance public IPs to host group
+     add_host: name={{ item.public_ip }} groupname={{ CLUSTER_NAME }}
+     with_items: ec2.results[0].tagged_instances
+
+   - name: Wait for the instances to boot by checking the ssh port
+     wait_for: host={{ item.public_dns_name }} port=22 delay=10 timeout=320 state=started
+     with_items: ec2.results[0].tagged_instances
+
+   - name: Create cloud inventory file
+     template: src=cloud_inventory.j2 dest={{ playbook_dir }}/inventory/{{ CLUSTER_NAME }}
+     tags: inventory
+

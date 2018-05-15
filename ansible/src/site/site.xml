@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-fluido-skin</artifactId>
+		<version>1.6</version>
+	</skin>
+
+	<custom>
+		<fluidoSkin>
+			<sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+			<leftColumnClass>span2</leftColumnClass>
+			<bodyColumnClass>span10</bodyColumnClass>
+			<googleSearch/>
+		</fluidoSkin>
+	</custom>
+
+	<poweredBy>
+		<logo name="Tibco" href="http://www.tibco.com/" img="images/Tibco.svg" />
+	</poweredBy>
+
+
+	<body>
+
+		<!-- See https://www.google.com/webmasters/tools - tied to plord12@googlemail.com but sharable since Tibco doesn't allow access -->
+		<head><![CDATA[<meta name="google-site-verification" content="i-h_VPB6E527ymTK_WL8muCfqYYOeFoYr_qkw4CXyT0" />]]></head>
+
+		<menu name="Overview">
+			<item name="Introduction" href="index.html" />
+			<item name="Usage" href="usage.html" collapse="true">
+				<item name="Ansible Playbook Examples" href="ansible_playbook_examples.html" />
+			</item>
+		</menu>
+
+		<menu ref="reports" />
+
+		<links>
+			<item name="DevZone" href="https://devzone.tibco.com/dashboard.action" />
+			<item name="Component Exchange" href="https://devzone.tibco.com/display/comp/TIBCO+Component+Exchange" />
+		</links>
+	</body>
+</project>

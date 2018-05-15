@@ -1,0 +1,29 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: remove_node.yml -- remove individual nodes
+# require servicename
+    - name: call backup
+      include: backup_node_installpath.yml target_dir={{ servicename }}
+    - name: stop sb node
+      command: "{{ EP_ADMIN_BIN }} servicename={{ servicename }} stop node"
+      register: stop_node_result
+      ignore_errors: true
+
+    - debug: var=stop_node_result
+
+    - name: stop sb node with adminport
+      command: "{{ EP_ADMIN_BIN }} adminport=5556 stop node"
+      when: stop_node_result.failed
+      ignore_errors: true
+
+    - name: remove sb node
+      command: "{{ EP_ADMIN_BIN }} servicename={{ servicename }} remove node"
+      register: remove_node_result
+      ignore_errors: true
+
+    - debug: var=remove_node_result
+
+    - name: remove sb nodes with adminport
+      command: "{{ EP_ADMIN_BIN }} adminport=5556 remove node"
+      when: remove_node_result.failed
+

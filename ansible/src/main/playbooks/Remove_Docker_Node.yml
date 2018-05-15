@@ -1,0 +1,18 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: Remove_Docker_Node.yml - remove SB node container running on a given instance
+# usage: ansible-playbook -i inventory --limit=instance_ipaddress Remove_Docker_Node.yml
+- hosts: tag_ClusterName_Cluster1
+  remote_user: centos
+  gather_facts: true
+  become: yes
+  # default plays run as linear - good for debugging 
+  # All hosts will run each task before any host starts the next task, using the number of forks (default 5) to parallelize. Other options include 'serial' and 'free'
+  strategy: linear
+  vars_files:
+  - roles/Cluster1_Docker/defaults/main.yml
+  environment: "{{ sb_env }}"
+  tasks:
+     - include: roles/Cluster_Docker/tasks/remove_node_containers.yml weave_hostname={{ item }} servicename={{ item }} 
+       with_items: "{{ nodes_assignment[inventory_hostname] }}"  

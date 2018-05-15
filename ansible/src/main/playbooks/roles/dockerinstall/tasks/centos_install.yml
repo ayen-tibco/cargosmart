@@ -1,0 +1,32 @@
+# remove any old version of docker https://docs.docker.com/install/linux/docker-ce/centos/#uninstall-old-versions
+    - name: remove existing OS provider docker versions
+      yum: name=docker,docker-selinux,docker-common,docker-engine state=absent
+      tags: docker
+
+    - name: Install Docker Deps
+      yum: name=python-setuptools,yum-utils,device-mapper-persistent-data,lvm2 state=present
+      tags: docker
+      
+    # fix for error "Package does not match intended download" for next yum installs
+    - name: clean yum cache
+      command: yum clean all
+
+    - name: Add dockerpoject repo
+      yum_repository:
+        name: Docker-Repository
+        file: docker.repo
+        description: "Docker CE Stable"
+        baseurl: "https://download.docker.com/linux/centos/7/$basearch/stable"
+        gpgkey: https://download.docker.com/linux/centos/gpg
+        gpgcheck: yes
+        enabled: yes
+        state: present
+      tags: docker
+
+    - name: Install latest Docker from dockerproject
+      yum: name=docker-ce state=latest enablerepo=Docker-Repository
+      tags: docker
+
+
+
+

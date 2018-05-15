@@ -1,0 +1,9 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: set_sbuser_env_file.yml
+   - name: add sb env var to bashrc
+     lineinfile: dest="/home/{{ SBUSER }}/.bashrc" line='export {{ item.key }}={{ item.value }}' regexp='^export {{ item.key }}=.*' state=present create=yes
+     with_dict: "{{ sb_env }}"
+   - name: set sbuser path to epadmin
+     lineinfile: dest="/etc/bashrc" line='export PATH=$PATH:{{ TIBCO_EP_BIN }}' regexp='^export PATH=.*' state=present create=yes
+

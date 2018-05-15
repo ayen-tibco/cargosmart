@@ -1,0 +1,39 @@
+{# Copyright (c) 2018 TIBCO Software Inc.#}
+version: "{{ DOCKER_COMPOSE_VERSION }}"
+services:
+{% set AdminPortIndex = 5556 %}
+{% set SBPortPrefix = 10000 %}
+{% for host in ansible_play_batch  %}
+{% set AdminPortIndex = AdminPortIndex + loop.index0 %}
+{% set SBPortPrefix = SBPortPrefix + loop.index0 %}
+  A{{ loop.index }}:
+    image: {{ TIBCO_SB_DOCKER_IMAGE }}
+    deploy:
+      placement:
+        constraints:
+          - node.hostname=={{ host }}
+      restart_policy:
+        condition: on-failure
+    hostname: {{ nodes_assignment[host][0] }}
+    ports:
+      - "{{AdminPortIndex}}:5556"
+      - "{{SBPortPrefix}}:10000"
+    networks:
+      sbweave:
+        aliases:
+          - {{ nodes_assignment[host][0] }}
+    volumes:               
+      - "{{ SB_APP_DIR }}:{{ SB_APP_DIR }}"
+    environment:
+        - NODENAME={{ nodes_assignment[host][0] }}
+        - SB_APP_FILE={{ SB_APP_FILE }}
+        - SB_APP_DIR={{ SB_APP_DIR }}
+        - NODE_CONFIG={{ NODE_CONFIG }}
+        - SUBSTITUTIONS={{ SUBSTITUTIONS }}
+        - DEPLOYDIR= {{ DEPLOYDIR }}
+        - BUILDTYPE=PRODUCTION
+{% endfor %}
+
+networks:
+  sbweave:
+    driver: {{ weaveplugin }}

@@ -1,0 +1,15 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+    - name: determine swarm status
+      shell: >
+        docker info | egrep '^Swarm: ' | cut -d ' ' -f2
+      register: swarm_status
+
+    - name: leave cluster if swarm is active
+      shell: >
+        docker swarm leave --force
+      register: swarm_status
+      when: "'active' in swarm_status.stdout_lines"
+
+
+

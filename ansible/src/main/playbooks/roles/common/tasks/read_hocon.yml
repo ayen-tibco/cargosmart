@@ -1,0 +1,36 @@
+# Copyright (c) 2018 TIBCO Software Inc.
+#
+   - name: Install python setup tools for Linux
+     become: yes
+     package: name=python-setuptools state=present
+     delegate_to: 127.0.0.1
+     when: hostvars['localhost']['ansible_os_family']=="RedHat" or hostvars['localhost']['ansible_os_family']=="Debian"
+
+   - name: Install python setup tools for MacOSX
+     become: no
+     package: name=python state=present
+     delegate_to: 127.0.0.1
+     when: hostvars['localhost']['ansible_distribution']=="MacOSX"
+
+   - name: Install Pypi
+     become: yes
+     easy_install: name=pip
+     delegate_to: 127.0.0.1
+
+   - name: install pyhocon
+     become: yes
+     pip: name=pyhocon
+     delegate_to: 127.0.0.1
+
+   - name: install dnspython for dig lookup for local host file
+     become: yes
+     pip: name=dnspython
+     delegate_to: 127.0.0.1
+
+   - name: convert node config file
+     shell: pyhocon -i {{NODE_CONFIG_URL }}/{{ NODE_CONFIG}} -o {{role_path}}/../{{ CLUSTER_NAME }}/files/{{ NODE_CONFIG }}.yml -f yaml
+     environment: "{{ node_substitutions }}"
+     delegate_to: 127.0.0.1
+
+   - name: load hocon vars
+     include_vars: roles/{{ CLUSTER_NAME }}/files/{{ NODE_CONFIG}}.yml

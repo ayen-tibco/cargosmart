@@ -1,0 +1,12 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: load_cluster_config.yml
+   - name: upload new cluster config file
+     include: roles/tibcosbinstall/tasks/get_nodeconfig.yml
+   # determine whether there are more one sb node running
+   - name: call get active node
+     include: get_active_nodes.yml
+   - name: load node config
+     command: "{{ EP_ADMIN_BIN }} servicename={{ servicename }} username=guest password=guest load configuration source={{ SB_APP_DIR }}/{{ NODE_CONFIG }} substitutions={{ SUBSTITUTIONS }}"
+     when: active_nodes.results.0.stdout_lines != ''
+

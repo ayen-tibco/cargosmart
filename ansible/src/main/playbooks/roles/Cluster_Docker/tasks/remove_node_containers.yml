@@ -1,0 +1,20 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: remove_node_containers.yml - stop and remove only SB node containers in instance
+    - name: leave cluster
+      become: True
+      command: "docker exec {{ weave_hostname }} {{ EP_ADMIN_BIN }} servicename={{ servicename }} leave cluster"
+      register: leave_cluster
+      ignore_errors: true
+
+    - name: remove SB container on instance
+      become: True
+      docker:
+#       docker_api_version: "{{ client_api_version.stdout }}"
+        docker_api_version: "1.20"
+        name: "{{ weave_hostname }}"
+        image: "{{ TIBCO_SB_DOCKER_IMAGE }}"
+        state: absent
+    - name: remove weave service
+      become: True
+      command: /usr/local/bin/weave stop

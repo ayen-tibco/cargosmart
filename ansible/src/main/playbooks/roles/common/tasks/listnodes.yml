@@ -1,0 +1,35 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+- hosts: partition
+  tasks:
+  - name: load node config to determine how many nodes
+    include_vars: ../../{{ CLUSTER_NAME }}/files/three-node-active-active-node.conf.yml
+  - name: Check existence of local nodes assignment file
+    local_action: stat path=../../{{ CLUSTER_NAME }}/files/nodes_assignment.yml get_md5=no
+    register: n_stat
+  - name: load existing node assignment
+    include_vars: ../../{{ CLUSTER_NAME }}/files/nodes_assignment.yml
+    when: n_stat==true
+  - name: update node array
+    set_fact: nodes=[]
+  - name: update node array
+    set_fact: nodes="{{nodes}} + [ '{{item}}' ]"
+    with_items: configuration['NodeDeploy']['nodes']|sort
+  - debug: msg="Nodes are {{ nodes }}."
+  - name: update number of nodes
+    set_fact: 
+      num_nodes: "{{ configuration['NodeDeploy']['nodes']|length }}"
+      node_count: 1
+  - name: update node assignment file
+    template:
+      src:  "../../{{ CLUSTER_NAME }}/templates/nodes_assignment2.j2"
+      dest: "playbooks/roles/{{ CLUSTER_NAME }}/files/nodes_assignment.yml"
+    delegate_to: 127.0.0.1
+    run_once: true
+  - name: load existing node assignment
+    include_vars: ../../{{ CLUSTER_NAME }}/files/nodes_assignment.yml
+#    when: node_count != n_count
+#  - debug: msg="Node is {{ item.key }}."
+#    with_dict: "{{ configuration['NodeDeploy']['nodes'] }}"
+  - debug: msg="{{nodes_assignment['instance-1'][0]}}"

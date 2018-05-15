@@ -1,0 +1,14 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+    - name: read node config
+      include: read_hocon.yml
+      delegate_to: 127.0.0.1
+      run_once: true
+      when: name is undefined and type is undefined
+    - name: call assign node
+      include: assign_nodes.yml
+      delegate_to: 127.0.0.1
+      run_once: true
+    - name: update Cluster inventory file
+      template: src=cluster_inventory.j2 dest="{{ inventory_dir }}/{{ CLUSTER_NAME }}"
+      delegate_to: 127.0.0.1

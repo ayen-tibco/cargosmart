@@ -1,0 +1,17 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# global group vars for Cluster topologies
+# use for override if necessary
+#node_count: 
+#CLUSTER_NAME: ${CLUSTERNAME}
+#SUBSTITUTIONS: "GOLDYLOCKS_EPPORT=10000,A1_DATATRANSPORTPORT=5557,A2_DATATRANSPORTPORT=5557,A3_DATATRANSPORTPORT=5557,A1_ADMINPORT=5556,A2_ADMINPORT=5556,A1_IPADDR=A1.topologies,A2_IPADDR=A2.topologies,A3_IPADDR=A3.topologies"
+#WEAVE_DOMAIN: ${CLUSTERNAME}.local.
+
+#node_substitutions:
+#  A1_DATATRANSPORTPORT: 5557
+#  A2_DATATRANSPORTPORT: 5557
+#  A3_DATATRANSPORTPORT: 5557
+#  A1_IPADDR: A1.topologies
+#  A2_IPADDR: A2.topologies
+#  A3_IPADDR: A3.topologies
+  

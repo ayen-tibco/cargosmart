@@ -1,0 +1,18 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# SB AWS EC2 Destroy Script
+# Deletes a VPC/Subnets, Instance Security Group, and Launch three instances for SB Cluster
+# Configured with groupvars found in group_vars/CLUSTER_NAME file tagged with CLUSTER_NAME
+# Required: var of the cluster name passed via command line
+#
+# Usage: ansible-playbook ec2_destroy.yml --extra-vars "CLUSTER_NAME=topologies"
+#
+- hosts: localhost
+  gather_facts: false
+  vars_files:
+  - roles/aws_ec2/defaults/main.yml
+  - roles/tibcosbinstall/defaults/main.yml
+
+  tasks:
+    - include: roles/aws_ec2/tasks/ec2_destroy.yml

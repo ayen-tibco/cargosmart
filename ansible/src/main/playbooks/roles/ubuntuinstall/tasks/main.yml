@@ -1,0 +1,37 @@
+# roles/centosinstall/tasks/main.yml
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+   - name: clean up old packages
+     command: apt-get clean
+   - name: clean unncessary packages
+     command: apt-get autoremove
+   - name: install ntpd
+     apt: name=ntp state=latest
+   - name: install perl dependency package
+     apt: name=perl state=latest
+   - name: install wget dependency package
+     apt: name=wget state=latest
+   - name: install tar dependency packages
+     apt: name=tar state=latest
+   - name: install unzip dependency packages
+     apt: name=unzip state=latest
+   - name: install sysstat/sar dependency packages
+     apt: name=sysstat state=latest
+   - name: install dns utils dependency packages
+     apt: name=dnsutils state=latest
+   - name: install tcpdump dependency packages
+     apt: name=tcpdump state=latest
+   - name: install net-tootls dependency packages
+     apt: name=net-tools state=latest
+   - name: install hostname dependency packages
+     apt: name=hostname state=latest
+   - service: name=ntp state=started
+   - name: add jave 8 deb repo
+     apt_repository:
+       repo: deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main
+       state: present
+   - name: apt update
+     apt: update_cache=yes
+   - name: install java 8
+     apt: name=openjdk-8-jdk force=yes state=latest

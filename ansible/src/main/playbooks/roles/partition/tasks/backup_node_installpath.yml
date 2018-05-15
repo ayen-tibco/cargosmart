@@ -1,0 +1,14 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: backup_node_installpath.yml -- backup installation path of individual nodes
+# require target directory to be passed in
+# remove node will stop the coordinator and remove config/installation path
+    - set_fact: backup_path={{ NODE_INSTALL_DIR }}/../backups/{{ ansible_date_time.date }}_{{ ansible_date_time.hour }}{{ ansible_date_time.minute }}{{ ansible_date_time.second }}_{{ inventory_hostname }}
+    - name: create backup dir
+      file: path={{ backup_path }} state=directory recurse=yes owner={{ SBUSER }} group=sbusers
+    # save install path prior to removal - if fail don't proceed
+    - name: backup installpath
+      become: True
+      become_user: "{{ SBUSER }}"
+      shell: /usr/bin/cp -rp {{ NODE_INSTALL_DIR }}/{{ target_dir }} {{ backup_path }}
+      ignore_errors: false

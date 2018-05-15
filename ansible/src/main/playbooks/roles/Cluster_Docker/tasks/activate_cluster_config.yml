@@ -1,0 +1,8 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+   - name: activate config
+     become: true
+     command: "docker exec {{docker_name}} {{ EP_ADMIN_BIN }} servicename={{ docker_name }} activate configuration name={{ name }} version={{ version }} type={{ type }}"
+     register: activate_cmd_result
+
+   - debug: var=activate_cmd_result

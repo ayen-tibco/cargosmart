@@ -1,0 +1,13 @@
+{# Copyright (c) 2017 TIBCO Software Inc.#}
+n_count: {{node_count}}
+{% set node_index=[] %}
+nodes_assignment:
+{% for host in groups['${ANSIBLE_HOST_GROUP}'] %}
+  {{ host }}:
+{% for n in range(node_count) %}
+{% if node_index < num_nodes %}
+    - {{ nodes[node_index|length] }}
+{% if node_index.append('1') %}{% endif %}
+{% endif %}
+{% endfor %}
+{% endfor %}

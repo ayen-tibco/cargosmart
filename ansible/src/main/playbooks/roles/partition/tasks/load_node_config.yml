@@ -1,0 +1,10 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: load_node_config.yml
+   - name: local node config
+     command: "{{ TIBCO_EP_BIN }}/administrator servicename={{ nodename }} loadactivate configuration sourcelist={{ kcsfile }}"
+   - name: get config type
+     command: "grep -E '^configuration.*type\s\"(.*)"$' {{ kcsfile }} | cut -d' ' -f6 | tr -d '"'"
+     register: config_type
+   - name: display node type config
+     command: "{{ TIBCO_EP_BIN }}/administrator servicename={{ nodename }} display configuration type={{ config_type.results.stdout_lines }}"

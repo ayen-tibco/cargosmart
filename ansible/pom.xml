@@ -1,0 +1,507 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- vim: set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab : -->
+    <!-- Copyright (c) 2017 TIBCO Software Inc. -->
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.tibco.ep.sb.sample.cloud</groupId>
+    <artifactId>ansible</artifactId>
+    <packaging>pom</packaging>
+    <name>StreamBase Integration with Ansible AWS Deployment Example</name>
+
+    <parent>
+        <groupId>com.tibco.ep.sb.sample</groupId>
+        <artifactId>cloud</artifactId>
+        <version>10.3.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <!-- START SNIPPET: globalprops -->
+    <properties>
+        <CONFIG_PROP_FILE>config.properties</CONFIG_PROP_FILE>
+        <SB_TARBALL>platform_linux${DOCKER_SB_ARCH}.zip</SB_TARBALL>
+        <NODE_CONFIG_URL>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}</NODE_CONFIG_URL>
+    </properties>
+    <!-- END SNIPPET: globalprops -->
+
+    <!-- START SNIPPET: dependencies  -->
+    <dependencies>
+        <dependency>
+            <groupId>com.tibco.ep.sb.rt</groupId>
+            <artifactId>platform_${com.tibco.platform}${com.tibco.arch}</artifactId>
+            <type>zip</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tibco.ep.dtmexamples.applications</groupId>
+            <artifactId>topologies</artifactId>
+            <type>ep-application</type>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    <!-- END SNIPPET: dependencies  -->
+
+    <!-- Can choose between AWS or Azure deployment -->
+    <profiles>
+
+        <profile>
+            <id>aws</id>
+            <properties>
+                <!-- make any changes below, please edit profiles/aws/config.properties as well -->
+                <!--  regular config with auto discovery  -->
+                <profile-id>aws</profile-id>
+                <CLOUD_PROVIDER>${profile-id}</CLOUD_PROVIDER>
+            </properties>
+
+            <build>
+                <filters>
+                    <!--
+                        Ensures that the config.properties file is always loaded from the
+                        configuration directory of the active Maven profile.
+                    -->
+                    <filter>${project.basedir}/src/main/resources/profiles/${profile-id}/${CONFIG_PROP_FILE}</filter>
+                </filters>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>${project.basedir}/src/main/resources/profiles/${project.activeProfiles[0].id}/${CONFIG_PROP_FILE}</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                       <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>get-aws-inventory-script</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target name="get-aws-inventory-script" unless="ansible.skip.inventory">
+                                        <mkdir dir="${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory"/>
+                                        <exec
+                                            dir="${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory"
+                                            executable="curl"
+                                            failonerror="true"
+                                            searchpath="true">
+                                            <arg line="-L https://github.com/ansible/ansible/raw/devel/contrib/inventory/ec2.py -o ec2.py" />
+                                        </exec>
+                                        <chmod file="${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory/ec2.py" perm="755"/>
+                                        <exec
+                                            dir="${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks"
+                                            executable="curl"
+                                            failonerror="true"
+                                            searchpath="true">
+                                            <arg line="-L https://github.com/ansible/ansible/raw/devel/contrib/inventory/ec2.ini -o ec2.ini" />
+                                        </exec>                                        
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>upload-sb-s3</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target name="upload_sb_s3" unless="ansible.skip.s3upload">
+                                        <exec
+                                            dir="${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}"
+                                            executable="curl"
+                                            failonerror="true"
+                                            searchpath="true">
+                                            <arg line="-v -X PUT -T ${SB_TARBALL} ${SB_TARBALL_URL} -H 'Content-Type: application/octet-stream'" />
+                                        </exec>
+                                   </target>
+                                   </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                               </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- START SNIPPET: cloudprovision  -->
+                    <plugin>
+                        <groupId>co.escapeideas.maven</groupId>
+                        <artifactId>ansible-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>aws-cloud-provision</id>
+                                <goals>
+                                    <goal>playbook</goal>
+                                </goals>
+                                <configuration>
+                                    <options>
+                                        <option>-v</option>
+                                    </options>
+                                    <promoteDebugAsInfo>true</promoteDebugAsInfo>
+                                    <workingDirectory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks</workingDirectory>
+                                    <inventory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory</inventory>
+                                    <playbook>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/ec2_provision.yml</playbook>
+                                    <extraVars><variable>CLUSTER_NAME=${CLUSTERNAME}</variable></extraVars>
+                                </configuration>
+                            </execution>
+                            <!-- END SNIPPET: cloudprovision  -->
+                            <execution>
+                                <id>aws-sb-provision</id>
+                                <goals>
+                                    <goal>playbook</goal>
+                                </goals>
+                                <configuration>
+                                    <options>
+                                        <option>-v</option>
+                                    </options>
+                                    <promoteDebugAsInfo>true</promoteDebugAsInfo>
+                                    <workingDirectory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks</workingDirectory>
+                                    <inventory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory</inventory>
+                                    <playbook>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/${CLUSTERNAME}.yml</playbook>
+                                    <extraVars>
+                                        <variable>CLUSTER_NAME=${CLUSTERNAME}</variable>
+                                        <variable>DOCKERDEPLOY=true</variable>
+                                    </extraVars>
+                                    <tags>${ANSIBLE_TAGS}</tags>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>aws-destroy</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>playbook</goal>
+                                </goals>
+                                <configuration>
+                                    <promoteDebugAsInfo>true</promoteDebugAsInfo>
+                                    <workingDirectory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks</workingDirectory>
+                                    <inventory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory</inventory>
+                                    <playbook>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/ec2_destroy.yml</playbook>
+                                    <extraVars>
+                                        <variable>CLUSTER_NAME=${CLUSTERNAME}</variable>
+                                    </extraVars>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>aws-display-nodes</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>playbook</goal>
+                                </goals>
+                                <configuration>
+                                    <promoteDebugAsInfo>true</promoteDebugAsInfo>
+                                    <workingDirectory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks</workingDirectory>
+                                    <inventory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory</inventory>
+                                    <playbook>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/Display_All_Nodes.yml</playbook>
+                                    <extraVars>
+                                        <variable>CLUSTER_NAME=${CLUSTERNAME}</variable>
+                                        <variable>DOCKERDEPLOY=${DOCKERDEPLOY}</variable>
+                                    </extraVars>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+
+        <!-- Activate this profile for azure deployment -->
+        <profile>
+            <id>azure</id>
+            <properties>
+                <profile-id>azure</profile-id>
+                <CLOUD_PROVIDER>${profile-id}</CLOUD_PROVIDER>
+            </properties>
+
+            <build>
+                <filters>
+                    <!--
+                        Ensures that the config.properties file is always loaded from the
+                        configuration directory of the active Maven profile.
+                    -->
+                    <filter>${project.basedir}/src/main/resources/profiles/${profile-id}/${CONFIG_PROP_FILE}</filter>
+                </filters>
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>${project.basedir}/src/main/resources/profiles/${project.activeProfiles[0].id}/${CONFIG_PROP_FILE}</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                       <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>get-azure-inventory-script</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target name="get-azure-inventory-script" unless="vagrant.skip.inventory">
+                                        <mkdir dir="${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory"/>
+                                        <exec
+                                            dir="${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory"
+                                            executable="curl"
+                                            failonerror="true"
+                                            searchpath="true">
+                                            <arg line="-L https://github.com/ansible/ansible/raw/devel/contrib/inventory/azure_rm.py -o azure_rm.py" />
+                                        </exec>
+                                        <chmod file="${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory/azure_rm.py" perm="755"/>
+                                        <exec
+                                            dir="${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks"
+                                            executable="curl"
+                                            failonerror="true"
+                                            searchpath="true">
+                                            <arg line="-L https://github.com/ansible/ansible/raw/devel/contrib/inventory/azure_rm.ini -o azure_rmi.ini" />
+                                        </exec>                                    
+                                    </target>                                    
+                                    </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <!-- need to fix azure storage blob upload script - for now use amazon S3 -->
+                                <id>upload-sb-s3</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target name="upload_sb_s3" unless="ansible.skip.s3upload">
+                                        <exec
+                                            dir="${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}"
+                                            executable="curl"
+                                            failonerror="true"
+                                            searchpath="true">
+                                            <arg line="-v -X PUT -T ${SB_TARBALL} ${SB_TARBALL_URL} -H 'Content-Type: application/octet-stream'" />
+                                       </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>co.escapeideas.maven</groupId>
+                        <artifactId>ansible-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>azure-cloud-provision</id>
+                                <goals>
+                                    <goal>playbook</goal>
+                                </goals>
+                                <configuration>
+                                    <options>
+                                        <option>-v</option>
+                                    </options>
+                                    <promoteDebugAsInfo>true</promoteDebugAsInfo>
+                                    <workingDirectory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks</workingDirectory>
+                                    <inventory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory</inventory>
+                                    <playbook>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/azure_provision.yml</playbook>
+                                    <extraVars><variable>CLUSTER_NAME=${CLUSTERNAME}</variable></extraVars>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>azure-sb-provision</id>
+                                <goals>
+                                    <goal>playbook</goal>
+                                </goals>
+                                <configuration>
+                                    <options>
+                                        <option>-v</option>
+                                    </options>
+                                    <promoteDebugAsInfo>true</promoteDebugAsInfo>
+                                    <workingDirectory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks</workingDirectory>
+                                    <inventory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory</inventory>
+                                    <playbook>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/${CLUSTERNAME}.yml</playbook>
+                                    <extraVars>
+                                        <variable>CLUSTER_NAME=${CLUSTERNAME}</variable>
+                                        <variable>DOCKERDEPLOY=${DOCKERDEPLOY}</variable>
+                                    </extraVars>
+                                    <tags>${ANSIBLE_TAGS}</tags>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>azure-destroy</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>playbook</goal>
+                                </goals>
+                                <configuration>
+                                    <promoteDebugAsInfo>true</promoteDebugAsInfo>
+                                    <workingDirectory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks</workingDirectory>
+                                    <inventory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory</inventory>
+                                    <playbook>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/azure_destroy.yml</playbook>
+                                    <extraVars>
+                                        <variable>CLUSTER_NAME=${CLUSTERNAME}</variable>
+                                    </extraVars>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>azure-display-nodes</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>playbook</goal>
+                                </goals>
+                                <configuration>
+                                    <promoteDebugAsInfo>true</promoteDebugAsInfo>
+                                    <workingDirectory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks</workingDirectory>
+                                    <inventory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/inventory</inventory>
+                                    <playbook>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}/playbooks/Display_All_Nodes.yml</playbook>
+                                    <extraVars>
+                                        <variable>CLUSTER_NAME=${CLUSTERNAME}</variable>
+                                        <variable>DOCKERDEPLOY=true</variable>
+                                    </extraVars>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <!-- END SNIPPET: build  -->
+
+        </profile>
+        <profile>
+            <id>skipTestCompileAndRun</id>
+            <activation>
+                <property>
+                    <name>ansible.skip</name>
+                    <value>true</value>
+                </property>
+            </activation>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.tibco.ep</groupId>
+                <artifactId>ep-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <!-- skip default tests since we'll do this in execution steps below -->
+                    <skipTests>true</skipTests>
+                </configuration>
+
+                <executions>
+                    <!-- required since this is a pom project and so not automatically run -->
+                    <execution>
+                        <id>Install product</id>
+                        <phase>integration-test</phase>
+                        <goals><goal>install-product</goal></goals>
+                    </execution>
+                    <!-- START SNIPPET: eptest  -->
+                    <execution>
+                        <id>ep_display_nodes</id>
+                        <phase>post-integration-test</phase>
+                        <goals><goal>administer-nodes</goal></goals>
+                        <configuration>
+                            <skip>${skipTests}</skip>
+                            <command>display</command>
+                            <target>node</target>
+                            <serviceName>A1.topologies</serviceName>
+                            <hostname>${A1_NODENAME}</hostname>
+                            <discoveryPort>54321</discoveryPort>
+                            <userName>guest</userName>
+                            <password>guest</password>
+                            <adminport>${SB_ADMIN_PORT}</adminport>
+                        </configuration>
+                    </execution>
+                    <!-- END SNIPPET: eptest  -->
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${ansible.skip}</skip>
+                            <outputDirectory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-ansible-scripts</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${ansible.skip}</skip>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                                <nonFilteredFileExtensions>
+                                    <nonFilteredFileExtension>key</nonFilteredFileExtension>
+                                    <nonFilteredFileExtension>pub</nonFilteredFileExtension>
+                                    <nonFilteredFileExtension>zip</nonFilteredFileExtension>
+                                    <nonFilteredFileExtension>py</nonFilteredFileExtension>
+                                </nonFilteredFileExtensions>
+                                <outputDirectory>${project.build.directory}/staging/ansible/${CLOUD_PROVIDER}</outputDirectory>
+                                <resources>
+                                   <resource>
+                                      <directory>${project.basedir}/src/main</directory>
+                                      <filtering>true</filtering>
+                                   </resource>
+                                </resources>
+                            </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-nodeconfig</id>
+                        <phase>compile</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${ansible.skip}</skip>
+                                    <overWriteIfNewer>true</overWriteIfNewer>
+                                    <outputDirectory>${NODE_CONFIG_URL}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.basedir}/../../applications/${SB_APP_NAME}/src/test/configurations</directory>
+                                            <filtering>true</filtering>
+                                            <includes>
+                                                <include>${NODE_CONFIG}</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

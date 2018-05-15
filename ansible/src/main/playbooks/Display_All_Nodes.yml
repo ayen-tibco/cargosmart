@@ -1,0 +1,46 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: Display_All_Nodes.yml
+# Usage: ansible-playbook Display_All_Nodes.yml --extra-vars "CLUSTER_NAME=Cluster1"
+# target can be hostname or ec2 tag like tag_ClusterName_Cluster1
+# servicename can be be a hostname.Cluster or Cluster alone like node1.Cluster1 
+- hosts: ${ANSIBLE_HOST_GROUP}
+  remote_user: ${ANSIBLE_REMOTE_USER}
+  become: true
+  become_user: "{{ SBUSER }}"
+  gather_facts: true
+  ignore_errors: true
+  vars_files:
+  - roles/tibcosbinstall/defaults/main.yml
+  - roles/${CLUSTERNAME}/defaults/main.yml
+
+
+  environment: "{{ sb_env }}"
+  tasks:
+     - name: load existing node assignment
+       include_vars: "{{ playbook_dir }}/roles/${CLUSTERNAME}/files/nodes_assignment.yml"
+     - name: call display node
+       include: roles/{{ CLUSTER_NAME }}/tasks/display_node.yml servicename={{ item }}
+       with_items: "{{nodes_assignment[inventory_hostname]}}"
+       when: DOCKERDEPLOY == false
+     - name: call display cluster
+       include: roles/{{ CLUSTER_NAME }}/tasks/display_cluster.yml servicename={{ item }}
+       with_items: "{{nodes_assignment[inventory_hostname]}}"
+       when: DOCKERDEPLOY == false
+     - name: call display partition
+       include: roles/{{ CLUSTER_NAME }}/tasks/display_partition.yml servicename={{ item }}
+       with_items: "{{nodes_assignment[inventory_hostname]}}"
+       when: DOCKERDEPLOY == false
+     - name: call docker display node
+       include: roles/Cluster_Docker/tasks/display_node.yml docker_name={{ item }} servicename={{ item }}
+       with_items: "{{ nodes_assignment[inventory_hostname] }}"
+       when: DOCKERDEPLOY
+     - name: call docker display cluster
+       include: roles/Cluster_Docker/tasks/display_cluster.yml docker_name={{ item }} servicename={{ item }}
+       with_items: "{{ nodes_assignment[inventory_hostname] }}"
+       when: DOCKERDEPLOY
+     - name: call docker display partition
+       include: roles/Cluster_Docker/tasks/display_partition.yml docker_name={{ item }} servicename={{ item }}
+       with_items: "{{ nodes_assignment[inventory_hostname] }}"
+       when: DOCKERDEPLOY

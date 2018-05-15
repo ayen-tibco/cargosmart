@@ -1,0 +1,40 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: reload_node_containers.yml - restart and re-pull image if necessary for SB node containers in instance
+    - name: remove ALL SB containers
+      become: True
+      become_user: root
+      docker:
+#       docker_api_version: "{{ client_api_version.stdout }}"
+        docker_api_version: "1.20"
+        name: "{{ item }}"
+        image: "{{ TIBCO_SB_DOCKER_IMAGE }}"
+        state: absent
+      with_items: "{{ nodes_assignment[inventory_hostname] }}"
+      ignore_errors: true
+
+    - name: pull image
+      become: True
+      become_user: root
+      shell: docker pull {{ TIBCO_SB_DOCKER_IMAGE }}
+
+    - name: start SB containers on instance
+      become: True
+      become_user: root
+      docker:
+#       docker_api_version: "{{ client_api_version.stdout }}"
+        docker_api_version: "1.20"
+        name: "{{ item }}"
+        hostname: "{{ item }}.local"
+        image: "{{ TIBCO_SB_DOCKER_IMAGE }}"
+        docker_url: unix:///var/run/weave/weave.sock
+        state: reloaded
+#        pull: always
+        env:
+            NODENAME: "{{ item }}"
+            SUBSTITUTIONS: "{{ SUBSTITUTIONS }}"
+            NODE_CONFIG: "{{ NODE_CONFIG }}"
+            WEAVE_HOSTNAME: "{{ item }}.local"
+        volumes: "{{ SB_APP_DIR }}:{{ SB_APP_DIR }}" 
+      with_items: "{{ nodes_assignment[inventory_hostname] }}"
+      ignore_errors: true

@@ -1,0 +1,20 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: leave_cluster.yml -- leave cluster
+# require servicename
+    - name: call display cluster
+      include: display_cluster.yml
+    - name: leave cluster
+      command: "{{ EP_ADMIN_BIN }} servicename={{ servicename }} leave cluster"
+      register: leave_cluster
+      ignore_errors: true
+
+    - name: leave cluster with adminport
+      command: "{{ EP_ADMIN_BIN }} adminport=5556 leave cluster"
+      when: leave_cluster.failed is defined
+      ignore_errors: false
+
+    - debug: var=leave_cluster
+
+    - name: call display cluster
+      include: display_cluster.yml

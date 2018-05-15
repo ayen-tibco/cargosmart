@@ -1,0 +1,19 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# SB Azure Playbook Script
+# Creates a Azure resources instances for SB Cluster
+# Configured with groupvars found in group_vars/CLUSTER_NAME file tagged with CLUSTER_NAME
+# Required: var of the cluster name passed via command line
+#
+# Usage: ansible-playbook azure_provision.yml --extra-vars "CLUSTER_NAME=topologies"
+#        ansible-playbook -i inventory topologies.yml
+#
+- name: Create a SB Cluster environment in Azure
+  hosts: localhost
+  remote_user: ${ANSIBLE_REMOTE_USER}
+  gather_facts: True
+  vars_files:
+  - roles/tibcosbinstall/defaults/main.yml
+  roles:
+    - azure

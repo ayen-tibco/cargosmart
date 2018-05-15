@@ -1,0 +1,23 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+  - name: check if ssh key file exists
+    stat: path=~/.ssh/id_rsa_{{ ssh_key}}
+    register: sshkeyfile
+    tags: sshkey
+
+  - name: Create SSH Key for Azure VMS
+    expect:
+        command: ssh-keygen -t rsa -b 2048 -f {{ ansible_env.HOME}}/.ssh/id_rsa_{{ ssh_key}} -C {{ CLUSTER_NAME }}
+        echo: yes
+        timeout: 5
+        responses:
+          "passphrase": "" ## Enter passphrase (empty for no passphrase)
+    register: azurekey
+    when: not sshkeyfile.stat.exists
+    tags: sshkey
+
+  - name: Get public key
+    local_action: command ssh-keygen -y -f ~/.ssh/id_rsa_{{ ssh_key}}
+    register: pubkey
+    tags: sshkey

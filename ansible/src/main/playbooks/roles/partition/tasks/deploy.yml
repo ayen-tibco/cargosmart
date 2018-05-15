@@ -1,0 +1,51 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+- name: count how many sb nodes already exists
+  command: pgrep -xc swcoord
+  ignore_errors: True
+  register: cmd_result
+
+- set_fact: 
+    sb_exist_nodes: "{{ cmd_result.stdout|int }}"
+
+- set_fact: 
+    node_start: "{{ sb_exist_nodes | int }}"
+
+- debug: var=sb_exist_nodes
+
+- name: do not set default admin port if multi-node deployment is enabled
+  set_fact:
+        SB_ADMIN_PORT:
+  when: node_count > 1
+
+- name: set nodename suffix and index
+  set_fact: 
+    node_start: "{{ sb_exist_nodes | int + 1 }}"
+  when: sb_exist_nodes == "0"
+
+- name: install/start sb node and then launch application
+  become: True
+  become_user: "{{ SBUSER }}"
+  shell: ./startsb.sh {{ CLUSTER_NAME }} > startsb_{{ansible_date_time.date}}.log 2>&1 
+  args:
+    chdir: "{{ TIBCO_EP_BIN }}"
+  environment: 
+     NODENAME: "{{ item }}"
+     SB_ADMIN_PORT: "{{ SB_ADMIN_PORT | default('') }}"
+     PATH: "$PATH:{{ ansible_env.PATH }}"
+  with_items: "{{ nodes_assignment[inventory_hostname] }}"
+  when: sb_exist_nodes|int < node_count|int
+
+- name: collect port numbers
+  command: "{{ EP_ADMIN_BIN }} getadminport node installpath={{ NODE_INSTALL_DIR }}/{{ item }} "
+  with_items: "{{ nodes_assignment[inventory_hostname] }}"
+  register: sb_ports
+
+- debug: 
+    var: sb_ports
+
+### FIX THIS -AY- add host param to resolve to local interface instead of default localhost
+- name: wait and verify sb mgmt port is running
+  wait_for: port={{ item.stdout }} host={{ ansible_default_ipv4.address }} delay=5 state=started timeout=60
+  with_items: "{{ sb_ports.results }}"
+  when: item.stdout != ''

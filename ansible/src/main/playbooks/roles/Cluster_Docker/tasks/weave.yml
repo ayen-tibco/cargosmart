@@ -1,0 +1,52 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+    - name: set weave head node ip hostname
+      include_vars: defaults/main.yml
+      when: weave_headnode is undefined
+
+    - debug: var=weave_headnode
+    - debug: var=weave_headnode_ip
+
+    - name: check weave status
+      become: True
+      command: /usr/local/bin/weave status
+      ignore_errors: true
+      register: weave_status
+
+    - name: start weave on head node instance
+      become: True
+      command: /usr/local/bin/weave launch --dns-domain={{ WEAVE_DOMAIN }}
+      ignore_errors: false
+      delegate_to: "{{ weave_headnode }}"
+      run_once: true
+      when: weave_status.rc > 0
+      
+    - name: connect weave to head node
+      become: True
+      command: /usr/local/bin/weave launch --dns-domain={{ WEAVE_DOMAIN }} {{ weave_headnode_ip }}
+      when: (inventory_hostname != weave_headnode) and (weave_status.rc > 0)
+      ignore_errors: false
+
+    - name: send weave concensus
+      become: True
+      command: /usr/local/bin/weave prime
+      run_once: true
+      ignore_errors: false
+
+#    - debug: var=node_start
+#    - debug: var=node_count
+
+#    - name: get weave env
+#      become: True
+#      command: /usr/local/bin/weave env
+#      register: weave_env
+
+    - name: get weave status
+      become: True
+      command: /usr/local/bin/weave status
+      register: weave_status
+      ignore_errors: true
+#      run_once: true
+      when: inventory_hostname != weave_headnode
+
+    - debug: var=weave_status

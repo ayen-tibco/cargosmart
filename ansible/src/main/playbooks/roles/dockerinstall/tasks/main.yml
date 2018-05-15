@@ -1,0 +1,43 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+    - name: run docker centos/rh/fedora install
+      include: centos_install.yml
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+    - name: run docker debian/ubuntu install
+      include: ubuntu_install.yml
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Install Pypi
+      easy_install: name=pip
+      tags: docker
+
+    - name: Install docker python lib
+      pip: name=docker state=latest extra_args=--ignore-installed
+      tags: docker
+
+    - name: Make sure Docker is running
+      service: name=docker state=started
+      tags: docker
+
+    - name: set swarm manager if undefined
+      set_fact:
+        swarm_manager: "{{ groups['partition'][0] }}"
+      when: swarm_manager|default(None) == None
+      tags: swarm
+
+    - debug: var=swarm_manager
+      tags: swarm
+
+    - name: initialize swarm
+      include: swarm_manager.yml
+    # for now only support one swarm manager
+      delegate_to: "{{swarm_manager}}"
+      when: swarm_manager|default(None) != None
+      tags: swarm
+
+    - name: initialize swarm workers
+      include: swarm_workers.yml
+      when: swarm_manager|default(None) != None
+      tags: swarm

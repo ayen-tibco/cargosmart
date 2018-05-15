@@ -1,0 +1,28 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: Remove_All_Nodes.yml
+- hosts: ${ANSIBLE_HOST_GROUP}
+  remote_user: ${ANSIBLE_REMOTE_USER}
+  gather_facts: true
+  become: yes
+  become_user: "{{ SBUSER }}"
+  # default plays run as linear - good for debugging 
+  # All hosts will run each task before any host starts the next task, using the number of forks (default 5) to parallelize. Other options include 'serial' and 'free'
+  strategy: linear
+  vars_files:
+  - roles/tibcosbinstall/defaults/main.yml
+  - roles/${CLUSTERNAME}/defaults/main.yml
+  - roles/Cluster_Docker/defaults/main.yml
+
+  environment: "{{ sb_env }}"
+
+  tasks:
+    - name: load existing node assignment
+      include_vars: "{{ playbook_dir }}/roles/${CLUSTERNAME}/files/nodes_assignment.yml"    
+    - include: roles/{{ CLUSTER_NAME }}/tasks/remove_node.yml servicename={{ item }}
+      with_items: "{{ nodes_assignment[inventory_hostname] }}"
+      when: DOCKERDEPLOY == false
+    - include: roles/Cluster_Docker/tasks/remove_node_containers.yml weave_hostname={{ item }} servicename={{ item }}
+      with_items: "{{ nodes_assignment[inventory_hostname] }}"
+      when: DOCKERDEPLOY == true

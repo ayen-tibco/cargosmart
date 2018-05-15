@@ -1,0 +1,140 @@
+  ------
+  Introduction
+  ------
+  Adam yen
+  ------
+  2017-02-21
+  ------
+
+~~ Copyright 2017 TIBCO, Inc. All rights reserved.
+
+Introduction
+
+  This Ansible example contains the following :
+
+  * Ansible playbooks for provisioning AWS EC2 and Azure resources
+  
+  * Ansible playbooks for installing, deploying, and managing StreamBase Application
+
+  * Documentation on using Ansible playbooks
+
+  []
+  
+* Prerequisites
+
+  * Hardware: Minimum 4GB RAM/2 x vCPUs/20GB HDD, Recommend 8GB RAM/4 x vCPUs/50GB HDD
+    SB Applications with multiple fragments requires at least 8GB/4vCPUs
+  
+  * Compatible OS certified by Ansible (Windows not supported but check out {{{https://www.jeffgeerling.com/blog/2017/using-ansible-through-windows-10s-subsystem-linux}Windows 10 Subsystem for Linux}} )
+  
+  * Java 1.8.0+, Maven 3.3.3+, Python 2.4+ on your local Ansible control system
+  
+  * Ansible 2.1.3.0
+  
+  * Curl
+  
+  * StreamBase Linux Binary
+  
+  * StreamBase Application
+  
+  * Optional: {{{https://docs.ansible.com/ansible/guide_azure.html}Azure Python SDK}}, Ansible dynamic inventory script for Azure, and Azure account/credentials
+  
+  * Optional: Ansible dynamic inventory script for AWS EC2 and AWS credentials
+  
+* Installation
+
+  [[1]] Make sure all the prerequites are met above. Follow the Ansible installation guide 
+  {{{https://docs.ansible.com/ansible/intro_installation.html}here}}.
+  
+  [[2]] Maven <<<compile>>> lifecycle will download the appropriate Ansible dynamic inventory script and config file for your Cloud provider.
+  
+  Amazon EC2
+  {{{https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.py}ec2.py}}
+  {{{https://raw.githubusercontent.com/ansible/ansible/devel/contrib/inventory/ec2.ini}ec2.ini}}
+  
+  Azure
+  {{{https://github.com/ansible/ansible/raw/devel/contrib/inventory/azure_rm.py}azure_rm.py}}
+  {{{https://github.com/ansible/ansible/raw/devel/contrib/inventory/azure_rm.ini}azure_rm.ini}}
+
+* Dependencies in pom.xml
+
+  By default, Linux StreamBase runtime is always referenced here as a 'provided' dependency. If your
+  puppet nodes' OS is other than Linux, change it here.  The other StreamBase runtime for 'test' scope
+  depends on your maven host. This runtime dependency is used by ep-maven plugin to connect to your
+  StreamBase node(s).
+  
+  By default, {{{../../applications/topologies/index.html}topologies}} application is used. Update the application dependency here if you wish
+  to use your own. <<SB_APP_NAME>> variable property in profiles/<provider>/config.properties must be updated as well.
+  
+%{snippet|id=dependencies|file=${project.basedir}/pom.xml}
+
+* StreamBase Ansible playbooks directory skeleton structure
+
+  Ansible roles include cloud provider bootstrapping, StreamBase dependencies installation, and Docker and native StreamBase App deployment.
+  Ansible best practices {{{http://docs.ansible.com/ansible/playbooks_best_practices.html#directory-layout}directory layout structure}} is as
+  follows:
+
++------------
+├── src
+│   └── main
+│       ├── azure
+│       └── playbooks
+│           ├── inventory
+│           ├── roles
+│           │   ├── aws_ec2
+│           │   │   ├── defaults
+│           │   │   ├── tasks
+│           │   │   └── templates
+│           │   ├── azure
+│           │   │   ├── defaults
+│           │   │   ├── tasks
+│           │   │   └── templates
+│           │   ├── centosinstall
+│           │   │   └── tasks
+│           │   ├── Cluster_Docker
+│           │   │   ├── defaults
+│           │   │   ├── files
+│           │   │   └── tasks
+│           │   ├── common
+│           │   │   ├── tasks
+│           │   │   └── templates
+│           │   ├── dockerinstall
+│           │   │   └── tasks
+│           │   ├── tibcosbinstall
+│           │   │   ├── defaults
+│           │   │   └── tasks
+│           │   ├── topologies
+│           │   │   ├── defaults
+│           │   │   ├── files
+│           │   │   ├── handlers
+│           │   │   ├── tasks
+│           │   │   └── templates
+│           │   └── weaveinstall
+│           │       ├── defaults
+│           │       └── tasks
+│           └── templates
++------------
+
+* Other Support Files
+
+  Ansible configuration file ansible.cfg
+  
+%{snippet|file=${project.basedir}/src/main/playbooks/ansible.cfg}
+
+  Template to dynamically generate ansible inventory files for StreamBase Cluster management:
+
+  cloud_inventory.j2
+  
+%{snippet|file=${project.basedir}/src/main/playbooks/roles/aws_ec2/templates/cloud_inventory.j2}
+
+  Template to dynamically convert StreamBase node configuration to YAML node assignments:
+  
+  nodes_assignment.j2
+
+%{snippet|file=${project.basedir}/src/main/playbooks/templates/nodes_assignment.j2}
+
+  Template to dynamically generate remote /etc/hosts file to access other nodes:
+  
+  hosts.j2
+
+%{snippet|file=${project.basedir}/src/main/playbooks/templates/hosts.j2}

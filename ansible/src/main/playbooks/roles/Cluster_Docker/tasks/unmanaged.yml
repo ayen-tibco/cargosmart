@@ -1,0 +1,42 @@
+# Copyright (c) 2018 TIBCO Software Inc.
+#
+    - name: pull image
+      become: True
+      docker_image: 
+        state: present
+        name: "{{ DOCKER_REGISTRY }}/{{ TIBCO_SB_DOCKER_IMAGE }}"
+
+    - name: start SB container
+      become: True
+      docker_container:
+        docker_api_version: "1.20"
+        docker_url: unix:///var/run/weave/weave.sock
+        name: "{{ item }}"
+        hostname: "{{ item }}.local"
+        image: "{{ DOCKER_REGISTRY }}/{{ TIBCO_SB_DOCKER_IMAGE }}"
+        ports:
+        - "5556:5556"
+        - "5557:5557"
+        - "5558:5558"
+        - "10000:10000"
+        state: started
+        env:
+            NODENAME: "{{ item }}"
+            SUBSTITUTIONS: "{{ SUBSTITUTIONS }}"
+            NODE_CONFIG: "{{ NODE_CONFIG }}"
+            SB_APP_DIR: "{{ SB_APP_DIR }}"
+            SB_APP_FILE: "{{ SB_APP_FILE }}"
+            CLUSTER_NAME: "{{ CLUSTER_NAME }}"
+        volumes: "{{ SB_APP_DIR }}:{{ SB_APP_DIR }}"
+      with_items: "{{ nodes_assignment[inventory_hostname] }}"
+#      when: sb_exist_nodes|int < node_count|int     
+      ignore_errors: false      
+
+    - name: wait and verify sb mgmt port is running
+      command: "docker exec {{ item }} {{ EP_ADMIN_BIN }} servicename={{ item }} display node" 
+      with_items: "{{ nodes_assignment[inventory_hostname] }}"
+      register: task_result
+      until: task_result.rc == 0
+      retries: 5
+      delay: 30
+      ignore_errors: yes

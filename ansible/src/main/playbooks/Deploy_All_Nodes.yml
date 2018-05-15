@@ -1,0 +1,20 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: Deploy_All_Nodes.yml
+- hosts: ${ANSIBLE_HOST_GROUP}
+  remote_user: ${ANSIBLE_REMOTE_USER}
+  become: yes
+  # default plays run as linear - good for debugging 
+  # All hosts will run each task before any host starts the next task, using the number of forks (default 5) to parallelize. Other options include 'serial' and 'free'
+  strategy: linear
+  vars_files:
+  - roles/tibcosbinstall/defaults/main.yml
+  - roles/Cluster_Docker/defaults/main.yml
+
+  environment: "{{ sb_env }}"
+
+  roles: 
+    - tibcosbinstall
+    - { role: ${CLUSTERNAME}, when: DOCKERDEPLOY==false }
+    - { role: Cluster_Docker, when: DOCKERDEPLOY }

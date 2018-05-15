@@ -1,0 +1,9 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+   - name: list installed sb nodes
+     command: "ls -1 {{ NODE_INSTALL_DIR }}"
+     register: sb_nodenames
+   - name: verify node is running 
+     shell: "{{ EP_ADMIN_BIN }} servicename={{ item }} display node | grep -q 'Node State = Started' && echo {{ item }}"
+     with_items: sb_nodenames.stdout_lines
+     register: active_nodes

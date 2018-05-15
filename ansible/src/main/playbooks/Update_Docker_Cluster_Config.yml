@@ -1,0 +1,29 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: Update_Docker_Cluster_Config.yml - update node config on ALL Cluster nodes
+# default Cluster is Cluster1, default node config is roles/Cluster1/files
+# Usage: ansible-playbook -i inventory Update_Docker_Cluster_Config.yml --extra-vars "NODE_CONFIG=newconfigfile"
+- hosts: "${ANSIBLE_HOST_GROUP}"
+  remote_user: ${ANSIBLE_REMOTE_USER}
+  become: True
+  gather_facts: true
+  # default plays run 1 host at a time so partitions can be migrated to replica nodes if necessary linear 
+  # This is necessary for rolling upgrades
+  vars_files:
+  - roles/tibcosbinstall/defaults/main.yml
+  - roles/Cluster_Docker/defaults/main.yml
+  serial: 1
+  environment: "{{ sb_env }}"
+  ignore_errors: true
+
+  tasks:
+    - include: roles/tibcosbinstall/tasks/read_hocon.yml
+      delegate_to: 127.0.0.1
+      run_once: true
+
+    - include: ./roles/Cluster1_Docker/tasks/load_cluster_config.yml docker_name={{ item }}
+      with_items: "{{ nodes_assignment[inventory_hostname] }}"
+
+    - include: ./roles/Cluster1_Docker/tasks/activate_cluster_config.yml docker_name={{ item }}
+      with_items: "{{ nodes_assignment[inventory_hostname] }}"

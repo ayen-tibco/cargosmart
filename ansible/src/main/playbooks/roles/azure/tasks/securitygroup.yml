@@ -1,0 +1,66 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# Azure Security Group Update for Vagrant Azure provision
+# Workaround since Vagrant azure plugin does not allow custom extentions
+# Configured with groupvars found in group_vars/Cluster1
+   - include: install_azure_deps.yml
+
+   - name: Add Custom SB10 network ports to exising security group
+     azure_rm_securitygroup:
+       resource_group: "{{ resource_group }}"
+       name: "{{ inventory_hostname }}{{ sgsuffix }}"
+       purge_rules: no
+       rules:
+           - name: 'LVDWEB-WSS'
+             protocol: Tcp
+             destination_port_range: 10080
+             access: Allow
+             priority: 200
+             direction: Inbound
+           - name: 'SBAdmin'
+             protocol: Tcp
+             destination_port_range: 5556
+             access: Allow
+             priority: 300
+             direction: Inbound
+           - name: 'SBData'
+             protocol: Tcp
+             destination_port_range: 5557
+             access: Allow
+             priority: 400
+             direction: Inbound
+           - name: 'SB'
+             protocol: Tcp
+             destination_port_range: 5558
+             access: Allow
+             priority: 500
+             direction: Inbound
+           - name: 'SBDiscovery'
+             protocol: Udp
+             destination_port_range: 54321
+             access: Allow
+             priority: 600
+             direction: Inbound
+           - name: 'WeaveTCP'
+             protocol: Tcp
+             destination_port_range: 6783-6784
+             access: Allow
+             priority: 700
+             direction: Inbound
+           - name: 'WeaveUDP'
+             protocol: Udp
+             destination_port_range: 6783-6784
+             access: Allow
+             priority: 800
+             direction: Inbound
+       tags:
+            Environment: "{{ resource_group }}"
+            ClusterName: "{{CLUSTER_NAME}}"
+            delete: never
+     delegate_to: 127.0.0.1
+     register: azuresg
+
+   - debug: var=azuresg
+
+

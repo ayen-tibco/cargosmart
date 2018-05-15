@@ -1,0 +1,4 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+    - name: copy node config
+      copy: src=roles/{{ CLUSTER_NAME }}/files/{{ NODE_CONFIG }} dest={{ SB_APP_DIR }} owner={{ SBUSER }} group=sbusers    

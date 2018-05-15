@@ -1,0 +1,55 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# AWS EC2 Destroy Script
+# Remove a VPC/Subnets, Instance Security Group, and existing SB instances
+   - name: Delete instances
+     ec2:
+       key_name: "{{ ssh_key }}"
+       instance_type: "{{ instance_type }}"
+       instance_tags: "{{ tags }}"
+       image: "{{ image_id }}"
+       wait: yes
+       group: "{{ security_group }}"
+       region: "{{ regions }}"
+       exact_count: 0
+       count_tag: 
+          ClusterName: "{{ CLUSTER_NAME }}"
+       monitoring: yes 
+       assign_public_ip: yes
+     register: ec2
+
+   - debug: var=ec2
+
+   - name: delete security group to allow network traffic flow in and out of the instances
+     ec2_group:
+        name: "{{ security_group }}"
+        description: SB {{ CLUSTER_NAME }} Security Group
+        region: "{{ regions }}"
+        state: absent
+     register: ec2_sg
+
+   - debug: var=ec2_sg
+
+   - name: delete current vpc to be used in different availability zones
+     ec2_vpc:
+        state: absent
+        region: "{{ regions }}"
+        internet_gateway: True
+        resource_tags: { "Environment":"Development","ClusterName" : "{{CLUSTER_NAME}}" }
+        cidr_block: 10.101.0.0/16
+        wait: yes
+        wait_timeout: 300
+        subnets:
+          - cidr: 10.101.0.0/24
+            az: us-east-1c
+            resource_tags: { "Environment":"Development", "ClusterName" : "{{CLUSTER_NAME}}" }
+        route_tables:
+          - subnets:
+              - 10.101.0.0/24
+            routes:
+              - dest: 0.0.0.0/0
+                gw: igw
+     register: ec2_vpc
+
+   - debug: var=ec2_vpc

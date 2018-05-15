@@ -1,0 +1,42 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+   - name: call host update
+     include: roles/common/tasks/updatehostfile.yml
+   - name: create sbusers group
+     group: name=sbusers gid=3303 state=present
+   - name: create sbusers group
+     group: name=docker state=present
+     when: DOCKERDEPLOY
+   - name: create sbuser user account
+     user: name=sbuser comment="StreamBase User" uid=3303 group=sbusers
+   - name: add sbuser into docker group
+     user: name=sbuser groups=docker append=yes
+     when: DOCKERDEPLOY
+   - name: set env vars
+     include: set_sbuser_env_file.yml
+
+   - name: create SB install directory
+     file: path={{ TIBCO_EP_HOME }} state=directory recurse=yes owner={{ SBUSER }} group=sbusers
+
+   - name: create SB node install directory
+     file: path={{ NODE_INSTALL_DIR }} state=directory recurse=yes owner={{ SBUSER }} group=sbusers
+
+   - name: get sb product
+     include: get_streambase.yml
+
+   - name: get application
+     include: get_application.yml
+
+   - name: create SB user option directory
+     file: path=/home/{{ SBUSER }}/.dtm state=directory recurse=yes owner={{ SBUSER }} group=sbusers
+
+   - name: copy dtm option file
+     copy: src=roles/{{ CLUSTER_NAME }}/files/sbuser_dtm_options dest=/home/sbuser/.dtm/options owner={{ SBUSER }} group=sbusers
+
+   - name: copy startsb script
+#     copy: src=roles/{{ CLUSTER_NAME }}/files/startsb.sh dest={{ TIBCO_EP_BIN }} owner={{ SBUSER }} group=sbusers mode=u+x,g+x
+     # workaround for ssh timeout escalation priv https://github.com/ansible/ansible/pull/17754
+     synchronize: src=roles/{{ CLUSTER_NAME }}/files/startsb.sh dest={{ TIBCO_EP_BIN }} 
+
+   - name: set script attribues
+     file: path={{ TIBCO_EP_BIN }}/startsb.sh owner=sbuser group=sbusers mode=u+x,g+x

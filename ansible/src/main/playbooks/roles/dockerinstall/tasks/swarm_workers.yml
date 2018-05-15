@@ -1,0 +1,12 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+    - name: determine swarm status
+      shell: >
+        docker info | egrep '^Swarm: ' | cut -d ' ' -f2
+      register: swarm_status
+
+    - name: join worker nodes to cluster
+      shell: >
+        docker swarm join --token={{ hostvars[swarm_manager]['swarm_worker_token']['stdout'] }} {{ swarm_manager_ip }}:2377
+      when: swarm_status.stdout == "inactive"
+        

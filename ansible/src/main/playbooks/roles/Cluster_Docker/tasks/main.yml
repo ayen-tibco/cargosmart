@@ -1,0 +1,49 @@
+# Copyright (c) 2018 TIBCO Software Inc.
+#
+    - name: create docker user dir
+      become: True
+      file: path=~/.docker state=directory
+    - name: copy docker auth file
+      become: True
+      copy: src=files/config.json dest=~/.docker/config.json mode=u+x,g+x
+      with_first_found:
+        - files:
+            - files/config.json
+          skip: true
+    - name: count how many containers are running
+      shell: docker ps -q | wc -l
+      register: shell_result
+
+    - set_fact:
+        sb_exist_nodes: "{{ shell_result.stdout|int }}"
+    - debug: var=sb_exist_nodes
+
+    - set_fact:
+        node_start: "{{ sb_exist_nodes | int }}"
+
+    - name: docker login
+      become: True
+      docker_login:
+        registry: "{{ DOCKER_REGISTRY }}"
+        username: "{{ DOCKER_REGISTRY_USERNAME }}"
+        password: "{{ DOCKER_REGISTRY_PASSWORD }}"
+        email: "{{ DOCKER_REGISTRY_EMAIL }}"
+        reauthorize: yes
+      when: DOCKER_REGISTRY_USERNAME|default(None) != None
+
+    - name: load existing node assignment if undefined
+      include_vars: "{{ playbook_dir }}/roles/{{ CLUSTER_NAME }}/files/nodes_assignment.yml"
+      when: nodes_assignment is not defined
+      delegate_to: 127.0.0.1
+      run_once: true
+
+    - name: deploy container via swarm manager
+      include: swarm.yml
+      when: swarm_manager is defined
+      run_once: true
+
+    - name: deploy individual unmanaged container
+      include: unmanaged.yml
+      when: swarm_manager is undefined
+
+

@@ -1,0 +1,6 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: activate_cluster_config.yml
+   - name: activate node config
+     command: "{{ EP_ADMIN_BIN }} servicename={{ servicename }} activate configuration source={{ TIBCO_EP_HOME }}/{{ NODE_CONFIG }} substitutions={{ SUBSTITUTIONS }}"
+

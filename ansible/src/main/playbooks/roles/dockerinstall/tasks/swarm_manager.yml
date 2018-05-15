@@ -1,0 +1,55 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+    - name: check if docker-compose exists
+      stat:
+        path: /usr/bin/docker-compose
+      register: dockercompose_result
+      tags: swarm
+
+    - name: install docker-compose
+      pip: name=docker-compose state=latest
+#      shell: "curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/bin/docker-compose"
+#      when: dockercompose_result.stat.exists == false and inventory_hostname == swarm_manager 
+      tags: swarm
+
+
+    - name: set swarm manager ip address if undefined
+      set_fact:
+        swarm_manager_ip: "{{ hostvars[swarm_manager]['ansible_default_ipv4']['address']}}"
+      when: swarm_manager_ip|default(None) == None and swarm_manager != "localhost"
+      tags: swarm
+
+    - name: get localhost ip address if swarm manager
+      local_action: shell hostname -i
+      register: swmgr
+      when: swarm_manager_ip|default(None) == None and swarm_manager == "localhost"
+      tags: swarm
+
+    - name: set swarm manager ip address if localhost
+      local_action: set_fact swarm_manager_ip="{{ swmgr.stdout }}"
+      when: swarm_manager_ip|default(None) == None and swarm_manager == "localhost"
+      tags: swarm
+
+    - name: determine swarm status
+      shell: >
+        docker info | egrep '^Swarm: ' | cut -d ' ' -f2
+      register: swarm_status
+      tags: swarm
+  
+    - name: initialize swarm manager
+      shell: docker swarm init --advertise-addr={{ swarm_manager_ip | default('eth0') }}:2377
+      when: inventory_hostname == swarm_manager  and swarm_status.stdout!="active"
+      register: swarm_manager_status
+      tags: swarm
+      
+    - name: retrieve swarm manager token
+      shell: docker swarm join-token -q manager
+      when: inventory_hostname == swarm_manager
+      register: swarm_manager_token
+      tags: swarm
+      
+    - name: retrieve swarm worker token
+      shell: docker swarm join-token -q worker
+      when: inventory_hostname == swarm_manager
+      register: swarm_worker_token
+      tags: swarm

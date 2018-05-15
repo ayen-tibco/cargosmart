@@ -1,0 +1,165 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# Azure Provisioning Script
+# Creates a Resource Group, Instance Security Group, and Launch instances for SB Cluster
+# Configured with groupvars found in group_vars/Cluster1
+   - include: install_azure_deps.yml
+   - include: create_sshkey.yml
+   - name: Create a resource group
+     azure_rm_resourcegroup:
+       name: "{{ resource_group }}"
+       location: "{{ regions }}"
+       state: present
+       tags:
+            Environment: "{{ resource_group }}"
+            ClusterName: "{{CLUSTER_NAME}}" 
+            delete: never
+     ignore_errors: yes
+
+   - name: Create security group that allows SSH
+     azure_rm_securitygroup:
+       resource_group: "{{ resource_group }}"
+       name: "{{ security_group }}"
+       purge_rules: yes
+       rules:
+           - name: 'AllowSSH'
+             protocol: Tcp
+             destination_port_range: 22
+             access: Allow
+             priority: 100
+             direction: Inbound
+           - name: 'LVDWEB-WSS'
+             protocol: Tcp
+             destination_port_range: 10080
+             access: Allow
+             priority: 200
+             direction: Inbound
+           - name: 'SBAdmin'
+             protocol: Tcp
+             destination_port_range: 5556
+             access: Allow
+             priority: 300
+             direction: Inbound
+           - name: 'SBData'
+             protocol: Tcp
+             destination_port_range: 5557
+             access: Allow
+             priority: 400
+             direction: Inbound
+           - name: 'SB'
+             protocol: Tcp
+             destination_port_range: 5558
+             access: Allow
+             priority: 500
+             direction: Inbound
+           - name: 'SBDiscovery'
+             protocol: Udp
+             destination_port_range: 54321
+             access: Allow
+             priority: 600
+             direction: Inbound
+           - name: 'WeaveTCP'
+             protocol: Tcp
+             destination_port_range: 6783-6784
+             access: Allow
+             priority: 700
+             direction: Inbound
+           - name: 'WeaveUDP'
+             protocol: Udp
+             destination_port_range: 6783-6784
+             access: Allow
+             priority: 800
+             direction: Inbound
+       tags:
+            Environment: "{{ resource_group }}"
+            ClusterName: "{{CLUSTER_NAME}}"
+            delete: never
+     tags: azuresg
+
+   - name: Create virtual network
+     azure_rm_virtualnetwork:
+       resource_group: "{{ resource_group }}"
+       name: "{{ resource_group }}_vn"
+       address_prefixes: "10.10.0.0/16"
+       tags:
+            Environment: "{{ resource_group }}"
+            ClusterName: "{{CLUSTER_NAME}}"
+            delete: never
+
+   - name: Add subnet
+     azure_rm_subnet:
+       resource_group: "{{ resource_group }}"
+       name: "{{ resource_group }}_subnet"
+       address_prefix_cidr: "10.10.0.0/24"
+       virtual_network_name: "{{ resource_group }}_vn"
+       security_group_name: "{{ security_group }}"
+
+   - name: create storage account
+     azure_rm_storageaccount:
+       resource_group: "{{ resource_group }}"
+       name: "{{ resource_group }}stgacct"
+       type: Standard_LRS
+       tags:
+         Environment: "{{ resource_group }}"
+         ClusterName: "{{CLUSTER_NAME}}"
+         delete: on-exit
+
+   - name: Create public ip
+     azure_rm_publicipaddress:
+       resource_group: "{{ resource_group }}"
+       allocation_method: Static
+       name: "pip{{item}}"
+     with_sequence: count="{{ instance_count }}" format="{{CLUSTER_NAME}}vm%02x"
+
+   - name: Create NICs
+     azure_rm_networkinterface:
+       resource_group: "{{ resource_group }}"
+       name: "nic{{item}}"
+       virtual_network: "{{ resource_group }}_vn"
+       subnet: "{{ resource_group }}_subnet"
+       public_ip_name: "pip{{item}}"
+       security_group: "{{ security_group }}"
+     with_sequence: count="{{ instance_count }}" format="{{CLUSTER_NAME}}vm%02x"
+     register: azure_nics
+
+   - name: Launch Azure instances
+     azure_rm_virtualmachine:
+       resource_group: "{{ resource_group }}"
+       name: "{{item}}"
+       vm_size: "{{ instance_type }}"
+       storage_account: "{{ resource_group }}stgacct"
+       ssh_password_enabled: false
+       admin_username: "{{ ssh_user }}"
+       virtual_network_name: "{{ resource_group }}_vn"
+       network_interfaces: "nic{{item}}" 
+       public_ip_allocation_method: Static
+       os_type: Linux
+       ssh_public_keys:
+         - path: "/home/{{ ssh_user }}/.ssh/authorized_keys"
+           key_data: "{{ pubkey.stdout }}"
+       image:
+         offer: ${IMAGE_ID}
+         publisher: ${IMAGE_PUBLISHER}
+         sku: ${IMAGE_SKU}
+         version: ${IMAGE_VERSION}
+       tags:
+            Environment: "{{ resource_group }}"
+            ClusterName: "{{CLUSTER_NAME}}"
+     with_sequence: count="{{ instance_count }}" format="{{CLUSTER_NAME}}vm%02x"
+     register: azure_vms
+
+   - debug: var=azure_vms
+
+   - name: Add all instance public IPs to host group
+     add_host: name={{ item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }} groupname={{ CLUSTER_NAME }}
+     with_items: azure_vms.results
+
+   - name: Wait for the instances to boot by checking the ssh port
+     wait_for: host={{ item.ansible_facts.azure_vm.properties.networkProfile.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.properties.ipAddress }} port=22 delay=10 timeout=320 state=started
+     with_items: azure_vms.results
+
+   - name: Create cloud inventory file
+     template: src=cloud_inventory.j2 dest={{ playbook_dir }}/inventory/{{ CLUSTER_NAME }}
+     tags: inventory
+

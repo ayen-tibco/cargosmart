@@ -1,0 +1,23 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: remove_containers.yml - stop and remove all containers in instance
+    - name:  get container names
+      become: True
+      become_user: root
+      shell: docker ps -qa --format '{{ '{{' }}.Names{{ '}}' }}'
+      register: shell_result
+
+    - name: remove ALL SB containers on instance
+      become: True
+      become_user: root
+      docker_container:
+#       docker_api_version: "{{ client_api_version.stdout }}"
+        docker_api_version: "1.20"
+        name: "{{ item }}"
+        image: "{{ TIBCO_SB_DOCKER_IMAGE }}"
+        state: absent
+      with_items: shell_result.stdout_lines
+      when: shell_result.stdout !=''
+
+    - name: do cleanup
+      include: cleanup.yml

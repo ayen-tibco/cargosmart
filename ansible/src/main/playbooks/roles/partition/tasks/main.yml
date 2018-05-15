@@ -1,0 +1,6 @@
+# roles/topologies/tasks/main.yml
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+   - name: deploy sb
+     include: deploy.yml

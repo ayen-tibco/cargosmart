@@ -1,0 +1,7 @@
+ansible_ec2_settings_mine.sh
+my_ec2.ini
+ansible_azure_settings_mine.sh
+*.zip
+*.tgz
+*.mine
+config.properties.mine

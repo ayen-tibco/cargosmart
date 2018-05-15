@@ -1,0 +1,20 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+# 
+    - name: create node array
+      set_fact: nodes=[]
+    - name: update node array
+      set_fact: nodes="{{nodes}} + [ '{{item}}' ]"
+      with_items: "{{configuration['NodeDeploy']['nodes']|sort}}"
+    - name: update number of nodes
+      set_fact:
+        num_nodes: "{{ configuration['NodeDeploy']['nodes']|length }}"
+    - name: update node assignment file
+      template:
+        src:  "roles/{{ CLUSTER_NAME }}/templates/nodes_assignment.j2"
+        dest: "{{playbook_dir}}/roles/{{ CLUSTER_NAME }}/files/nodes_assignment.yml"
+      delegate_to: 127.0.0.1
+      run_once: true
+    - name: load existing node assignment
+      include_vars: "{{ playbook_dir }}/roles/{{ CLUSTER_NAME }}/files/nodes_assignment.yml"
+

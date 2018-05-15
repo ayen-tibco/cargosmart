@@ -1,0 +1,18 @@
+---
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: Deploy_Docker_Nodes.yml
+- hosts: {{ CLUSTER_NAME }}
+  remote_user: centos
+  become: yes
+  # default plays run as linear - good for debugging 
+  # All hosts will run each task before any host starts the next task, using the number of forks (default 5) to parallelize. Other options include 'serial' and 'free'
+  strategy: linear
+  vars_files:
+  - roles/Cluster_Docker/defaults/main.yml    
+  environment: "{{ sb_env }}"
+#  roles: 
+#    - tibcosbinstall
+
+  tasks:
+    - include: roles/Cluster_Docker/tasks/reload_node_containers.yml

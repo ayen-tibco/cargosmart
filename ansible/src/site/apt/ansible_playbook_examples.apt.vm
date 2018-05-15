@@ -1,0 +1,403 @@
+  ------
+  Ansible Playbooks Examples
+  ------
+~~ %{snippet|file=pom.xml}  
+~~ Copyright 2017 TIBCO Software Inc. ALL RIGHTS RESERVED.
+
+Ansible Playbooks Examples
+
+%{toc}
+
+  The following sections provide usage information for manually running StreamBase Ansible Playbooks using
+  {{{https://docs.puppet.com/puppet/latest/man/apply.html}ansible-playbook}} command line tool.
+
+  The goal is to (i) learn how to create and configure StreamBase Application role, (ii) execute StreamBase Application deployment in debug mode, 
+  (iii) configure and deploy StreamBase Application in a cluster of remote nodes.  
+
+  The topologies application archive will be used along with the {{{../../applications/topologies/index.html#a2-node_active-active}two node active}} 
+  configuration.  Two docker containers are used to run the same StreamBase Application.
+       
+* Setting Default Properties
+
+  Profile properties file are used and are located at profiles/<provider>/config.properties.
+  Default profiles/aws/config.properties file is utilized in this pom.xml.
+  
+%{snippet|id=globalprops|file=${project.basedir}/pom.xml}
+
+  In Maven, profile id represents the provider. The Maven <<initialize>> lifecycle is used
+  to load the config.properties for antrun shell scripts. Also filtering are set to use 
+  the profile properties file when copying resource files like Ansible and bash scripts.
+
+  The filtering customizes the StreamBase Ansible playbooks, templates, etc. It also copies
+  your StreamBase Application (topologies), StreamBase Linux Binary, and node configuration
+  to the module's files directory.
+   
+  To customize the profile properties file, do the following:
+
++------------
+cp src/main/resources/profiles/aws/config.properties profile/aws/config_myversion.properties
+vi src/main/resources/profile/aws/config_myversion.properties
+mvn post-integration-test -DCONFIG_PROP_FILE=config_myversion.properties
++------------
+  
+  config.properties
+  
+%{snippet|file=${project.basedir}/src/main/resources/profiles/aws/config.properties}
+
+  The following custom property variables MUST be set prior to running Maven lifecycles.
+
+*------------------------*------------------------------------------*---------------------------------------*
+| <<Variable Name>>      | <<Description>>                          | <<Example Value(s)>>                  |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_TARBALL_URL         |Location to retreive StreamBase Linux     |<https://bucketname.s3.amazonaws.com>  |
+|                        |binary. For Cloud remote deployment, use  | OR                                    |
+|                        |S3 to save bandwidth. Otherwise copy      |<files>                                |
+|                        |the tarball to                            | OR                                    |
+|                        |playbooks/roles/<application>/files.      |</opt/tibco>                           |
+|                        |                                          |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_DOCKER_IMAGE         |Custom StreamBase App and Binary Docker   |                                       |
+|SB_DOCKER_IMAGE_TAG     |image and tag (default latest).           |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY         |Private or public registry.               | <docker.io> (default) |
+|                       |                                           | OR
+|                       |                                           | myprivaterepo.domain.com:5000 |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY_USERNAME|Docker credentials. Can be blank if not   |                                       |
+|DOCKER_REGISTRY_PASSWORD|required by registry                       |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+Required Custom Property Settings
+
+* Customize the Application role
+
+  Copy or rename the topologies role if you like to use a your own StreamBase application.
+  The name of the cluster <<CLUSTER_NAME>> is also taken from the application name by default.
+  Next copy or rename the topologies playbook to your application name.
+  
++------------
+cp src/main/playbooks/roles/topologies src/main/playbooks/roles/myapplication
+cp src/main/playbooks/topologies.yml src/main/playbooks/myapplication.yml
++------------
+  
+* Generate StreamBase Ansible Playbooks
+
+  After setting the properties above, generate the StreamBase Ansible Playbook scripts by
+  using the maven lifecycle <<<compile>>> below.
+  
++------------
+mvn compile -DCONFIG_PROP_FILE=config.properties -Dpuppet.skip.s3upload
++------------
+  
+  Maven target directory target/staging/ansible/aws will be created for Ansible to bootstrap
+  and deploy with the necessary support files. The location of the Ansible playbooks
+  is target/staging/ansible/aws/playbooks.
+
+* SSH Key and Authentication
+
+  Because Ansible utilize ssh for remote provisioning and fact gathering, SSH keys need to be setup
+  properly for remote deployment. By default, the Ansible role <<common>> and tag <<install>> will automatically set
+  in the inventory file the default ssh key ~/.ssh/id_rsa_<SSH_KEY_NAME> to be used to reach your remote hosts.
+  
+  See {{{http://docs.ansible.com/ansible/intro_getting_started.html#your-first-commands}SSH Agent}}
+  configuration with Ansible.  Also make sure {{{http://docs.ansible.com/ansible/intro_getting_started.html#host-key-checking}SSh Host Key Checking}} is disabled
+  in the ansible.cfg file.
+
++------------  
+ssh-add -L
+Could not open a connection to your authentication agent.
+ssh-agent bash
+ssh-add ~/.ssh/id_rsa_ec2_sbtest
++------------
+  
+  Another option is to use the --private-key parameter to point to your SSH private key when invoking a play.
+  
++------------
+ansible-playbook --private-key=~/.ssh/mysshprivatekey -i ./inventory topologies.yml -t "prep,install,deploy,docker"
++------------
+
+** AWS EC2 SSH Key
+  
+  By default, the Ansible playbook ec2_provision.yml provisions the key <ec2_sbtest> if it doesn't already exist on EC2. 
+  
+  Codeline : 
+  
+  %{snippet|file=${project.basedir}/src/main/playbooks/roles/aws_ec2/tasks/create_sshkey.yml}
+  
+* Provison and Deploy StreamBase
+
+  To provision the localhost and deploy StreamBase Docker Image with your Application for the first time:
+
++------------
+cd target/staging/ansible/aws/playbooks
+ansible-playbook -i "localhost" topologies.yml -t "prep,install,deploy,docker"
++------------
+
+  To provision the localhost and deploy StreamBase Application natively for the first time, set the DOCKERDEPLOY variable to false.
+
++------------
+cd target/staging/ansible/aws/playbooks
+ansible-playbook -i "localhost" topologies.yml -t "prep,install,deploy" -e DOCKERDEPLOY=false
++------------
+
+  For existing Cloud resources, deploy remotely using dynamic inventory with verbosity:
+
++------------
+cd target/staging/ansible/aws/playbooks
+ansible-playbook -v --flush-cache -i inventory topologies.yml -t "prep,install,deploy,docker"
++------------
+
+  Codeline :
+  
+  StreamBase Docker Deployment: playbooks/roles/Cluster_Docker/tasks/main.yml
+
+%{snippet|file=${project.basedir}/src/main/playbooks/roles/Cluster_Docker/tasks/main.yml}
+
+  StreamBase Native Deployment: playbooks/roles/topologies/tasks/deploy.yml
+  
+%{snippet|file=${project.basedir}/src/main/playbooks/roles/topologies/tasks/deploy.yml}
+  
+* Stop/Remove StreamBase Application and SB Engine Nodes
+
+  To stop ALL Docker containers and remove SB Engine nodes running in remote resources:
+
++------------
+ansible-playbook -i inventory Remove_All_Nodes.yml
++------------
+
+  To stop a specific node running in remote resources, use the --limit parameter and specify the ip address found
+  in the inventory file playbook/inventory/<application name>.
+
++------------
+ansible-playbook -i inventory ./Remove_All_Nodes.yml --limit 52.87.187.251
++------------
+
+  Codeline :
+  
+%{snippet|file=${project.basedir}/src/main/playbooks/Remove_All_Nodes.yml}
+
+  Result:
+
++------------  
+PLAY [tag_ClusterName_topologies] **********************************************
+
+TASK [setup] *******************************************************************
+ok: [54.174.176.166]
+ok: [54.84.176.75]
+...
+TASK [leave cluster] ***********************************************************
+changed: [54.84.176.75]
+
+TASK [remove SB container on instance] *****************************************
+changed: [54.84.176.75]
+
+TASK [remove weave service] ****************************************************
+changed: [54.84.176.75]
+
+TASK [remove SB container on instance] *****************************************
+changed: [54.174.176.166]
+
+TASK [remove weave service] ****************************************************
+changed: [54.174.176.166]
+
+PLAY RECAP *********************************************************************
+54.174.176.166             : ok=6    changed=2    unreachable=0    failed=0
+54.84.176.75               : ok=6    changed=3    unreachable=0    failed=0
++------------
+  
+* Node and Cluster Configuration Update
+
+  Invoke the following play if you made changes to node/cluster configuration file.
+  The play is executed serially rather in parallel as this is the correct way of updating
+  StreamBase nodes across the same Cluster.
+  
++------------
+ansible-playbook -i inventory ./Update_Cluster_Config.yml
++------------
+
+  Codeline :
+  
+%{snippet|file=${project.basedir}/src/main/playbooks/Update_Cluster_Config.yml}
+
+* StreamBase Application and Runtime Upgrade
+
+  Use the Redeploy_Nodes.yml playbook to redeploy nodes when the Application
+  or Runtime binary has changed.
+
++------------
+ansible-playbook -i inventory ./Redeploy_Nodes.yml
++------------
+
+  Codeline :
+  
+%{snippet|file=${project.basedir}/src/main/playbooks/Redeploy_Nodes.yml}
+
+* Display Nodes, Partitions and Clusters
+
+  Use the Display_All_Nodes.yml playbook to display status of nodes, partitions,
+  and cluster.
+
++------------
+ansible-playbook -i inventory ./Display_All_Nodes.yml
++------------
+  
+  Codeline :
+  
+%{snippet|file=${project.basedir}/src/main/playbooks/Display_All_Nodes.yml}
+
+  Result:
+
++------------  
+TASK [display node in docker] **************************************************
+changed: [54.84.176.75]
+
+TASK [debug] *******************************************************************
+ok: [54.84.176.75] => {
+    "cmd_result.stdout_lines": [
+        "[A1.topologies] Node Name = A1.topologies",
+        "[A1.topologies] Node Description = No description",
+        "[A1.topologies] Node State = Started",
+        "[A1.topologies] Host Name = A1.topologies.local",
+        "[A1.topologies] Administration Port = 5556",
+        "[A1.topologies] Discovery Service = running on port 54321",
+        "[A1.topologies] Container = tibco/sb",
+        "[A1.topologies] Node Directory = /opt/tibco/sb-cep/10/deploy/nodes/A1.topologies",
+        "[A1.topologies] Deployment Directories = /opt/tibco/sb-cep/10/lib:/opt/tibco/topologies",
+        "[A1.topologies] Install Time = 2017-03-02 20:51:18 +0000 UTC",
+        "[A1.topologies] Last Start Time = 2017-03-02 20:51:30 +0000 UTC",
+        "[A1.topologies] Build Type = DEVELOPMENT",
+        "[A1.topologies] Product Version = TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1702011015 streambase-master-linux-327)",
+        "[A1.topologies] Product Installation Directory = /opt/tibco/sb-cep/10",
+        "[A1.topologies] Web Server State = Started",
+        "[A1.topologies] Web Server URLs = http://A1.topologies.local:45456"
+    ]
+}
+...
+TASK [display cluster] *********************************************************
+changed: [54.84.176.75]
+
+TASK [debug] *******************************************************************
+ok: [54.84.176.75] => {
+    "cmd_result.stdout_lines": [
+        "[A1.topologies] Node Name = A2.topologies",
+        "[A1.topologies] Network Address = IPv4:A2.topologies.local:1099",
+        "[A1.topologies] Current State = Up",
+        "[A1.topologies] Last State Change = 2017-03-02 20:51:29",
+        "[A1.topologies] Number of Connections = 1",
+        "[A1.topologies] Number of Queued PDUs = 0",
+        "[A1.topologies] Discovered = Dynamic",
+        "[A1.topologies] Location Code = 15438230776873066114"
+    ]
+}
+...
+TASK [display partition] *******************************************************
+changed: [54.84.176.75]
+
+TASK [debug] *******************************************************************
+ok: [54.84.176.75] => {
+    "cmd_result.stdout_lines": [
+        "[A1.topologies] Partition Name = P2",
+        "[A1.topologies] Partition State = Active",
+        "[A1.topologies] Partition Status = LocalEnabled",
+        "[A1.topologies] Last State Change Time = 2017-03-02 20:51:34",
+        "[A1.topologies] Active Node = A2.topologies",
+        "[A1.topologies] Replica Nodes = A1.topologies:synchronous",
+        "[A1.topologies] Replicate To Existing = false",
+        "[A1.topologies] Object Batch Size = 1000",
+        "[A1.topologies] Number Of Threads = 1",
+        "[A1.topologies] Restore From Node = ",
+        "[A1.topologies] Mapped Types = ",
+        "[A1.topologies] Broadcast Definition Updates = true",
+        "[A1.topologies] Sparse Audit Option = verifynodelist",
+        "[A1.topologies] Replica Audit Option = waitactive",
+        "[A1.topologies] Remote Enable Action = enablepartition",
+        "",
+        "[A1.topologies] Partition Name = P1",
+        "[A1.topologies] Partition State = Active",
+        "[A1.topologies] Partition Status = LocalEnabled",
+        "[A1.topologies] Last State Change Time = 2017-03-02 20:51:34",
+        "[A1.topologies] Active Node = A1.topologies",
+        "[A1.topologies] Replica Nodes = A2.topologies:synchronous",
+        "[A1.topologies] Replicate To Existing = false",
+        "[A1.topologies] Object Batch Size = 1000",
+        "[A1.topologies] Number Of Threads = 1",
+        "[A1.topologies] Restore From Node = ",
+        "[A1.topologies] Mapped Types = ",
+        "[A1.topologies] Broadcast Definition Updates = true",
+        "[A1.topologies] Sparse Audit Option = verifynodelist",
+        "[A1.topologies] Replica Audit Option = waitactive",
+        "[A1.topologies] Remote Enable Action = enablepartition"
+    ]
+}
++------------
+
+* Tasks and Tags
+
+  To start at a specific task, use --start-at-task followed by the task name.
+  
++------------
+ansible-playbook --flush-cache -vvv -i inventory ./topologies.yml --start-at-task="deploy sb"
++------------
+
+  To run only specific tasks, use tags -t.
+
++------------
+ansible-playbook --flush-cache -vvv -i inventory ./topologies.yml -t "deploy" DOCKERDEPLOY=false
++------------
+
+  Tags are assigned to the following roles:
+
++------------  
+       └── playbooks
+           ├── inventory
+           ├── roles
+           │   ├── aws_ec2
+           │   │   ├── defaults
+           │   │   ├── tasks
+           │   │   └── templates
+           │   ├── azure
+           │   │   ├── defaults
+           │   │   ├── tasks
+           │   │   └── templates
+           │   ├── centosinstall (tags: ['prep'])
+           │   │   └── tasks
+           │   ├── Cluster_Docker (tags: ['deploy']) with extra-vars DOCKERDEPLOY=true
+           │   │   ├── defaults
+           │   │   ├── files
+           │   │   └── tasks
+           │   ├── common (tags: ['install', 'docker'])
+           │   │   ├── tasks
+           │   │   └── templates
+           │   ├── dockerinstall (tags: ['docker'])
+           │   │   └── tasks
+           │   ├── tibcosbinstall (tags: ['install'])
+           │   │   ├── defaults
+           │   │   └── tasks
+           │   ├── topologies (tags: ['deploy']) with extra-vars DOCKERDEPLOY=true
+           │   │   ├── defaults
+           │   │   ├── files
+           │   │   ├── handlers
+           │   │   ├── tasks
+           │   │   └── templates
+           │   └── weaveinstall (tags: ['docker'])
+           │       ├── defaults
+           │       └── tasks
+           └── templates
++------------
+
+* Reboot
+  
+  To reboot all the instance so to start fresh again, include the target variable with tag_ClusterName_yourclustername.  
+
++------------  
+ansible-playbook -i inventory Powercycle.yml --extra-vars "target=topologies"
++------------
+
+  Or you can just specify specific instance ip address to reboot.
+  
++------------  
+ansible-playbook -i "hostname" Powercycle.yml --extra-vars "target=topologies"
++------------
+
+  Codeline :
+  
+%{snippet|file=${project.basedir}/src/main/playbooks/Powercycle.yml}

@@ -1,0 +1,41 @@
+- name: add docker deb repo
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable
+    state: present
+
+- name: Add docker gpg key
+  shell: curl -s https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+
+# use only if phython > 2.7.9
+#- name: add docker gpg key
+#  apt_key:
+#    url: "https://download.docker.com/linux/ubuntu/gpg"
+#    state: present
+
+- name: apt update
+  apt: update_cache=yes
+
+- name: linux-image-extra-kernel_version
+  apt: name="linux-image-extra-{{ansible_kernel}}" state=present
+
+- name: linux-image-extra-virtual
+  apt: name=linux-image-extra-virtual state=present
+
+- name: install apt-transport-https
+  apt: name=apt-transport-https state=present
+
+- name: install ca-certificates
+  apt: name=ca-certificates state=present
+
+- name: install curl
+  apt: name=curl state=present
+
+- name: install software-properties-common
+  apt: name=software-properties-common state=present
+
+- name: install python-setuptools
+  apt: name=python-setuptools state=present
+
+- name: install docker CE 
+  apt: name=docker-ce state=present
+

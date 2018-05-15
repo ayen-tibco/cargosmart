@@ -1,0 +1,20 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# file: cleanup.yml - docker images and left over docker containers
+    - name:  remove old containers
+      become: True
+      become_user: root
+      shell: "/usr/bin/docker rm -v $(/usr/bin/docker ps -aqf status=exited)"
+      register: containers_shell_result
+      ignore_errors: true
+
+    - debug: var=containers_shell_result
+
+    - name: remove unassociated images
+      become: True
+      become_user: root
+      shell: "/usr/bin/docker rmi $(/usr/bin/docker images -q --filter 'dangling=true')"
+      register: images_shell_result
+      ignore_errors: true
+
+    - debug: var=images_shell_result

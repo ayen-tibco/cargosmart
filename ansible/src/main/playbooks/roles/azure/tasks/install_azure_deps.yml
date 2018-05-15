@@ -1,0 +1,21 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+   - name: Install python setup tools
+     become: yes
+     yum: name=python-setuptools
+     delegate_to: 127.0.0.1
+
+   - name: Install Pypi
+     become: yes
+     easy_install: name=pip
+     delegate_to: 127.0.0.1
+
+   - name: install azure python sdk
+     become: yes
+     pip: name=azure version=2.0.0rc6 state=present
+     delegate_to: 127.0.0.1
+
+   - name: install pexpect
+     become: yes
+     pip: name=pexpect
+     delegate_to: 127.0.0.1 
