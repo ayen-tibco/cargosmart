@@ -1,0 +1,149 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# This guide is optimized for Vagrant 1.7 and above.
+# Although versions 1.6.x should behave very similarly, it is recommended
+# to upgrade instead of disabling the requirement below.
+Vagrant.require_version ">= 1.7.0"
+cached_addresses = {}
+ANSIBLE_VERBOSE=false || ENV['ANSIBLE_VERBOSE']
+PUPPET_DOMAIN="${PUPPET_DOMAIN}"
+cluster_machine_names=Array.new
+
+unless Vagrant.has_plugin?("AWS")
+  raise 'vagrant-${VAGRANT_PROVIDER} is not installed! Enter [vagrant plugin install vagrant-${VAGRANT_PROVIDER}] to install.'
+end
+
+Vagrant.configure(2) do |config|
+
+    # Vagrant Defaults
+    # Disable the new default behavior introduced in Vagrant 1.7, to
+    # ensure that all Vagrant machines will use the same SSH key pair.
+    # See https://github.com/mitchellh/vagrant/issues/5005
+    config.ssh.insert_key = false
+    config.ssh.username = "${VAGRANT_REMOTE_USER}"
+    config.ssh.private_key_path = './example_box/vagrant_private.key'
+    config.ssh.pty = ('true'==ENV['VAGRANT_SSHPTY_DISABLE'])
+    config.vm.boot_timeout = 600
+    config.vm.network "private_network", type: "dhcp"
+    config.vm.box = "${VAGRANT_PROVIDER}.box"
+    config.vm.box_url = "example_box/${VAGRANT_PROVIDER}.box"    
+    config.vm.synced_folder ".","/vagrant", type: "rsync",
+        rsync__exclude: ["sb","${SB_TARBALL}"],rsync__chown: false
+    # hostmanage plugin to manage /etc/host file for puppet and ep-maven
+    config.hostmanager.enabled = ('true'==ENV['UPDATEHOSTSLOCAL'])
+    config.hostmanager.manage_host = ('true'==ENV['UPDATEHOSTSLOCAL'])
+    config.hostmanager.manage_guest = ('true'==ENV['UPDATEHOSTSREMOTE'])
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = false
+    if ('true'==ENV['UPDATEHOSTSREMOTE'])
+        config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
+            if cached_addresses[vm.name].nil?
+                if hostname = (vm.ssh_info && vm.ssh_info[:host])
+                    vm.communicate.execute("/sbin/ifconfig eth0 | grep 'inet\s' | tail -n 1 | egrep -o '[0-9\.]+' | head -n 1 2>&1") do |type, contents|
+                        cached_addresses[vm.name] = contents.split("\n").first[/(\d+\.\d+\.\d+\.\d+)/, 1]
+                    end
+                end
+            end
+            cached_addresses[vm.name]
+        end
+    elsif ('true'==ENV['UPDATEHOSTSLOCAL'])
+        config.hostmanager.ip_resolver = proc do |vm, resolving_vm|
+            if cached_addresses[vm.name].nil?
+                vm.communicate.execute('curl http://169.254.169.254/latest/meta-data/public-ipv4') do |type, pubip|
+                    cached_addresses[vm.name] = pubip
+                end
+            end
+            cached_addresses[vm.name]
+        end
+    end 
+    # AWS Defaults
+    config.vm.provider :${VAGRANT_PROVIDER} do |${VAGRANT_PROVIDER}|
+        # Supply aws credentials using maven properties and pass via ant ENV params
+        # Or use ENV vars
+        # ${VAGRANT_PROVIDER}.access_key_id = "YOUR KEY"
+        # ${VAGRANT_PROVIDER}.secret_access_key = "YOUR SECRET KEY"
+        # ${VAGRANT_PROVIDER}.session_token = "SESSION TOKEN"
+        ${VAGRANT_PROVIDER}.associate_public_ip = true
+        ${VAGRANT_PROVIDER}.keypair_name = "${SSH_KEY_NAME}"
+        ${VAGRANT_PROVIDER}.ami = "${IMAGE_ID}"
+        ${VAGRANT_PROVIDER}.region = "${REGIONS}"
+# remove AZ to avoid unavailable instance types
+#        ${VAGRANT_PROVIDER}.availability_zone = "${AVAIL_ZONE}"
+        ${VAGRANT_PROVIDER}.security_groups = "${SECURITY_GROUPS}"
+        ${VAGRANT_PROVIDER}.instance_type = "${INSTANCE_TYPE}"
+        ${VAGRANT_PROVIDER}.subnet_id = "${SUBNET_ID}"
+        # workaround to get sudo to work https://github.com/mitchellh/vagrant-aws/issues/340
+        ${VAGRANT_PROVIDER}.user_data = "#!/bin/bash\nsed -i.orig -e 's/^Defaults.*requiretty/# Defaults requiretty/g' /etc/sudoers"
+    end
+
+    N=${INSTANCE_COUNT}
+    (1..N).each do |i|
+        config.vm.define "${NODENAME_PREFIX}#{i}" do |instance|
+            instance.vm.hostname = "${NODENAME_PREFIX}#{i}"
+            cluster_machine_names << "${NODENAME_PREFIX}#{i}"
+            instance.vm.provider :${VAGRANT_PROVIDER} do |${VAGRANT_PROVIDER}|
+                aws.tags = { 'ClusterName' => '${CLUSTERNAME}','Name' => "${NODENAME_PREFIX}#{i}" }
+                aws.block_device_mapping = [{ 'DeviceName' => '/dev/sda1', 'Ebs.DeleteOnTermination' => true }]
+            end
+
+            # puppet shell bootstrap provisioning
+            if i==1 and "${VAGRANT_PROVISIONER}" == "puppet_server"
+                instance.hostmanager.aliases = "${NODENAME_PREFIX}#{i}.#{PUPPET_DOMAIN}"
+                instance.vm.provision "shell", path: "puppet_server.sh"
+            elsif "${VAGRANT_PROVISIONER}" == "puppet_server"
+                instance.hostmanager.aliases = "${NODENAME_PREFIX}#{i}.#{PUPPET_DOMAIN}"
+                instance.vm.provision "shell", path: "puppet_agent.sh"
+            end
+
+            # puppet agent provisioning
+            if "${VAGRANT_PROVISIONER}" == "puppet_server"
+                instance.vm.provision "${VAGRANT_PROVISIONER}" do |${VAGRANT_PROVISIONER}|
+                    ${VAGRANT_PROVISIONER}.puppet_server = "${NODENAME_PREFIX}1.${PUPPET_DOMAIN}".downcase
+                    ${VAGRANT_PROVISIONER}.puppet_node = "${NODENAME_PREFIX}#{i}.${PUPPET_DOMAIN}".downcase
+                    ${VAGRANT_PROVISIONER}.options = ${PUPPET_OPS}
+                end
+            elsif "${VAGRANT_PROVISIONER}" == "puppet"  # puppet apply local - does not support parallelism in loop
+                ${VAGRANT_PROVISIONER}.environment = "${PUPPET_ENV}"
+                ${VAGRANT_PROVISIONER}.environment_path = "puppet/environments"
+                #${VAGRANT_PROVISIONER}.module_path = "puppet/environments/production/modules:/etc/puppetlabs/code/environments/production/modules:/opt/puppetlabs/puppet/modules"
+                ${VAGRANT_PROVISIONER}.options = ${PUPPET_OPS}
+            elsif "${VAGRANT_PROVISIONER}" == "ansible"
+                $shell_script= <<SCRIPT
+                # Install the EPEL repo
+                yum makecache fast
+                rpm -Uvh http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm; true
+                yum clean metadata
+SCRIPT
+                config.vm.provision "shell", inline: $shell_script
+
+                # trick to get playbook run only once with parrallelism
+                if i == N
+                    instance.vm.provision "ansible" do |ansible|
+                        if ANSIBLE_VERBOSE.include? "v" 
+                            ansible.verbose = "#{ANSIBLE_VERBOSE}"
+                        end
+                        # fix for ansible plugin hard coded 30s timeout
+                        ansible.raw_arguments = ["--timeout=120"]
+                        ansible.limit = "all"
+                        ansible.groups = { "${ANSIBLE_HOST_GROUP}" => cluster_machine_names }
+                        if "${ANSIBLE_TAGS}" == "redeploy"
+                            ansible.playbook = "ansible/playbooks/Redeploy_Nodes.yml"
+                        elsif "${ANSIBLE_TAGS}" == "update"
+                            ansible.playbook = "ansible/playbooks/Update_Cluster_Config.yml"
+                        elsif "${ANSIBLE_TAGS}" == "display"
+                            ansible.playbook = "ansible/playbooks/Display_All_Nodes.yml"
+                        elsif "${ANSIBLE_TAGS}" == "remove"
+                            ansible.playbook = "ansible/playbooks/Remove_All_Nodes.yml"
+                        else
+                            # perform the entire deployment or custom tags
+                            ansible.playbook = "${ANSIBLE_PLAYBOOK}"
+                            ansible.tags = "${ANSIBLE_TAGS}"
+                            ansible.extra_vars = ${ANSIBLE_EXTRA_VARS}
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+

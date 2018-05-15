@@ -1,0 +1,489 @@
+  ------
+  Vagrant Openstack Example
+  ------
+~~ %{snippet|file=pom.xml}  
+~~ Copyright 2017 TIBCO Software Inc. ALL RIGHTS RESERVED.
+
+%{toc}
+
+Introduction
+
+  The following sections provides usage information to the Vagrant Openstack example.
+  The {{{https://github.com/ggiamarchi/vagrant-openstack-provider}vagrant-openstack-provider plugin}} is 
+  used as the provider and ansible as the provisioner.
+  
+  The goal is to create Openstack compute instances with Vagrant 
+  and provision the instances with Ansible.  Vagrant utilizes Ansible to remotely
+  deploy docker containers running StreamBase Application.
+
+  The topologies application archive will be used along with the {{{../../applications/topologies/index.html}two node active}} 
+  configuration.  Two VMs are created to host each docker container. ep-maven-plugin is 
+  used to display the status of the node after the container is launched.
+
+  Complete Maven lifecycle will create instances, deploy SB10, run ep-maven test,
+  and remove the instances.
+
++------------
+mvn -Popenstack post-integration-test
++------------
+  
+  Maven target directory target/staging/openstack will be created for Vagrant to bootstrap
+  and deploy with the necessary support files.
+
+* Setting Profile Properties
+
+  Profile properties file are used and are located at src/main/resources/profiles/<provider>/config.properties.
+  In Maven, profile id represents the provider. The Maven <<initialize>> lifecycle is used
+  to load the config.properties for antrun shell scripts. Also filtering are set to use 
+  the profile properties file when copying resource files like Vagrantfile and scripts.
+
+  The filtering customizes the Vagrantfile with Openstack specific settings, hostnames, 
+  number of VMs to be deployed, etc.
+  
+  In addition to these settings, Openstack credentials and settings are required
+  for VMs to be provisioned. Vagrant Openstack plugin allows Openstack credentials to be set via
+  environment variables or inside the Vagrantfile.  For flexibility and convenience,
+  these variables can also be set in the config.properties.
+  
+  To customize the profile properties file, do the following:
+
++------------
+cp src/main/resources/profiles/openstack/config.properties src/main/resources/profile/openstack/config_myversion.properties
+vi src/main/resources/profile/openstack/config_myversion.properties
+mvn -Pvsphere post-integration-test -DCONFIG_PROP_FILE=config_myversion.properties
++------------
+  
+  config.properties
+  
+%{snippet|file=${project.basedir}/src/main/resources/profiles/openstack/config.properties}
+
+  The following custom property variables MUST be set prior to running Maven lifecycles.
+
+*------------------------*------------------------------------------*---------------------------------------*
+| <<Variable Name>>      | <<Description>>                          | <<Example Value(s)>>                  |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_TARBALL_URL          |Location to retreive StreamBase Linux     |</vagrant/app>  |
+|                        |binary. For Cloud remote deployment, use  |                                     |
+|                        |remote Cloud provider storage to save bandwith. Otherwise edit |                  |
+|                        |Vagrantfile to allow rsync for            |                                       |
+|                        |<<SB_TARBALL>>.                          |                                       |
+|                        |                                          |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|OPENSTACK_USERNAME      |Openstack credentials necessary to create Openstack |                                       |
+|OPENSTACK_PASSWORD      |resources.                                |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|OPENSTACK_DOMAIN_NAME   |Required when using keytone v3 API usage  | OPENSTACK_DOMAIN_NAME=default         |
+|OPENSTACK_PROJECT_NAME  |and your Openstack configuration.         | OPENSTACK_PROJECT_NAME=admin          |
+*------------------------*------------------------------------------*---------------------------------------*
+|OPENSTACK_FLAVOR        |Depending on your Openstack configuration,|                                       |
+|OPENSTACK_IMAGE         |these fields are required to be filled in.|                                       |
+|OPENSTACK_KEYPAIR_NAME  |If you follow the ocata prescribed        |                                       |
+|OPENSTACK_SECURITY_GROUPS|self service network configuration,      |                                       |
+|OPENSTACK_NETWORKS      |the default settings should work.         |                                       |
+|OPENSTACK_FLOATING_IP_POOL|                                        |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|SSH_KEY_NAME            |Name of SSH Key on Openstack to use for   |                                       |
+|                        |instances. This coincides to the          |                                       |
+|                        |openstack/example_box/vagrant_private.key |                                       |
+|                        |in the Vagrantfile.                       |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_DOCKER_IMAGE         |Custom StreamBase App and Binary Docker   |                                       |
+|SB_DOCKER_IMAGE_TAG     |image and tag (default latest).           |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY         |Private or public registry.               | <docker.io> (default) |
+|                       |                                           | OR
+|                       |                                           | myprivaterepo.domain.com:5000 |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY_USERNAME|Docker credentials. Can be blank if not   |                                       |
+|DOCKER_REGISTRY_PASSWORD|require by registry                       |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+Required Custom Property Settings for Openstack Deployment
+
+* Summary of Steps for Quick Launch
+
+  [[1]] Install required software on control host. See {{{./index.html}Introduction}} .
+
+  [[2]] Import openstack/example_box/vagrant_private.key to Openstack. Give it the name openstack_sbtest.
+
+  [[3]] Upload StreamBase App Docker Image to Repo (i.e. Private Docker Registry, Docker Hub). See {{{../docker/usage.html}Docker Usage}} .
+
+  [[4]] Set required custom property variables in profiles/openstack/config.properties.
+
+  [[5]] Execute Maven lifecycle to provision and deploy
+
++------------
+mvn -Popenstack post-integration-test
++------------
+* Openstack Version Architecture
+
+  StreamBase 10 has been tested and verified with {{{https://docs.openstack.org/ocata/install-guide-ubuntu/index.html} Openstack Ocata}}
+  installation on a baremetal server. The network architecture {{{https://docs.openstack.org/ocata/install-guide-ubuntu/overview.html#networking}Networking Option 2: Self-service networks}}
+  was choosen along to demonstrate the network flexibility in StreamBase 10 deployment.
+  
+* Openstack with Docker
+
+  Openstack Nova Compute VM works with Docker and in this example is set by default
+  to deploy SB10 application via Docker.  The ansible playbook that is executed 
+  prepares the VM for docker engine execution.  As described in the {{{../docker/machine_swarm_example.html}Docker swarm example}}, 
+  Weave is used to connect the docker containers together. The only network
+  configuration required is {{{https://www.weave.works/documentation/net-latest-faq}Weave network ports}} be opened across all Nova Compute VMs.
+  
+[uml/docker-openstack.svg] Openstack and SB10 Docker Deployment Architecture 
+
+* Openstack Overlay Network Considerations
+
+  When deploying StreamBase 10 natively using auto network discovery, keep in mind that
+  MTU less than 1500 will fragment udp packets and thus renders StreamBase auto discovery inoperable.
+  See https://docs.openstack.org/ocata/networking-guide/config-mtu.html for Openstack MTU
+  network considerations. When using {{{https://docs.openstack.org/ocata/networking-guide/deploy-lb-selfservice.html}self-service network method}} in configuring
+  Neutron, VXLAN will add 50 bytes overhead thus making the compute  
+  interface to have MTU size of 1450. SB 10 auto discovery packets will be fragmented unless 
+  the physical and virtual network MTU is set to greater than 1550.
+  Another workaround is to use static discovery in SB10 node configuration.
+  
+[uml/native-openstack.svg] Openstack and SB10 Native Deployment Architecture 
+
+  To set the Physical Nova Compute Interfaces to MTU greater than 1500, verify
+  with your network admin that the physical network (Layer 2) can accomodate MTU greater than
+  1500. In this example, we adjust the neutron and the ml2 config files to accommodate VXLAN
+  50 bytes overhead by setting mtu size 1550. Neutron server and Linux bridge agent services
+  will require a restart afterwards. Next, manually adjust MTU on the physical and virtual interfaces,
+  set the physical Nova host computer to MTU 9000 (Jumbo frame support).
+  Then working backwards, set/verify the VXLAN and the bridge interfaces is configured appropriately.
+
+  /etc/neutron/neutron.conf
+
++------------
+# provider network
+global_physnet_mtu = 1550
++------------
+
+ /etc/neutron/plugins/ml2/ml2_conf.ini
+
++------------
+path_mtu = 1550
+systemctl restart neutron-server.service neutron-linuxbridge-agent.service
++------------
+
+  Network interface configuration on Nova Compute Host
+
++------------
+# ip link set eth0 mtu 9000
+# ip link show eth0
+3: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9000 qdisc mq master brq7b60e99a-e5 state UP mode DEFAULT group default qlen 1000
+    link/ether e8:39:35:1f:8b:7f brd ff:ff:ff:ff:ff:ff
+# ip link show vxlan-77
+17: vxlan-77: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 8950 qdisc noqueue master brq319c8c92-8d state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether 96:2b:5b:89:55:36 brd ff:ff:ff:ff:ff:ff
+# openstack router list
+ +--------------------------------------+---------+--------+-------+-------------+-------+----------------------------------+
+ | ID                                   | Name    | Status | State | Distributed | HA    | Project                          |
+ +--------------------------------------+---------+--------+-------+-------------+-------+----------------------------------+
+ | 25611714-06e3-476e-b694-20fe4d4cb74b | router1 | ACTIVE | UP    | False       | False | 0f5db8b5039b4f2e8db8d777010e9a5c |
+ +--------------------------------------+---------+--------+-------+-------------+-------+----------------------------------+
+# ip netns exec qrouter-25611714-06e3-476e-b694-20fe4d4cb74b ip addr list
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+3: qg-998f5b63-a1@if12: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1550 qdisc noqueue state UP group default qlen 1000   <---- provider network
+    link/ether fa:16:3e:be:4f:c8 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 10.181.5.203/24 brd 10.181.5.255 scope global qg-998f5b63-a1
+       valid_lft forever preferred_lft forever
+    inet 10.181.5.205/32 brd 10.181.5.205 scope global qg-998f5b63-a1
+       valid_lft forever preferred_lft forever
+    inet 10.181.5.201/32 brd 10.181.5.201 scope global qg-998f5b63-a1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f816:3eff:febe:4fc8/64 scope link
+       valid_lft forever preferred_lft forever
+4: qr-2811fc5d-88@if19: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000   <---- self service network where instances reside
+    link/ether fa:16:3e:af:7c:31 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 192.168.100.1/24 brd 192.168.100.255 scope global qr-2811fc5d-88
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f816:3eff:feaf:7c31/64 scope link
+       valid_lft forever preferred_lft forever
+# brctl show
+bridge name     bridge id               STP enabled     interfaces
+brq319c8c92-8d          8000.42f6b33a2df3       no      tap1a88698b-ea
+                                                        tap2811fc5d-88
+                                                        tap5713ee6c-74
+                                                        tap78823246-25
+                                                        vxlan-77
+brq7b60e99a-e5          8000.b24134397fb0       no      eth0
+                                                        tap998f5b63-a1
++------------
+
+ Virtual Compute Instance eth0 interface
+
++------------
+# ip link set eth0 mtu 1500
+# ip link show eth0
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT qlen 1000
+    link/ether fa:16:3e:3f:b5:34 brd ff:ff:ff:ff:ff:ff
++------------ 
+
+* Create and provision VMs
+
+  The <<compile>> goal copies the Openstack custom Vagrantfile and supporting script files. 
+  It then installs the vagrant-openstack-provider and hostmanager plugins fron the internet.
+  The hostmanager plugin is needed to update /etc/hosts file locally and remotely with
+  the name of the instances.  This allows the local Vagrant host to access the remote VMs
+  by name.
+  
+  <<<vagrant up>>> is called with basic shell provisioning like setting linux repo.
+  
++------------  
+$ mvn -Popenstack compile
+...
+17:15:21 [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-provisioner-scripts) @ vagrant ---
+17:15:21 [INFO] Using 'UTF-8' encoding to copy filtered resources.
+17:15:21 [INFO] Copying 93 resources
+17:15:21 [INFO] 
+17:15:21 [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-cloud-inventory-script) @ vagrant ---
+17:15:21 [INFO] Using 'UTF-8' encoding to copy filtered resources.
+17:15:21 [INFO] skip non existing resourceDirectory /cloud/vagrant/./src/main/openstack
+17:15:22 [INFO] 
+17:15:22 [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-nodeconfig) @ vagrant ---
+17:15:22 [INFO] Using 'UTF-8' encoding to copy filtered resources.
+17:15:22 [INFO] Copying 1 resource
+17:15:22 [INFO] 
+17:15:22 [INFO] --- maven-dependency-plugin:3.0.0:copy (copy-sb-app) @ vagrant ---
+17:15:22 [INFO] Configured Artifact: com.tibco.ep.dtmexamples.applications:topologies:3.1.0-SNAPSHOT:ep-application
+17:15:22 [INFO] Configured Artifact: com.tibco.ep.sb.rt:platform_linuxx86_64:?:zip
+17:15:22 [INFO] Copying topologies-3.1.0-SNAPSHOT.zip to /cloud/vagrant/target/staging/openstack/app/topologies-3.2.0-SNAPSHOT.zip
+17:15:22 [INFO] Copying platform_linuxx86_64-10.2.0-SNAPSHOT.zip to /cloud/vagrant/target/staging/openstack/app/platform_linuxx86_64.zip
+17:15:22 [INFO] 
+17:15:22 [INFO] --- maven-antrun-plugin:1.8:run (install-hostmanager-plugin) @ vagrant ---
+17:15:22 [INFO] Executing tasks
+17:15:22 
+17:15:22 install_hostmanager_plugin:
+17:15:25      [exec]  WARN environment: No local data path is set. Local data cannot be stored.
+17:15:25      [exec] Installing the 'vagrant-hostmanager' plugin. This can take a few minutes...
+17:15:39      [exec] Installed the plugin 'vagrant-hostmanager (1.8.5)'!
+17:15:39 [INFO] Executed tasks
+17:15:39 [INFO] 
+17:15:39 [INFO] --- maven-antrun-plugin:1.8:run (install-openstack-plugin) @ vagrant ---
+17:15:39 [INFO] Executing tasks
+17:15:39 
+17:15:39 install_openstack_plugin:
+17:15:43      [exec]  WARN environment: No local data path is set. Local data cannot be stored.
+17:15:43      [exec] Installing the 'vagrant-openstack-provider' plugin. This can take a few minutes...
+17:15:52      [exec] Installed the plugin 'vagrant-openstack-provider (0.10.0)'!
+17:15:52 [INFO] --- maven-antrun-plugin:1.8:run (create-openstack-vms) @ vagrant ---
+17:15:52 [INFO] Executing tasks
+17:15:52 
+17:15:52 create_openstack_vms:
+17:15:59      [exec] ERROR loader: Unknown config sources: ["22908740_machine_A2-1", :"33089520_openstack.box_openstack"]
+17:15:59      [exec] ERROR loader: Unknown config sources: ["22908740_machine_A2-1", :"33089520_openstack.box_openstack"]
+17:15:59      [exec] ERROR loader: Unknown config sources: ["22908740_machine_A2-1"]
+17:15:59      [exec] ERROR loader: Unknown config sources: [:"33089520_openstack.box_openstack", "22908740_machine_A2-2"]
+17:15:59      [exec] ERROR loader: Unknown config sources: ["22908740_machine_A2-1", :"33089520_openstack.box_openstack"]
+17:16:00      [exec] Bringing machine 'A2-1' up with 'openstack' provider...
+17:16:00      [exec] Bringing machine 'A2-2' up with 'openstack' provider...
+17:16:00      [exec] ==> A2-1: Finding flavor for server...
+17:16:01      [exec] ==> A2-1: Finding image for server...
+17:16:01      [exec] ==> A2-1: Finding network(s) for server...
+17:16:01      [exec] ==> A2-1: Launching a server with the following settings...
+17:16:01      [exec] ==> A2-1:  -- Tenant          : 
+17:16:01      [exec] ==> A2-1:  -- Name            : A2-1
+17:16:01      [exec] ==> A2-1:  -- Flavor          : 4vCPU8GB
+17:16:01      [exec] ==> A2-1:  -- FlavorRef       : e280f8bb-9494-4438-b000-c433a111cea2
+17:16:01      [exec] ==> A2-1:  -- Image           : centos7_3
+17:16:01      [exec] ==> A2-1:  -- ImageRef        : 906de9c1-06e3-4a6a-bba8-b9b43325a442
+17:16:01      [exec] ==> A2-1:  -- KeyPair         : sb_test
+17:16:01      [exec] ==> A2-1:  -- Network         : 319c8c92-8d41-4432-8034-fbb1a2a29cb0
+17:16:02      [exec] ==> A2-1: Waiting for the server to be built...
+17:16:33      [exec] ==> A2-1: Using floating IP 10.181.5.205
+17:16:35      [exec] ==> A2-1: Waiting for machine to boot. This may take a few minutes...
+17:16:36      [exec]     A2-1: SSH address: 10.181.5.205:22
+17:16:36      [exec]     A2-1: SSH username: centos
+17:16:36      [exec]     A2-1: SSH auth method: private key
+17:18:13      [exec]     A2-1: Warning: Host unreachable. Retrying...
+17:18:18      [exec]     A2-1: Warning: Connection refused. Retrying...
+17:18:19      [exec]     A2-1: Warning: Authentication failure. Retrying...
+17:18:29      [exec]     A2-1: Warning: Authentication failure. Retrying...
+17:18:35      [exec] ==> A2-1: Machine booted and ready!
+17:18:38      [exec] ==> A2-1: Rsyncing folder: /cloud/vagrant/target/staging/openstack/app/ => /opt/tibco/topologies
+17:18:38      [exec] ==> A2-1:   - Exclude: [".vagrant/", "sb"]
+17:18:42      [exec] ==> A2-1: Rsyncing folder: /cloud/vagrant/target/staging/openstack/ => /vagrant
+17:18:54      [exec] ==> A2-1: Running provisioner: shell...
+17:18:55      [exec]     A2-1: Running: inline script
+17:19:07      [exec] ==> A2-1: Loaded plugins: fastestmirror
+17:19:07      [exec] ==> A2-1: 
+17:19:07      [exec] base                                                     | 3.6 kB     00:00     ==> A2-1: 
+17:19:07      [exec] extras                                                   | 3.4 kB     00:00     ==> A2-1: 
+17:19:07      [exec] updates
+...
++------------
+  
+* Custom Provision and Run Containers
+
+  The antrun target <provision-sb-openstack> executes <<<vagrant provision>>> script calling either Ansible by default or Puppet.
+  This assume previous compile lifecycle has been executed.
+
++------------
+$ mvn -Popenstack antrun:run@provision-sb-openstack -DUPDATEHOSTSREMOTE=true
+...
+17:22:16 [INFO] --- maven-antrun-plugin:1.8:run (provision-sb-openstack) @ vagrant ---
+17:22:16 [INFO] Executing tasks
+17:22:16 
+17:22:16 provision_sb_openstack:
+17:22:22      [exec] ERROR loader: Unknown config sources: ["19994860_machine_A2-1", :"19600440_openstack.box_openstack"]
+17:22:22      [exec] ERROR loader: Unknown config sources: ["19994860_machine_A2-1"]
+17:22:26      [exec] ==> A2-1: Rsyncing folder: /cloud/vagrant/target/staging/openstack/app/ => /opt/tibco/topologies
+17:22:26      [exec] ==> A2-1:   - Exclude: [".vagrant/", "sb"]
+17:22:27      [exec] ==> A2-1: Rsyncing folder: /cloud/vagrant/target/staging/openstack/ => /vagrant
+17:22:31      [exec] ==> A2-2: Rsyncing folder: /cloud/vagrant/target/staging/openstack/app/ => /opt/tibco/topologies
+17:22:31      [exec] ==> A2-2:   - Exclude: [".vagrant/", "sb"]
+17:22:33      [exec] ==> A2-2: Rsyncing folder: /cloud/vagrant/target/staging/openstack/ => /vagrant
+17:22:33      [exec] ==> A2-2: Running provisioner: ansible...
+17:22:34      [exec]     A2-2: Running ansible-playbook...
+17:22:35      [exec] 
+17:22:35      [exec] PLAY [topologies] **************************************************************
+17:22:35      [exec] 
+17:22:35      [exec] TASK [setup] *******************************************************************
+17:22:36      [exec] ok: [A2-1]
+17:22:36      [exec] ok: [A2-2]
+17:22:36      [exec] 
+17:22:36      [exec] TASK [common : Install python setup tools] *************************************
+17:22:37      [exec] ok: [A2-1 -> 127.0.0.1]
+17:22:37      [exec] 
+17:22:37      [exec] TASK [common : Install Pypi] ***************************************************
+17:22:39      [exec] ok: [A2-1 -> 127.0.0.1]
+17:22:39      [exec] 
+17:22:39      [exec] TASK [common : install pyhocon] ************************************************
+17:22:40      [exec] ok: [A2-1 -> 127.0.0.1]
+17:22:40      [exec] 
+17:22:40      [exec] TASK [common : convert node config file] ***************************************
+17:22:41      [exec] changed: [A2-1 -> 127.0.0.1]
+17:22:41      [exec] 
+17:22:41      [exec] TASK [common : load hocon vars] ************************************************
+17:22:41      [exec] ok: [A2-1 -> 127.0.0.1]
+17:22:41      [exec] 
+17:22:41      [exec] TASK [common : create node array] **********************************************
+17:22:41      [exec] ok: [A2-1 -> 127.0.0.1]
+17:22:41      [exec] [DEPRECATION WARNING]: Using bare variables is deprecated. Update your 
+17:22:41      [exec] playbooks so that the environment value uses the full variable syntax 
+17:22:41      [exec] ('{{configuration['NodeDeploy']['nodes']|sort}}').
+17:22:41      [exec] This feature will be removed
+17:22:41      [exec]  in a future release. Deprecation warnings can be disabled by setting 
+17:22:41      [exec] deprecation_warnings=False in ansible.cfg.
+17:22:41      [exec] 
+17:22:41      [exec] TASK [common : update node array] **********************************************
+17:22:41      [exec] ok: [A2-1 -> 127.0.0.1] => (item=A1.topologies)
+17:22:41      [exec] ok: [A2-1 -> 127.0.0.1] => (item=A2.topologies)
+17:22:41      [exec] 
+...
+17:35:09      [exec] FAILED - RETRYING: TASK: Cluster_Docker : wait and verify sb mgmt port is running (1 retries left).
+17:35:09      [exec] FAILED - RETRYING: TASK: Cluster_Docker : wait and verify sb mgmt port is running (1 retries left).
+17:35:39      [exec] failed: [A2-2] (item=A2.topologies) => {"changed": true, "cmd": ["docker", "exec", "A2.topologies", "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin", "servicename=A2.topologies", "display", "node"], "delta": "0:00:00.107814", "end": "2017-04-13 21:35:39.947503", "failed": true, "item": "A2.topologies", "rc": 126, "start": "2017-04-13 21:35:39.839689", "stderr": "", "stdout": "rpc error: code = 2 desc = oci runtime error: exec failed: container_linux.go:247: starting container process caused \"exec: \\\"/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin\\\": stat /opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin: no such file or directory\"", "stdout_lines": ["rpc error: code = 2 desc = oci runtime error: exec failed: container_linux.go:247: starting container process caused \"exec: \\\"/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin\\\": stat /opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin: no such file or directory\""], "warnings": []}
+17:35:39      [exec] ...ignoring
+17:35:39      [exec] failed: [A2-1] (item=A1.topologies) => {"changed": true, "cmd": ["docker", "exec", "A1.topologies", "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin", "servicename=A1.topologies", "display", "node"], "delta": "0:00:00.104382", "end": "2017-04-13 21:35:39.952705", "failed": true, "item": "A1.topologies", "rc": 126, "start": "2017-04-13 21:35:39.848323", "stderr": "", "stdout": "rpc error: code = 2 desc = oci runtime error: exec failed: container_linux.go:247: starting container process caused \"exec: \\\"/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin\\\": stat /opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin: no such file or directory\"", "stdout_lines": ["rpc error: code = 2 desc = oci runtime error: exec failed: container_linux.go:247: starting container process caused \"exec: \\\"/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin\\\": stat /opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin: no such file or directory\""], "warnings": []}
+17:35:39      [exec] ...ignoring
+17:35:40      [exec] 
+17:35:40      [exec] TASK [topologies : count how many sb nodes already exists] *********************
+17:35:40      [exec] skipping: [A2-1]
+17:35:40      [exec] skipping: [A2-2]
+17:35:40      [exec] 
+17:35:40      [exec] TASK [topologies : set_fact] ***************************************************
+17:35:40      [exec] skipping: [A2-1]
+17:35:40      [exec] skipping: [A2-2]
+17:35:40      [exec] 
+17:35:40      [exec] TASK [topologies : set_fact] ***************************************************
+17:35:40      [exec] skipping: [A2-1]
+17:35:40      [exec] skipping: [A2-2]
+17:35:40      [exec] 
+17:35:40      [exec] TASK [topologies : debug] ******************************************************
+17:35:40      [exec] skipping: [A2-1]
+17:35:40      [exec] skipping: [A2-2]
+17:35:40      [exec] 
+17:35:40      [exec] TASK [topologies : do not set default admin port if multi-node deployment is enabled] ***
+17:35:40      [exec] skipping: [A2-1]
+17:35:40      [exec] skipping: [A2-2]
+17:35:40      [exec] 
+17:35:40      [exec] TASK [topologies : set nodename suffix and index] ******************************
+17:35:40      [exec] skipping: [A2-1]
+17:35:40      [exec] skipping: [A2-2]
+17:35:40      [exec] 
+17:35:40      [exec] TASK [topologies : install/start sb node and then launch application] **********
+17:35:40      [exec] skipping: [A2-1] => (item=A1.topologies) 
+17:35:40      [exec] skipping: [A2-2] => (item=A2.topologies) 
+17:35:40      [exec] 
+17:35:40      [exec] TASK [topologies : collect port numbers] ***************************************
+17:35:40      [exec] skipping: [A2-1] => (item=A1.topologies) 
+17:35:40      [exec] skipping: [A2-2] => (item=A2.topologies) 
+17:35:40      [exec] 
+17:35:40      [exec] TASK [topologies : debug] ******************************************************
+17:35:40      [exec] skipping: [A2-1]
+17:35:40      [exec] skipping: [A2-2]
+17:35:40      [exec] 
+17:35:40      [exec] TASK [topologies : wait and verify sb mgmt port is running] ********************
+17:35:40      [exec] skipping: [A2-1] => (item={'skipped': True, '_ansible_no_log': False, 'skip_reason': u'Conditional check failed', '_ansible_item_result': True, 'item': u'A1.topologies', 'changed': False}) 
+17:35:40      [exec] skipping: [A2-2] => (item={'skipped': True, '_ansible_no_log': False, 'skip_reason': u'Conditional check failed', '_ansible_item_result': True, 'item': u'A2.topologies', 'changed': False}) 
+17:35:40      [exec] 
+17:35:40      [exec] PLAY RECAP *********************************************************************
+17:35:40      [exec] A2-1                       : ok=74   changed=47   unreachable=0    failed=0   
+17:35:40      [exec] A2-2                       : ok=63   changed=45   unreachable=0    failed=0   
+17:35:40      [exec] 
+17:35:41 [INFO] Executed tasks
+...
++------------
+    
+* Stop and Remove Containers
+
+  Invoking maven lifecycle <<clean>> will run <<<vagrant destroy>>> script to remove the VMs.
+
++------------  
+mvn -Popenstack -fn initialize clean
++------------
+  
+  OR
+  
++------------  
+mvn -Popenstack antrun:run@destroy-openstack-vms -DVAGRANT_PROVIDER=openstack
+17:37:02 [INFO] --- maven-antrun-plugin:1.8:run (destroy-openstack-vms) @ vagrant ---
+17:37:02 [INFO] Executing tasks
+17:37:02 
+17:37:02 destroy_openstack_vms:
+17:37:02      [exec] ++ vagrant global-status --prune
+17:37:02      [exec] ++ grep openstack
+17:37:02      [exec] ++ awk '{ print $1 }'
+...
+17:37:05      [exec] + '[' true == true ']'
+17:37:05      [exec] + '[' -f .vagrant/hostmanager/id ']'
+17:37:05      [exec] ++ cat .vagrant/hostmanager/id
+17:37:05      [exec] + vid=7ca1b7b3-16e9-4fce-9255-f7e25a9dde48
+17:37:05      [exec] + grep -q 7ca1b7b3-16e9-4fce-9255-f7e25a9dde48 /etc/hosts
+17:37:05      [exec] + vagrant hostmanager
+17:37:12      [exec] ERROR loader: Unknown config sources: ["30478220_machine_A2-1", :"46500480_openstack.box_openstack"]
+17:37:12      [exec] ERROR loader: Unknown config sources: ["30478220_machine_A2-1"]
+17:37:14      [exec] Updating /etc/hosts file on host machine (password may be required)...
++------------
+  
+* Tests
+  
+  ep-maven-plugin is invoked with 'display node' on the first node running inside
+  container A1.topologies.
+
++------------  
+mvn -Popenstack initialize ep:administer-nodes@display-nodes
+17:36:42 [INFO] [5556] Running "display node"
+17:36:42 [INFO] Node        Node Name     Node Description Node State Host Name           Administration Port Discovery Service     Container Node Directory                        Deployment Directories                                                        Install Time                  Last Start Time               Build Type  Product Version                                                                         Product Installation Directory Web Server State Web Server URLs                  
+17:36:42 [INFO] [A2-1:5556] A1.topologies No description   Started    A1.topologies.local 5556                running on port 54321 tibco/sb  /opt/tibco/deploy/nodes/A1.topologies /opt/tibco/sb-cep/10/lib:/opt/tibco/topologies:/opt/tibco/topologies/java-bin 2017-04-13 21:33:15 +0000 UTC 2017-04-13 21:33:26 +0000 UTC DEVELOPMENT TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1701101138 streambase-master-linux-264) /opt/tibco/sb-cep/10/dtm       Started          http://A1.topologies.local:44464 
+17:36:42 [INFO] [5556] Finished "display node"
+17:36:43 [JENKINS] Archiving disabled
+17:36:43 Started calculate disk usage of build
+17:36:43 Finished Calculation of disk usage of build in 0 seconds
+17:36:43 Started calculate disk usage of workspace
+17:36:43 Finished Calculation of disk usage of workspace in 0 seconds
+17:36:43 [JENKINS] Archiving disabled
+17:36:43 [INFO] ------------------------------------------------------------------------
+17:36:43 [INFO] BUILD SUCCESS
+17:36:43 [INFO] ------------------------------------------------------------------------
++------------
+  
+  Codeline :
+  
+%{snippet|id=eptest|file=${project.basedir}/pom.xml}

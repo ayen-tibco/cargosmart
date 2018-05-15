@@ -1,0 +1,406 @@
+  ------
+  Docker Machine and Swarm Example
+  ------
+~~ %{snippet|file=pom.xml}  
+~~ Copyright 2017 TIBCO Software Inc. ALL RIGHTS RESERVED.
+
+%{toc}
+
+Introduction
+
+  The following sections provides usage information to the Maven Docker Profile
+  example docker-machine. The legacy swarm (swarm master/worker agents) feature in docker-machine
+  will be used for remote deployment. 
+  
+  New docker swarm mode will be supported when weave overlay network plugin {{{https://github.com/weaveworks/weave/pull/2727}bug}} is fixed. 
+  Also currently docker swarm overlay network does not support StreamBase 10 {{{(https://github.com/docker/libnetwork/issues/552}auto discovery}}.
+  
+  Docker-machine and legacy swarm information can be found here  
+  {{https://docs.docker.com/machine/overview/}} and {{https://docs.docker.com/swarm/provision-with-machine/}}.
+  
+  The overall goal is to provision docker host compute instances/VMs
+  and deploy docker containers running StreamBase Application remotely in a cluster using 
+  docker-machine and docker-compose.
+  
+  Vmware vsphere driver 'vmwaresphere' will be used by docker-machine to create
+  VMs. See the driver options documentation here {{https://docs.docker.com/machine/drivers/vsphere/}}.
+  The VSPHERE_ credentials and options are listed in the profile properties in the pom.xml.
+  A complete list of drivers is available here {{https://docs.docker.com/machine/drivers/}}.
+  
+  Since weave is used as the overlay network to allow StreamBase Cluster to auto discover other nodes,
+  the script update_swarm_weave.sh is executed after the docker swarm agents are started on the new VMs.
+  The script updates the swarm agents to use weave as the bridge network versus docker's native bridge driver.
+
+[uml/docker-weave-swarm.svg] Docker Swarm Cluster with Weave Diagram
+  
+  The topologies application archive will be used along with the {{{../../applications/topologies/index.html}two node active}}
+  cluster configuration file. A custom docker compose file is used for swarm deployment.  
+  ep-maven-plugin is used to display the status of the node
+  after the container is launched.
+  
+  The docker-machine profile assumes the docker image is already built 
+  and pushed out to a remote accessible registry. See docker docker maven-plugin {{{usage.html}Usage Example}}.
+  
+  Complete Maven lifecycle:
+
++------------   
+ mvn -Pmachine post-integration-test
++------------ 
+  
+  To use private insecure docker registry in swarm docker hosts:
+
++------------   
+mvn -Pmachine integration-test \
+ -DDOCKER_INSECURE_REGISTRY='--engine-insecure-registry myprivaterepo.domain.com:5000' \
+ -DSB_REMOTE_DOCKER_IMAGE=myprivaterepo.domain.com:5000/remote/dockerimage
++------------ 
+
+* Setting Profile Properties  
+
+%{snippet|id=machineprops|file=${project.basedir}/pom.xml}
+
+* Create Docker Host VMs
+
+  To create only the Docker Host VMs:
+
++------------   
+mvn -Pmachine compile antrun:run@machine-create-swarm antrun:run@update-swarm-weave \
+  -DDOCKER_INSECURE_REGISTRY='--engine-insecure-registry myprivaterepo.domain.com:5000'
++------------ 
+
+  Results:
+
++------------ 
+[INFO] --- maven-antrun-plugin:1.8:run (machine-create-swarm) @ docker ---
+[INFO] Executing tasks
+machine-create-swarm:
+     [exec] Running pre-create checks...
+     [exec] Creating machine...
+     [exec] (dockerkvstore) Copying .docker/machine/cache/boot2docker.iso to    .docker/machine/machines/dockerkvstore/boot2docker.iso...
+     [exec] (dockerkvstore) Generating SSH Keypair...
+     [exec] (dockerkvstore) Creating VM...
+     [exec] (dockerkvstore) Uploading Boot2docker ISO ...
+     [exec] (dockerkvstore) Reconfiguring VM...
+     [exec] (dockerkvstore) Waiting for VMware Tools to come online...
+     [exec] (dockerkvstore) Provisioning certs and ssh keys...
+     [exec] Waiting for machine to be running, this may take a few minutes...
+     [exec] Detecting operating system of created instance...
+     [exec] Waiting for SSH to be available...
+     [exec] Detecting the provisioner...
+     [exec] Provisioning with boot2docker...
+     [exec] Copying certs to the local machine directory...
+     [exec] Copying certs to the remote machine...
+     [exec] Setting Docker configuration on the remote daemon...
+     [exec] Checking connection to Docker...
+     [exec] Docker is up and running!
+...
+     [exec] To see how to connect your Docker Client to the Docker Engine running on this virtual machine, run: dtmexamples/applications/docker/target/staging/docker/docker-machine env A2
+     [exec] NAME            ACTIVE   DRIVER          STATE     URL                       SWARM         DOCKER    ERRORS
+     [exec] A1              -        vmwarevsphere   Running   tcp://10.181.5.191:2376   A1 (master)   v1.13.1
+     [exec] A2              -        vmwarevsphere   Running   tcp://10.181.5.181:2376   A1            v1.13.1
+     [exec] dockerkvstore   *        vmwarevsphere   Running   tcp://10.181.5.193:2376                 v1.13.1
+...     
+     [exec] + dtmexamples/applications/docker/target/staging/docker/weave connect 10.181.5.191
+     [exec] + shift
+     [exec] + '[' '' '!=' '' ']'
+     [exec] + dtmexamples/applications/docker/target/staging/docker/weave status
+     [exec]
+     [exec]         Version: 1.9.0 (up to date; next check at 2017/02/10 23:47:55)
+     [exec]
+     [exec]         Service: router
+     [exec]        Protocol: weave 1..2
+     [exec]            Name: 6e:6e:3d:dd:6c:03(A2)
+     [exec]      Encryption: disabled
+     [exec]   PeerDiscovery: enabled
+     [exec]         Targets: 1
+     [exec]     Connections: 1 (1 established)
+     [exec]           Peers: 2 (with 2 established connections)
+     [exec]  TrustedSubnets: none
+...
+     [exec]         Service: proxy
+     [exec]         Address: tcp://10.181.5.181:12375
+     [exec]
+     [exec]         Service: plugin
+     [exec]      DriverName: weave
+...
+     [exec] ++ dtmexamples/applications/docker/target/staging/docker/docker-machine ip dockerkvstore
+     [exec] + swarm_discovery_token=consul://10.181.5.193:8500
+     [exec] + set -- A1 A2
+     [exec] + '[' A1 '!=' '' ']'
+     [exec] + SWARM_NODE=A1
+     [exec] ++    dtmexamples/applications/docker/target/staging/docker/docker-machine config A1
+     [exec] + DOCKER_CLIENT_ARGS='--tlsverify
+     [exec] --tlscacert=".docker/machine/machines/A1/ca.pem"
+     [exec] --tlscert=".docker/machine/machines/A1/cert.pem"
+     [exec] --tlskey=".docker/machine/machines/A1/key.pem"
+     [exec] -H=tcp://10.181.5.191:2376'
+     [exec] ++ dtmexamples/applications/docker/target/staging/docker/docker-machine ip A1
+     [exec] + weave_proxy_endpoint=10.181.5.191:12375
+     [exec] + docker --tlsverify '--tlscacert=".docker/machine/machines/A1/ca.pem"' '--tlscert=".docker/machine/machines/A1/cert.pem"' '--tlskey=
+".docker/machine/machines/A1/key.pem"' -H=tcp://10.181.5.191:2376 rm -f swarm-agent
+     [exec] swarm-agent
+     [exec] + docker --tlsverify '--tlscacert=".docker/machine/machines/A1/ca.pem"' '--tlscert=".docker/machine/machines/A1/cert.pem"' '--tlskey=
+".docker/machine/machines/A1/key.pem"' -H=tcp://10.181.5.191:2376 run -d --restart=always --name=swarm-agent swarm join --addr 10.181.5.191:12375 consu
+l://10.181.5.193:8500
+     [exec] 1014ba603b31da652c413a10f26352638089a8711175e707aa0d30658d85a875
+     [exec] ++ docker --tlsverify '--tlscacert=".docker/machine/machines/A1/ca.pem"' '--tlscert=".docker/machine/machines/A1/cert.pem"' '--tlskey
+=".docker/machine/machines/A1/key.pem"' -H=tcp://10.181.5.191:2376 inspect '--format=      -d       --restart=always       --name={{.Name}}       -p 33
+76:3376       {{range .HostConfig.Binds}}-v {{.}} {{end}}       swarm{{range .Args}} {{.}}{{end}}     ' swarm-agent-master
+     [exec] + docker --tlsverify '--tlscacert=".docker/machine/machines/A1/ca.pem"' '--tlscert=".docker/machine/machines/A1/cert.pem"' '--tlskey=
+".docker/machine/machines/A1/key.pem"' -H=tcp://10.181.5.191:2376 rm -f swarm-agent-master
+     [exec] swarm-agent-master
+     [exec] + docker --tlsverify '--tlscacert=".docker/machine/machines/A1/ca.pem"' '--tlscert=".docker/machine/machines/A1/cert.pem"' '--tlskey=
+".docker/machine/machines/A1/key.pem"' -H=tcp://10.181.5.191:2376 run -d --restart=always --name=/swarm-agent-master -p 3376:3376 -v /var/lib/boot2dock
+er:/var/lib/boot2docker swarm manage --tlsverify --tlscacert=/var/lib/boot2docker/ca.pem --tlscert=/var/lib/boot2docker/server.pem --tlskey=/var/lib/boot2doc
+ker/server-key.pem -H tcp://0.0.0.0:3376 --strategy spread --advertise 10.181.5.191:3376 consul://10.181.5.193:8500
+...
+     [exec] + docker --tlsverify '--tlscacert=".docker/machine/machines/A1/ca.pem"' '--tlscert=".docker/machine/machines/A1/cert.pem"' '--tlskey=
+".docker/machine/machines/A1/key.pem"' -H=tcp://10.181.5.191:3376 info
+     [exec] Containers: 13
+     [exec]  Running: 9
+     [exec]  Paused: 0
+     [exec]  Stopped: 4
+     [exec] Images: 10
+     [exec] Server Version: swarm/1.2.6
+     [exec] Role: primary
+     [exec] Strategy: spread
+     [exec] Filters: health, port, containerslots, dependency, affinity, constraint, whitelist
+     [exec] Nodes: 4
+     [exec]  A1: 10.181.5.191:2376
+     [exec]   └ ID: SKR5:SRRT:N64O:MZLP:YK5P:PQFQ:POJN:OSTE:GN3Q:VVJ3:DEHP:M5YX
+     [exec]   └ Status: Pending
+     [exec]   └ Containers: 7
+     [exec]   └ Reserved CPUs: 0 / 2
+     [exec]   └ Reserved Memory: 0 B / 4.051 GiB
+     [exec]   └ Labels: kernelversion=4.4.47-boot2docker, operatingsystem=Boot2Docker 1.13.1 (TCL 7.2); HEAD : b7f6033 - Wed Feb  8 20:31:48 UTC 2017, provid
+er=vmwarevsphere, storagedriver=aufs
+     [exec]   └ UpdatedAt: 2017-02-10T17:07:10Z
+     [exec]   └ ServerVersion: 1.13.1
+     [exec]  A1: 10.181.5.191:12375
+     [exec]   └ ID: SKR5:SRRT:N64O:MZLP:YK5P:PQFQ:POJN:OSTE:GN3Q:VVJ3:DEHP:M5YX
+     [exec]   └ Status: Healthy
+     [exec]   └ Containers: 7 (5 Running, 0 Paused, 2 Stopped)
+     [exec]   └ Reserved CPUs: 0 / 2
+     [exec]   └ Reserved Memory: 0 B / 4.051 GiB
+     [exec]   └ Labels: kernelversion=4.4.47-boot2docker, operatingsystem=Boot2Docker 1.13.1 (TCL 7.2); HEAD : b7f6033 - Wed Feb  8 20:31:48 UTC 2017, provider=vmwarevsphere, storagedriver=aufs
+     [exec]   └ UpdatedAt: 2017-02-10T17:07:10Z
+     [exec]   └ ServerVersion: 1.13.1
+     [exec]  A2: 10.181.5.181:12375
+     [exec]   └ ID: ULJK:YENZ:2AYY:XOVP:IF3B:QWDZ:QMLE:6Z67:3FO2:IKUZ:SX5S:XSK5
+     [exec]   └ Status: Pending
+     [exec]   └ Containers: 6
+     [exec]   └ Reserved CPUs: 0 / 2
+     [exec]   └ Reserved Memory: 0 B / 4.051 GiB
+     [exec]   └ Labels: kernelversion=4.4.47-boot2docker, operatingsystem=Boot2Docker 1.13.1 (TCL 7.2); HEAD : b7f6033 - Wed Feb  8 20:31:48 UTC 2017, provid
+     [exec]   └ Containers: 6
+     [exec]   └ Reserved CPUs: 0 / 2
+     [exec]   └ Reserved Memory: 0 B / 4.051 GiB
+     [exec]   └ Labels: kernelversion=4.4.47-boot2docker, operatingsystem=Boot2Docker 1.13.1 (TCL 7.2); HEAD : b7f6033 - Wed Feb  8 20:31:48 UTC 2017, provider=vmwarevsphere, storagedriver=aufs
+     [exec]   └ UpdatedAt: 2017-02-10T17:07:14Z
+     [exec]   └ ServerVersion: 1.13.1
+     [exec]  A2: 10.181.5.181:2376
+     [exec]   └ ID: ULJK:YENZ:2AYY:XOVP:IF3B:QWDZ:QMLE:6Z67:3FO2:IKUZ:SX5S:XSK5
+     [exec]   └ Status: Healthy
+     [exec]   └ Containers: 6 (4 Running, 0 Paused, 2 Stopped)
+     [exec]   └ Reserved CPUs: 0 / 2
+     [exec]   └ Reserved Memory: 0 B / 4.051 GiB
+     [exec]   └ Labels: kernelversion=4.4.47-boot2docker, operatingsystem=Boot2Docker 1.13.1 (TCL 7.2); HEAD : b7f6033 - Wed Feb  8 20:31:48 UTC 2017, provider=vmwarevsphere, storagedriver=aufs
+     [exec]   └ UpdatedAt: 2017-02-10T17:07:14Z
+     [exec]   └ ServerVersion: 1.13.1
+     [exec] Plugins:
+     [exec]  Volume:
+     [exec]  Network:
+     [exec] Swarm:
+     [exec]  NodeID:
+     [exec]  Is Manager: false
+     [exec]  Node Address:
+     [exec] Kernel Version: 4.4.47-boot2docker
+     [exec] Operating System: linux
+     [exec] Architecture: amd64
+     [exec] CPUs: 4
+     [exec] Total Memory: 8.102 GiB
+     [exec] Name: 3776dc97dfc8
+     [exec] Docker Root Dir:
+     [exec] Debug Mode (client): false
+     [exec] Debug Mode (server): false
+     [exec] Experimental: false
+     [exec] Live Restore Enabled: false
+     [exec] WARNING: No kernel memory limit support
+[INFO] Executed tasks
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------   
+
+* Create and Deploy Services
+
+  Prior to running containers, the docker image must be pushed out to a registry (defaults to localhost:5000).
+  
+  To start a local registry which is accessible on the network as myprivaterepo.domain.com:5000 :
+
++------------   
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+mvn docker:push 
++------------ 
+  
+  OR another remote docker registry
+
++------------  
+mvn docker:push -Ddocker.registry=mydockerrepo.domain.com:5000/remote/dockerimage
++------------ 
+  
+  To deploy service to swarm cluster:
+
++------------   
+  mvn -Pmachine antrun:run@docker-create-service
++------------ 
+
++------------   
+docker-create-service:
+     [exec] + DOCKERMACHINE=dtmexamples/applications/docker/target/staging/docker/docker-machine
+     [exec] + SWARM_MANAGER=A1
+     [exec] ++ dtmexamples/applications/docker/target/staging/docker/docker-machine ip A1
+     [exec] + SWARM_MANAGER_IP=10.181.5.191
+     [exec] + WEAVE=dtmexamples/applications/docker/target/staging/docker/weave
+     [exec] + DOCKER_ENVFILE=dtmexamples/applications/docker/target/staging/docker/docker.env
+     [exec] + echo 10.181.5.191
+     [exec] ++ dtmexamples/applications/docker/target/staging/docker/docker-machine env --swarm A1
+     [exec] + eval export 'DOCKER_TLS_VERIFY="1"' export 'DOCKER_HOST="tcp://10.181.5.191:3376"' export 'DOCKER_CERT_PATH=".docker/machine/machines/A1"' export 'DOCKER_MACHINE_NAME="A1"' '#' Run this command to configure your shell: '#' eval '$(dtmexamples/applications/docker/target/staging/docker/docker-machine' env --swarm 'A1)'
+     [exec] ++ export DOCKER_TLS_VERIFY=1 export DOCKER_HOST=tcp://10.181.5.191:3376 export DOCKER_CERT_PATH=.docker/machine/machines/A1 export DOCKER_MACHINE_NAME=A1
+     [exec] ++ DOCKER_TLS_VERIFY=1
+     [exec] ++ DOCKER_HOST=tcp://10.181.5.191:3376
+     [exec] ++ DOCKER_CERT_PATH=.docker/machine/machines/A1
+     [exec] ++ DOCKER_MACHINE_NAME=A1
+     [exec] ++ dtmexamples/applications/docker/target/staging/docker/weave env
+     [exec] time="2017-02-10T14:08:52-05:00" level=error msg="error removing container: Error response from daemon: Error response from daemon: No such container: 5c6452d72e73404dcd10ef101d771855bcff0ae8e6ffc1251ec781e6b510c72e"
+     [exec] + eval 'export DOCKER_HOST=tcp://10.181.5.191:12375 ORIG_DOCKER_HOST=tcp://10.181.5.191:3376'
+     [exec] ++ export DOCKER_HOST=tcp://10.181.5.191:12375 ORIG_DOCKER_HOST=tcp://10.181.5.191:3376
+     [exec] ++ DOCKER_HOST=tcp://10.181.5.191:12375
+     [exec] ++ ORIG_DOCKER_HOST=tcp://10.181.5.191:3376
+     [exec] + docker-compose -f dtmexamples/applications/docker/target/staging/docker/two-node-bridge_swarm.yml up -d
+     [exec] latest: Pulling from ep/docker
+     [exec] Pulling node1 (lvmcloudpoc.lab.streambase.com:5000/ep/docker:latest)...
+     [exec] Digest: sha256:a5db5e5e867d3b7e21d99c2b3eb4cc6af240a4fc42cebdceb2d637b5f13f4a67
+     [exec] Creating A1.topologies
+     [exec] Status: Downloaded newer image for lvmcloudpoc.lab.streambase.com:5000/ep/docker:latest
+     [exec] Creating A2.topologies
+     [exec] + fifo=/tmp/tmpfifo.16184
+     [exec] + mkfifo /tmp/tmpfifo.16184
+     [exec] + docker-compose -f dtmexamples/applications/docker/target/staging/docker/two-node-bridge_swarm.yml logs -f
+...
+     [exec] A2.topologies | [A2.topologies]             Auditing node security
+     [exec] A2.topologies | [A2.topologies]             Deploying application
+     [exec] A1.topologies | [A1.topologies]             Engine application::default-engine-for-com.tibco.ep.dtmexamples.javafragment.helloworld started
+     [exec] A1.topologies | [A1.topologies]             Loading node configuration
+     [exec] A2.topologies | [A2.topologies]                     Engine default-engine-for-com.tibco.ep.dtmexamples.javafragment.helloworld
+     [exec] A2.topologies | [A2.topologies]             Application deployed
+     [exec] A2.topologies | [A2.topologies]             Administration port is 5556
+     [exec] A2.topologies | [A2.topologies]             Discovery Service running on port 54321
+     [exec] A2.topologies | [A2.topologies]             Service name is A2.topologies
+     [exec] A2.topologies | [A2.topologies]     Node installed
+     [exec] A2.topologies | + exit_code=0
+     [exec] A2.topologies | + '[' 0 -ne 0 ']'
+     [exec] A2.topologies | + /opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin adminport=5556 start node
+     [exec] A2.topologies | [A2.topologies]     Starting node
+     [exec] A2.topologies | [A2.topologies]             Engine application::default-engine-for-com.tibco.ep.dtmexamples.javafragment.helloworld started
+     [exec] A2.topologies | [A2.topologies]             Loading node configuration
+     [exec] A1.topologies | [A1.topologies]             Auditing node security
+     [exec] A1.topologies | [A1.topologies]             Host name localhost
+     [exec] A1.topologies | [A1.topologies]             Administration port is 5556
+     [exec] A1.topologies | [A1.topologies]             Discovery Service running on port 54321
+     [exec] A1.topologies | [A1.topologies]             Service name is A1.topologies
+     [exec] A1.topologies | [A1.topologies]     Node started
+     [exec] A1.topologies | + exit_code=0
+     [exec] A1.topologies | + '[' 0 -eq 0 ']'
+     [exec] A1.topologies | + '[' '' == true ']'
+     [exec] A1.topologies | + sleep 5
+     [exec] A1.topologies | [A1.topologies]     Node started
+     [exec] + kill 16309
+     [exec] + rm /tmp/tmpfifo.16184
+[INFO] Executed tasks
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------
+  
+* Stop and Remove Services
+  
+  Invoke the antrun execution id below to stop and remove the Docker services across the swarm cluster.
+  Containers on each Docker Host will be stopped and removed.
+
++------------   
+mvn -Pmachine antrun:run@docker-stop-service
++------------ 
+
+* Stop and Remove Docker Host VMs
+
+  Invoke the antrun execution id below to stop the Docker Host VMs across the swarm cluster.
+
++------------   
+mvn -Pmachine antrun:run@machine-stop
++------------ 
+
+  Invoking maven lifecycle pre-clean will remove the Docker Host VMs.
+
++------------   
+mvn -Pmachine -fn pre-clean
++------------ 
+
++------------ 
+[INFO] Executing tasks
+machine-stop-all:
+     [exec] Stopping "dockerkvstore"...
+     [exec] Stopping "A1"...
+     [exec] Stopping "A2"...
+     [exec] Machine "dockerkvstore" was stopped.
+     [exec] Machine "A2" was stopped.
+     [exec] Machine "A1" was stopped.
+[INFO] Executed tasks
+[INFO]
+[INFO] --- maven-antrun-plugin:1.8:run (machine-remove-pre-clean) @ docker ---
+[INFO] Executing tasks
+machine-remove-pre-clean:
+     [exec] About to remove A1, A2, dockerkvstore
+     [exec] WARNING: This action will delete both local reference and remote instance.
+     [exec] Successfully removed A1
+     [exec] Successfully removed A2
+     [exec] Successfully removed dockerkvstore
+[INFO] Executed tasks
+[INFO]
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ docker ---
+[INFO] Deleting /root/dtmexamples/applications/docker/target
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 38.233 s
+[INFO] Finished at: 2017-02-10T14:16:07-05:00
+[INFO] Final Memory: 21M/199M
+[INFO] ------------------------------------------------------------------------
++------------
+  
+* Tests
+  
+  ep-maven-plugin is invoked with 'display node' on the first node running inside
+  container A1.topologies. epmaven_hostname property must be set to include FQDN
+  (fully qualifiend domain name) available via DNS lookup or ip address of the 
+  machine running the A1.topologies service/container.
+  
+  From the Maven Host:
+
++------------   
+  docker-machine ip A1
++------------ 
+  
+  Invoke the antrun id 'display_nodes' with epmaven_hostname set to the ip address of A1:
+  
+  mvn ep:administer-nodes@display-nodes -Depmaven_hostname=<A1 host ip address>
+  
+%{snippet|id=eptest|file=${project.basedir}/pom.xml}
+
+* Troubleshooting
+
+  "Host already exists: someshost"
+  
+  This occurs when docker-machine failed to clean up .docker/machine/machines/somehost directory
+  after 'docker-machine rm' or mvn -Pmachine -fn clean. Also verify the VM host has been removed
+  from your Vsphere Host either using Vsphere client or vCenter WebUI.

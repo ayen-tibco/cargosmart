@@ -1,0 +1,201 @@
+commit cdc041ddd3ba4245155bf21e32dce70fb15ac0a2
+tree 84302e1ea28bc18bf5d0e7fd7d536d0fad01c9b8
+parent 33eb7a0a2aba88a2c3538820197a0e4cfa9d8a9d
+author ayen <ayen@tibco.com> 2018-05-12 00:01:12 -0400
+committer ayen <ayen@tibco.com> 2018-05-12 00:01:12 -0400
+
+    set substitution property to blank so native sb starts up
+
+
+
+:100644 100644 8626a6c6ce8461bd4227a549515e90cbf009c58e c72b77fa7234247b3bb7f05ed0bb18ae7365e297 M	vagrant/src/main/resources/profiles/azure/config-docker.properties
+:100644 100644 51a90f628a9f8846868f964855ec46f8c5e42dec 31fc1abfa6cfdc178397d4c76ef14d2c7e07b43b M	vagrant/src/main/resources/profiles/azure/config.properties
+commit 33eb7a0a2aba88a2c3538820197a0e4cfa9d8a9d
+tree 7f15809cc3336842bbc8ffd3f8aec1df08d51068
+parent aebafd9b0ec3ec654bbb77878c0105ae3aa06052
+author ayen <ayen@tibco.com> 2018-05-11 22:02:07 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 22:02:07 -0400
+
+    Comment out docker image and tag so to allow user and jenkins input
+
+
+
+:100644 100644 52d7011bcbe2bb046820163a685da018f0b5862c 8626a6c6ce8461bd4227a549515e90cbf009c58e M	vagrant/src/main/resources/profiles/azure/config-docker.properties
+commit aebafd9b0ec3ec654bbb77878c0105ae3aa06052
+tree f137aef50c11c36f4600ac9b39cc5a05b90ea641
+parent e8e36010a9c6ee163aaa0c5702eeebb151e7cdee
+author ayen <ayen@tibco.com> 2018-05-11 22:00:20 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 22:00:20 -0400
+
+    Add newline for hosts template
+
+
+
+:100644 100644 bf1bc090745ad3a7decbb5bd97100271811f19ed 6ffc807fd6ad6562beefe49ce19c289eb64c49ae M	ansible/src/main/playbooks/templates/hosts.j2
+:100644 100644 6c0e881db12b7f6319b89fd48c67048374f1bbaa 7eec90f7a06f789347d89d277d8080259897c747 M	ansible/src/main/playbooks/templates/localhosts.j2
+commit e8e36010a9c6ee163aaa0c5702eeebb151e7cdee
+tree 50c8f01ebeda0ae4b236da473557d8eb57bffd5c
+parent e1a3a2be1bff01d8f9dc60586ddcde0139936964
+author ayen <ayen@tibco.com> 2018-05-11 21:36:17 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 21:36:17 -0400
+
+    Add custom docker only config properties file
+
+
+
+:000000 100644 0000000000000000000000000000000000000000 52d7011bcbe2bb046820163a685da018f0b5862c A	vagrant/src/main/resources/profiles/azure/config-docker.properties
+:100644 100644 3e41bd42ae4788edb69f88a540e098213d47f696 51a90f628a9f8846868f964855ec46f8c5e42dec M	vagrant/src/main/resources/profiles/azure/config.properties
+commit e1a3a2be1bff01d8f9dc60586ddcde0139936964
+tree 2f4dfacc0f1ef3dad019ce305ae80d5018fb00d0
+parent 6b3907945922bf8d4182ce8a03d95b7fd817df79
+author ayen <ayen@tibco.com> 2018-05-11 20:27:42 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 20:27:42 -0400
+
+    move elastic.conf to test configuration directory so to use three node
+    config
+
+
+
+:100644 100644 71b448ffa5ed89078860024bb9ac6b6a1c821a4b 71b448ffa5ed89078860024bb9ac6b6a1c821a4b R100	partitioning-application/src/main/configurations/elastic.conf	partitioning-application/src/test/configurations/elastic.conf
+commit 6b3907945922bf8d4182ce8a03d95b7fd817df79
+tree 027873ab8998d3ec7a3a2d0932ec48a05f4233bf
+parent 69b7d2242b9a9c5bbd1701d5fab8bce77eedf38a
+author ayen <ayen@tibco.com> 2018-05-11 20:26:18 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 20:26:18 -0400
+
+    Add maven app build script in top root
+
+
+
+:000000 100755 0000000000000000000000000000000000000000 dcf4886f39705664c92fba44ce6d528fba23011c A	app_build.sh
+commit 69b7d2242b9a9c5bbd1701d5fab8bce77eedf38a
+tree 850fcb2f8a6b42bf384474b9428f6d8aa692143a
+parent 531824f6c68b35fea1ced389f7e3f64fe226b116
+author ayen <ayen@tibco.com> 2018-05-11 20:25:41 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 20:25:41 -0400
+
+    Add localhost admin template to resolve remote hostname
+
+
+
+:000000 100644 0000000000000000000000000000000000000000 6c0e881db12b7f6319b89fd48c67048374f1bbaa A	ansible/src/main/playbooks/templates/localhosts.j2
+commit 531824f6c68b35fea1ced389f7e3f64fe226b116
+tree f0fc37360f057b5b2a2b3c79500c2e958f934ff6
+parent 777bd4ae7fe031720581844879dc268b9a219f99
+author ayen <ayen@tibco.com> 2018-05-11 20:24:50 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 20:24:50 -0400
+
+    Fix output dir for vagranthost in and update maven script
+
+
+
+:100755 100755 4a264a617a633fbc38cd54834342a11829746ab3 7854beb6176149bc15ecae2bdb3734dd16a2b05b M	vagrant/mvn_provision.sh
+:100644 100644 1bd66bd0d595e5677c8781583310391619b48a15 5f78cd7799d43384a435a06657bbde41fdfa477d M	vagrant/pom.xml
+commit 777bd4ae7fe031720581844879dc268b9a219f99
+tree cd03c04b76dc01de1cd06597716b52d5e41ae4a4
+parent 071656e3881b16b9059812a7bf1a84e451c3889e
+author ayen <ayen@tibco.com> 2018-05-11 20:23:06 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 20:23:06 -0400
+
+    add spinning up local registry for test
+
+
+
+:100755 100755 b1fce180ec8e0946bdc3ba1a984fc9be8f8730e5 cf3bd93dafad22a018284bf371ceb69c672608d0 M	docker_build.sh
+commit 071656e3881b16b9059812a7bf1a84e451c3889e
+tree 5b19fddd4ebdc4e5eb5baa5edad624aba9c38997
+parent 55562caca03a1c11016008874c8ddf9911aa977f
+author ayen <ayen@tibco.com> 2018-05-11 20:22:11 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 20:22:11 -0400
+
+    stop node if failed result
+
+
+
+:100755 100755 fda96044afa7420bcaf6e65767fc7d06954c4d68 7ba6553b6b8ef337fc08c9f60febfa4f5b483d6c M	ansible/src/main/playbooks/roles/partition/files/startsb.sh
+:100644 100644 8f7b879ab9ba7e071e8746b293a0963e551ca95a 9b9f7fee35bdeabfaa5ffc5f8718c9a8ea002e55 M	ansible/src/main/playbooks/roles/partition/tasks/deploy.yml
+:100644 100644 8c2d0d5c2b67f4cb8c15af58a01eac73bb87e54f 5a24ca3581c037a29c032e19852250b91d0161ed M	ansible/src/main/playbooks/roles/partition/tasks/remove_node.yml
+commit 55562caca03a1c11016008874c8ddf9911aa977f
+tree 19de5e24ebc9953b009afd1b2b74d8234f88dbaf
+parent 712eecb3aa2b17f8af5724bf19c604124cd96f91
+author ayen <ayen@tibco.com> 2018-05-11 19:38:26 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 19:38:26 -0400
+
+    Remove vagrant azure deployment from top level pom
+
+
+
+:100644 100644 49d93703a1082be08e8d4d9cd7ee655b48bbd689 4a3f48e3cacad104959b223433eb894bf0771311 M	pom.xml
+commit 712eecb3aa2b17f8af5724bf19c604124cd96f91
+tree ed85067c9d80793ac933561d482f8e70ba415c67
+parent 07961687a29c4c713c8d22aa78fd77bc3382b92c
+author ayen <ayen@tibco.com> 2018-05-11 19:26:04 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 19:26:04 -0400
+
+    Fix local /etc/host update template
+
+
+
+:100644 100644 e0280c1293eb8cfa772cae6c35988b907dfa82a4 12aef3c690628355b1e00308009346212a48384a M	ansible/src/main/playbooks/roles/common/tasks/read_hocon.yml
+:100644 100644 1913f31f465645215c427580252ba4635162cc16 cba62848c3415fc0a58df8ef2cc058bc32af53d9 M	ansible/src/main/playbooks/roles/common/tasks/updatehostfile.yml
+commit 07961687a29c4c713c8d22aa78fd77bc3382b92c
+tree 1c51fe1806fd9b3842e31a164f6af94b0d9946f5
+parent 1b1a8f1a03296b530f93b057a70af4b1364b20d9
+author ayen <ayen@tibco.com> 2018-05-11 19:25:12 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 19:25:12 -0400
+
+    Update readme
+
+
+
+:100644 100644 137b5dcd2f60c4fd6e1d7312bcadf7750a8b1c09 ef25f96c04fc450644e873844fb7230b23fd1d97 M	README.md
+commit 1b1a8f1a03296b530f93b057a70af4b1364b20d9
+tree 0a4abeb4635862106dfd2b5ae6978d0c71d67dbc
+parent e57e09ae5f9dd7957c34eeebe3a07cc6689bdefe
+author ayen <ayen@tibco.com> 2018-05-11 19:24:45 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 19:24:45 -0400
+
+    Add azure env file
+
+
+
+:000000 100644 0000000000000000000000000000000000000000 05d72ab155d73aac6bea5c788064d98e9867d784 A	vagrant/azure.env
+commit e57e09ae5f9dd7957c34eeebe3a07cc6689bdefe
+tree 0172f84be9a706297e37c0349d7ab476e54ef045
+parent a2ffae178f91e56bec7430fe6865c6721bf695cc
+author ayen <ayen@tibco.com> 2018-05-11 03:20:09 -0400
+committer ayen <ayen@tibco.com> 2018-05-11 03:20:09 -0400
+
+    add localhost fact gathering to determine proper way to install python
+
+
+
+:100644 100644 0c362423d2711f09cb36d20b8c344d74a91247a3 e0280c1293eb8cfa772cae6c35988b907dfa82a4 M	ansible/src/main/playbooks/roles/common/tasks/read_hocon.yml
+:100644 100644 514cd5337b1cb400334ad6a5c528afa5526a4733 3827da61df7c45b49f8d81d9cf12ff02f169592c M	ansible/src/main/playbooks/topologies.yml
+:100644 100644 71b448ffa5ed89078860024bb9ac6b6a1c821a4b 71b448ffa5ed89078860024bb9ac6b6a1c821a4b R100	partitioning-application/src/test/configurations/elastic.conf	partitioning-application/src/main/configurations/elastic.conf
+:100644 100644 70a0a6abe227b9f36c2d5710646978f57921fbeb 1bd66bd0d595e5677c8781583310391619b48a15 M	vagrant/pom.xml
+:000000 100644 0000000000000000000000000000000000000000 c69eadd71e0956120c2a7e11c7aef87de02a581e A	vagrant/src/main/resources/ansible/vagranthost
+:100644 000000 ef3f2f8cfcf71c68221df26a3a13a1921b816728 0000000000000000000000000000000000000000 D	vagrant/src/main/resources/azure/vagrant-azure-2.0.0.pre1.gem
+:000000 100644 0000000000000000000000000000000000000000 c69eadd71e0956120c2a7e11c7aef87de02a581e A	vagrant/src/main/resources/vagranthost
+commit a2ffae178f91e56bec7430fe6865c6721bf695cc
+tree b4dfdc80eab203457c6117f333af649bbca61dd7
+parent 04e1f42a7d37e9db94e3c42c56c4917d992a2dfe
+author ayen <ayen@tibco.com> 2018-05-10 16:39:32 -0400
+committer ayen <ayen@tibco.com> 2018-05-10 16:39:32 -0400
+
+    use generic package management to install python
+
+
+
+:100644 100644 d6d5a1bda65d3c17a3aad3dbeaeb59fa0b57174f 0c362423d2711f09cb36d20b8c344d74a91247a3 M	ansible/src/main/playbooks/roles/common/tasks/read_hocon.yml
+commit 04e1f42a7d37e9db94e3c42c56c4917d992a2dfe
+tree 26b2041add2812b906c392626270d6edf2a3a6f0
+parent af72ebc3e72c2e971bb83dda8f5b0ec7e64dbe85
+author ayen <ayen@tibco.com> 2018-05-10 12:32:00 -0400
+committer ayen <ayen@tibco.com> 2018-05-10 12:32:00 -0400
+
+    disable searchpath for curl due to multiple curl libs on bitnami jenkins
+
+
+
+:100644 100644 4b5d1a1e8d92ff693af6650bc0fe6354b68396d2 70a0a6abe227b9f36c2d5710646978f57921fbeb M	vagrant/pom.xml

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- vim: set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab : -->
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.tibco.ep.sb.example</groupId>
+    <artifactId>partitioning</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>OOCL Partition Demo</name>
+
+    <parent>
+        <groupId>com.tibco.ep</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.2.1</version>
+        <relativePath>com.tibco.ep:parent</relativePath> <!-- avoid parent warning -->
+    </parent>  
+    
+    <organization>
+        <name>TIBCO Software Inc.</name>
+        <url>http://www.tibco.com</url>
+    </organization>
+    <scm>
+        <connection>scm:git:https://github.com/ayen-tibco/oocl.git</connection>
+        <url>https://github.com/ayen-tibco/oocl.git</url>
+    </scm>
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>http://ec2-54-243-209-127.compute-1.amazonaws.com</url>
+    </ciManagement>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/ayen-tibco/oocl/issues</url>
+    </issueManagement>
+
+    <properties>
+	<DOCKER_SB_ARCH>x86_64</DOCKER_SB_ARCH>
+        <streambase.version>10.2.1</streambase.version>
+
+        <software.repository>http://your.software.repository/</software.repository>
+        <docker.prefix>localhost:5000/</docker.prefix>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<epmaven.version>1.2.1</epmaven.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+    </properties>
+ 
+    <profiles>
+        <profile>
+            <id>all</id>
+            <modules>
+                <module>partitioning</module>
+                <module>partitioning-application</module>
+                <module>partition_docker</module>
+            </modules>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>docker</id>
+            <modules>
+                <module>partition_docker</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>app</id>
+            <modules>
+                <module>partitioning</module>
+                <module>partitioning-application</module>
+            </modules>
+        </profile>
+    </profiles>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.6</version>
+            </plugin>
+
+            <plugin>
+                <groupId>com.tibco.ep</groupId>
+                <artifactId>ep-maven-plugin</artifactId>
+                <version>${epmaven.version}</version>
+                <extensions>true</extensions>
+            </plugin>
+
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.25.2</version>
+                <extensions>true</extensions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+            </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>properties-maven-plugin</artifactId>
+                    <version>1.0.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.8</version>
+                </plugin>
+                <plugin>
+                    <groupId>co.escapeideas.maven</groupId>
+                    <artifactId>ansible-maven-plugin</artifactId>
+                    <version>1.3.0</version>
+                </plugin>
+
+        </plugins>
+    </build>
+
+    <!-- START SNIPPET: dependencies  -->
+    <dependencies>
+            <dependency>
+                <groupId>com.tibco.ep.dtm</groupId>
+                <artifactId>sdk</artifactId>
+                <version>3.2.1</version>
+		<scope>provided</scope>
+            </dependency>
+    </dependencies>
+    <!-- END SNIPPET: dependencies  -->
+
+    <dependencyManagement>
+
+        <dependencies>
+            <dependency>
+                <groupId>com.tibco.ep.sb</groupId>
+                <artifactId>test-api</artifactId>
+                <version>${streambase.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tibco.ep.sb</groupId>
+                <artifactId>dt-manager</artifactId>
+                <version>${streambase.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tibco.ep.dtm</groupId>
+                <artifactId>management</artifactId>
+                <version>${dtm.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+
+    </dependencyManagement>
+
+</project>

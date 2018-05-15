@@ -1,0 +1,112 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<hudson.maven.MavenModuleSetBuild plugin="maven-plugin@3.1.2">
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause>
+            <userId>user</userId>
+          </hudson.model.Cause_-UserIdCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+    <org.jenkinsci.plugins.envinject.EnvInjectPluginAction plugin="envinject@2.1.5"/>
+    <hudson.plugins.git.util.BuildData plugin="git@3.8.0">
+      <buildsByBranchName>
+        <entry>
+          <string>refs/remotes/origin/master</string>
+          <hudson.plugins.git.util.Build>
+            <marked plugin="git-client@2.7.1">
+              <sha1>cdc041ddd3ba4245155bf21e32dce70fb15ac0a2</sha1>
+              <branches class="list">
+                <hudson.plugins.git.Branch>
+                  <sha1 reference="../../../sha1"/>
+                  <name>refs/remotes/origin/master</name>
+                </hudson.plugins.git.Branch>
+              </branches>
+            </marked>
+            <revision reference="../marked"/>
+            <hudsonBuildNumber>16</hudsonBuildNumber>
+          </hudson.plugins.git.util.Build>
+        </entry>
+      </buildsByBranchName>
+      <lastBuild reference="../buildsByBranchName/entry/hudson.plugins.git.util.Build"/>
+      <scmName></scmName>
+      <remoteUrls>
+        <string>https://github.com/ayen-tibco/oocl.git</string>
+      </remoteUrls>
+    </hudson.plugins.git.util.BuildData>
+    <hudson.plugins.git.GitTagAction plugin="git@3.8.0">
+      <tags class="hudson.util.CopyOnWriteMap$Tree">
+        <entry>
+          <string>refs/remotes/origin/master</string>
+          <list/>
+        </entry>
+      </tags>
+      <ws>/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod</ws>
+    </hudson.plugins.git.GitTagAction>
+    <hudson.scm.SCMRevisionState_-None/>
+    <hudson.maven.reporters.MavenAggregatedArtifactRecord>
+      <records/>
+      <parent reference="../../.."/>
+    </hudson.maven.reporters.MavenAggregatedArtifactRecord>
+    <hudson.tasks.Fingerprinter_-FingerprintAction>
+      <record>
+        <entry>
+          <string>com.tibco.ep.sb.example:partitioning:pom.xml</string>
+          <string>8b665ddb2c0769fd2932d7f75cf3a674</string>
+        </entry>
+        <entry>
+          <string>com.tibco.ep.sb.example:partitioning-fragment-1.0.0-SNAPSHOT.zip</string>
+          <string>c600bfc41ac94ff2d6ab1379e70c47fb</string>
+        </entry>
+        <entry>
+          <string>com.tibco.ep.dtm:sdk-3.2.1.jar</string>
+          <string>cf9871a4fbee82b94245e7fd6e6d3577</string>
+        </entry>
+        <entry>
+          <string>com.tibco.ep.sb.example:partition_docker:pom.xml</string>
+          <string>2df2b58bd3f13311e5fbd41099c78d8d</string>
+        </entry>
+        <entry>
+          <string>com.tibco.ep.sb.example:partitioning-application-1.0.0-SNAPSHOT.zip</string>
+          <string>4f8c105b5889de042d798745bb2bb70c</string>
+        </entry>
+        <entry>
+          <string>com.tibco.ep.sb.rt:platform_linuxx86_64-10.2.1.zip</string>
+          <string>a111b4bb547fc66c3af5d81be8f6f97f</string>
+        </entry>
+        <entry>
+          <string>org.slf4j:slf4j-api-1.7.21.jar</string>
+          <string>c9be56284a92dcb2576679282eff80bf</string>
+        </entry>
+        <entry>
+          <string>com.tibco.ep:parent:parent-1.2.1.pom</string>
+          <string>6300a7980872cf47a7d83a6251f5fb97</string>
+        </entry>
+        <entry>
+          <string>com.tibco.ep.sb.example:partitioning:partitioning-1.0.0-SNAPSHOT.pom</string>
+          <string>f029f1771e9b96b192b4816a3fa70465</string>
+        </entry>
+      </record>
+    </hudson.tasks.Fingerprinter_-FingerprintAction>
+  </actions>
+  <queueId>44</queueId>
+  <timestamp>1526101376792</timestamp>
+  <startTime>1526101376796</startTime>
+  <result>SUCCESS</result>
+  <duration>192964</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-docker-prod</workspace>
+  <hudsonVersion>2.107.2</hudsonVersion>
+  <scm class="hudson.plugins.git.GitChangeLogParser" plugin="git@3.8.0">
+    <authorOrCommitter>false</authorOrCommitter>
+  </scm>
+  <culprits class="com.google.common.collect.RegularImmutableSortedSet">
+    <string>ayen</string>
+  </culprits>
+  <mavenVersionUsed>3.5.3</mavenVersionUsed>
+</hudson.maven.MavenModuleSetBuild>

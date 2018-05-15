@@ -1,0 +1,132 @@
+#Copyright (c) 2017 TIBCO Software Inc.
+#
+# This guide is optimized for Vagrant 1.7 and above.
+# Although versions 1.6.x should behave very similarly, it is recommended
+# to upgrade instead of disabling the requirement below.
+Vagrant.require_version ">= 1.7.0"
+cached_addresses = {}
+PUPPET_DOMAIN="${PUPPET_DOMAIN}"
+VM_OS="${VAGRANT_VM_OS}"
+cluster_machine_names=Array.new
+
+unless Vagrant.has_plugin?("vagrant-${VAGRANT_PROVIDER}-provider")
+  raise 'vagrant-${VAGRANT_PROVIDER}-provider is not installed! Enter [vagrant plugin install vagrant-${VAGRANT_PROVIDER}-provider] to install.'
+end
+
+if VM_OS == "Ubuntu"
+    $shell_script= <<SCRIPT
+    # Update OS
+    apt-get -y update
+SCRIPT
+else
+    $shell_script= <<SCRIPT
+    # Install the EPEL repo
+    yum makecache fast
+    rpm -Uvh http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm; true
+    yum clean metadata
+SCRIPT
+end
+
+Vagrant.configure(2) do |config|
+
+    # Disable the new default behavior introduced in Vagrant 1.7, to
+    # ensure that all Vagrant machines will use the same SSH key pair.
+    # See https://github.com/mitchellh/vagrant/issues/5005
+    config.ssh.insert_key = true
+    config.ssh.username = "${ANSIBLE_REMOTE_USER}"
+    config.ssh.private_key_path = './example_box/vagrant_private.key'
+    config.ssh.pty = ('true'==ENV['VAGRANT_SSHPTY_DISABLE'])
+    config.vm.boot_timeout = 600
+    config.vm.network "private_network", type: "dhcp"
+    config.vm.box = "${VAGRANT_PROVIDER}.box"
+    config.vm.box_url = "example_box/${VAGRANT_PROVIDER}.box"
+    # fix for https://github.com/hashicorp/vagrant/issues/5401#issuecomment-115240904 introduced in Vagrant 2.x
+    config.nfs.functional = false
+    config.vm.synced_folder "./app","${TIBCO_INSTALL_DIR}/${SB_APP_NAME}", type: "rsync",
+        rsync__exclude:"sb", rsync__chown: false
+    # hostmanage plugin to manage /etc/host file for puppet
+    config.hostmanager.enabled = ('true'==ENV['UPDATEHOSTSLOCAL'])
+    config.hostmanager.manage_host = ('true'==ENV['UPDATEHOSTSLOCAL'])
+    config.hostmanager.manage_guest = ('true'==ENV['UPDATEHOSTSREMOTE'])
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = false
+
+    # Openstack defaults
+    config.vm.provider :${VAGRANT_PROVIDER} do |${VAGRANT_PROVIDER}|
+        ${VAGRANT_PROVIDER}.openstack_auth_url = '${OPENSTACK_AUTH_URL}'
+        ${VAGRANT_PROVIDER}.identity_api_version = '${OPENSTACK_IDENTITY_API_VERSION}'
+        ${VAGRANT_PROVIDER}.username = '${OPENSTACK_USERNAME}'
+        ${VAGRANT_PROVIDER}.password = '${OPENSTACK_PASSWORD}'
+        ${VAGRANT_PROVIDER}.domain_name = '${OPENSTACK_DOMAIN_NAME}'
+        ${VAGRANT_PROVIDER}.project_name = '${OPENSTACK_PROJECT_NAME}'
+        ${VAGRANT_PROVIDER}.flavor = '${OPENSTACK_FLAVOR}'
+        ${VAGRANT_PROVIDER}.image = "${OPENSTACK_IMAGE}"
+        ${VAGRANT_PROVIDER}.keypair_name = '${OPENSTACK_KEYPAIR_NAME}'
+        ${VAGRANT_PROVIDER}.metadata = {"ClusterName" => "${CLUSTERNAME}"}
+        # ${VAGRANT_PROVIDER}.floating_ip = ${OPENSTACK_FLOATING_IP}
+        ${VAGRANT_PROVIDER}.floating_ip_pool = [${OPENSTACK_FLOATING_IP_POOL}]
+        ${VAGRANT_PROVIDER}.security_groups = [${OPENSTACK_SECURITY_GROUPS}]
+        ${VAGRANT_PROVIDER}.networks = [${OPENSTACK_NETWORKS}]
+        ${VAGRANT_PROVIDER}.server_create_timeout = ${OPENSTACK_CREATE_TIMEOUT}
+        ${VAGRANT_PROVIDER}.server_active_timeout = ${OPENSTACK_CREATE_TIMEOUT}
+        # in case instance eth0 mtu is below 1500
+        ${VAGRANT_PROVIDER}.user_data = ${OPENSTACK_USER_DATA}
+    end
+
+    N=${INSTANCE_COUNT}
+    (1..N).each do |i|
+        config.vm.define "${NODENAME_PREFIX}#{i}" do |instance|
+            instance.vm.hostname = "${NODENAME_PREFIX}#{i}"
+            cluster_machine_names << "${NODENAME_PREFIX}#{i}"
+
+            # puppet shell bootstrap provisioning
+            if i==1 and "${VAGRANT_PROVISIONER}" == "puppet_server"
+                instance.hostmanager.aliases = "${NODENAME_PREFIX}#{i}.#{PUPPET_DOMAIN}"
+                instance.vm.provision "shell", path: "puppet_server.sh"
+            elsif "${VAGRANT_PROVISIONER}" == "puppet_server"
+                instance.hostmanager.aliases = "${NODENAME_PREFIX}#{i}.#{PUPPET_DOMAIN}"
+                instance.vm.provision "shell", path: "puppet_agent.sh"
+            end
+
+            # puppet agent provisioning
+            if "${VAGRANT_PROVISIONER}" == "puppet_server"
+                instance.vm.provision "${VAGRANT_PROVISIONER}" do |${VAGRANT_PROVISIONER}|
+                    ${VAGRANT_PROVISIONER}.puppet_server = "${NODENAME_PREFIX}1.${PUPPET_DOMAIN}".downcase
+                    ${VAGRANT_PROVISIONER}.puppet_node = "${NODENAME_PREFIX}#{i}.${PUPPET_DOMAIN}".downcase
+                    ${VAGRANT_PROVISIONER}.options = ${PUPPET_OPS}
+                end
+            elsif "${VAGRANT_PROVISIONER}" == "puppet"  # puppet apply local - does not support parallelism in loop
+                ${VAGRANT_PROVISIONER}.environment = "${PUPPET_ENV}"                        
+                ${VAGRANT_PROVISIONER}.environment_path = "puppet/environments"
+                #${VAGRANT_PROVISIONER}.module_path = "puppet/environments/production/modules:/etc/puppetlabs/code/environments/production/modules:/opt/puppetlabs/puppet/modules"
+                ${VAGRANT_PROVISIONER}.options = ${PUPPET_OPS}
+            elsif "${VAGRANT_PROVISIONER}" == "ansible"
+                config.vm.provision "shell", inline: $shell_script
+
+                # trick to get playbook run only once with parrallelism
+                if i <= N
+                    instance.vm.provision "ansible" do |ansible|
+                        #ansible.verbose = "v"
+                        ansible.limit = "all"
+                        ansible.groups = { "${CLUSTERNAME}" => cluster_machine_names }
+                        if "${ANSIBLE_TAGS}" == "redeploy"
+                            ansible.playbook = "ansible/playbooks/Redeploy_Nodes.yml"
+                        elsif "${ANSIBLE_TAGS}" == "update"
+                            ansible.playbook = "ansible/playbooks/Update_Cluster_Config.yml"
+                        elsif "${ANSIBLE_TAGS}" == "display"
+                            ansible.playbook = "ansible/playbooks/Display_All_Nodes.yml"
+                        elsif "${ANSIBLE_TAGS}" == "remove"
+                            ansible.playbook = "ansible/playbooks/Remove_All_Nodes.yml"
+                        else
+                            # perform the entire deployment or custom tags
+                            ansible.playbook = "${ANSIBLE_PLAYBOOK}"
+                            ansible.tags = "${ANSIBLE_TAGS}"
+                            ansible.extra_vars = ${ANSIBLE_EXTRA_VARS}
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+

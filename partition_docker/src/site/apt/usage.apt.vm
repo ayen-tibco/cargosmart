@@ -1,0 +1,192 @@
+  ------
+  Usage
+  ------
+~~ %{snippet|file=pom.xml}  
+~~ Copyright 2017 TIBCO Software Inc. ALL RIGHTS RESERVED.
+
+Usage
+
+%{toc}
+
+  The following sections provides usage information to Maven Docker Profile examples.
+  By default, the 3rd party maven docker plugin {{{https://github.com/fabric8io/docker-maven-plugin}docker-maven-plugin}} is used.
+
+* Setting Default Properties  
+
+%{snippet|id=globalprops|file=${project.basedir}/pom.xml}
+
+* Build a Docker Image
+
+  The overall goal is to build a docker image containing StreamBase Application and 
+  deploy the containers in a cluster locally. The Dockerfile is used to build the image.
+  
+  The topologies application archive will be used along with the {{{../../applications/topologies/index.html}two node active}} 
+  cluster configuration file.  ep-maven-plugin is used to display the status of the node
+  after the container is launched.
+  
+  Using default docker plugin to build image:
+
++------------  
+mvn compile
++------------
+  
+  Results:
+
++------------
+...
+[INFO] DOCKER> ---> Running in 7515b1599add
+[INFO] DOCKER> ---> cc2e006280f2
+[INFO] DOCKER> Removing intermediate container 7515b1599add
+[INFO] DOCKER> Step 30/33 : EXPOSE 54321/udp
+[INFO] DOCKER> ---> Running in 65a69e95c607
+[INFO] DOCKER> ---> d8308b9788bd
+[INFO] DOCKER> Removing intermediate container 65a69e95c607
+[INFO] DOCKER> Step 31/33 : EXPOSE 10000
+[INFO] DOCKER> ---> Running in 7341854ac309
+[INFO] DOCKER> ---> 5597c97673c8
+[INFO] DOCKER> Removing intermediate container 7341854ac309
+[INFO] DOCKER> Step 32/33 : WORKDIR $TIBCO_EP_HOME/distrib/tibco/bin
+[INFO] DOCKER> ---> b3c7c5d50a8e
+[INFO] DOCKER> Removing intermediate container 316e3cd983c9
+[INFO] DOCKER> Step 33/33 : ENTRYPOINT ./startsb.sh Cluster1
+[INFO] DOCKER> ---> Running in f6a6fa58ca42
+[INFO] DOCKER> ---> fe60464ec817
+[INFO] DOCKER> Removing intermediate container f6a6fa58ca42
+[INFO] DOCKER> Successfully built fe60464ec817
+[INFO] DOCKER> [ep/docker] "docker-build": Built image sha256:fe604
+[INFO] DOCKER> [ep/docker] "docker-build": Removed image
+[INFO] DOCKER> [ep/docker] "docker-build": Tag with latest  
++------------
+  
+  Codeline:
+  
+%{snippet|id=fabric8buildimage|file=${project.basedir}/pom.xml}
+  
+* Run Containers
+
+  Prior to running containers, the docker image must be pushed out to a local registry (defaults to localhost:5000) or remote registry:
+  
++------------  
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+mvn docker:push
++------------  
+
+  Or push to remote registry with docker commands: 
+  
++------------  
+docker tag ep/docker:latest docker.io/myusername/ep-docker:latest
+docker login docker.io
+docker push docker.io/myusername/ep-docker:latest
++------------
+  
+  To run specific containers (two nodes):
+
++------------  
+mvn docker:run -Ddocker.image=A1.topologies,A2.topologies 
+mvn docker:run -Ddocker.skip.build -DskipNode3 
++------------
+
+  To run all containers locally in a cluster:
+
++------------
+mvn docker:start
++------------
+
+  OR
+  
++------------
+mvn docker:run
++------------
+
+  Results:
+
++------------
+$ mvn docker:run -Ddocker.image=A1.topologies
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] Building SB Docker 3.1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO]
+[INFO] >>> docker-maven-plugin:0.15.14:run (default-cli) > initialize @ docker >>>
+[INFO]
+[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ docker ---
+[INFO] Executing: /bin/sh -c cd '/root/dtmexamples/applications/docker' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /root/dtmexamples/applications/docker
+[INFO] Storing buildNumber: 97bbcbc52e1a3f665eab3f0a58ea4819809976d3 at timestamp: 1486571596487
+[INFO] Storing buildScmBranch: master
+[INFO]
+[INFO] <<< docker-maven-plugin:0.15.14:run (default-cli) < initialize @ docker <<<
+[INFO]
+[INFO] --- docker-maven-plugin:0.15.14:run (default-cli) @ docker ---
+[INFO] DOCKER> Pulling from ep/docker
+[INFO] DOCKER> Digest: sha256:a5db5e5e867d3b7e21d99c2b3eb4cc6af240a4fc42cebdceb2d637b5f13f4a67
+[INFO] DOCKER> Status: Image is up to date for localhost:5000/ep/docker:latest
+[INFO] DOCKER> Pulled localhost:5000/ep/docker:latest in 58 milliseconds
+[INFO] DOCKER> [localhost:5000/ep/docker:latest] "A1.topologies": Start container 180afaa45827
+...
+     A1.topologies> [A1.topologies]          Loading node configuration
+     A1.topologies> [A1.topologies]          Auditing node security
+     A1.topologies> [A1.topologies]          Deploying application
+     A1.topologies> [A1.topologies]                  Engine default-engine-for-com.tibco.ep.dtmexamples.javafragment.helloworld
+     A1.topologies> [A1.topologies]          Application deployed
+     A1.topologies> [A1.topologies]          Administration port is 5556
+     A1.topologies> [A1.topologies]          Discovery Service running on port 54321
+     A1.topologies> [A1.topologies]          Service name is A1.topologies
+     A1.topologies> [A1.topologies]  Node installed
+     A1.topologies> + exit_code=0
+     A1.topologies> + '[' 0 -ne 0 ']'
+     A1.topologies> + /opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin adminport=5556 start node
+     A1.topologies> [A1.topologies]  Starting node
+[INFO] DOCKER> [localhost:5000/ep/docker:latest] "A1.topologies": Waited on log out 'Starting node' 22007 ms
+...
+     A2.topologies> [A2.topologies]          Engine application::default-engine-for-com.tibco.ep.dtmexamples.javafragment.helloworld started
+     A2.topologies> [A2.topologies]          Loading node configuration
+     A2.topologies> [A2.topologies]          Auditing node security
+     A2.topologies> [A2.topologies]          Host name localhost
+     A2.topologies> [A2.topologies]          Administration port is 5556
+     A2.topologies> [A2.topologies]          Discovery Service running on port 54321
+     A2.topologies> [A2.topologies]          Service name is A2.topologies
+     A2.topologies> [A2.topologies]  Node started
+[INFO] DOCKER> [localhost:5000/ep/docker:latest] "A2.topologies": Waited on log out 'Node started' 22514 ms
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------
+  
+  Codeline :
+  
+%{snippet|id=fabric8containers|file=${project.basedir}/pom.xml}
+  
+* Stop and Remove Containers
+
+  Invoking maven lifecycle clean will stop and remove the containers.
+
++------------  
+mvn -fn clean
++------------
+  
+  OR
+  
++------------  
+mvn -fn docker:stop
++------------
+  
+* Tests
+  
+  ep-maven-plugin is invoked with 'display node' on the first node running inside
+  container A1.topologies.
+
++------------  
+mvn ep:administer-nodes@display-nodes
+[INFO] [5556] Running "display node"
+[INFO] Node             Node Name     Node Description Node State Host Name     Administration Port Discovery Service     Container Node Directory                                      Deployment Directories                         Install Time                  Last Start Time               Build Type  Product Version                                                                         Product Installation Directory Web Server State Web Server URLs
+[INFO] [localhost:5556] A1.topologies No description   Started    A1.topologies 5556                running on port 54321 tibco/sb  /opt/tibco/sb-cep/10/deploy/nodes/A1.topologies /opt/tibco/sb-cep/10/lib:/opt/tibco/topologies 2017-02-08 17:13:01 +0000 UTC 2017-02-08 17:13:14 +0000 UTC DEVELOPMENT TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1702011015 streambase-master-linux-327) /opt/tibco/sb-cep/10       Started          http://A1.topologies:59855
+[INFO] [5556] Finished "display node"
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------
+  
+  Codeline :
+  
+%{snippet|id=eptest|file=${project.basedir}/pom.xml}

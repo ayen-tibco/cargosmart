@@ -1,0 +1,312 @@
+  ------
+  Vagrant Azure Example
+  ------
+~~ %{snippet|file=pom.xml}  
+~~ Copyright 2017 TIBCO Software Inc. ALL RIGHTS RESERVED.
+
+%{toc}
+
+Introduction
+
+  The following sections provides usage information to the Vagrant Microsoft Azure example.
+  The {{{https://github.com/Azure/vagrant-azure}Vagrant-azure plugin}} is 
+  used as the provider and ansible as the provisioner.
+  
+  The goal is to create Azure compute VMs with Vagrant and provision the VMs
+  with Ansible.  Vagrant utilizes Ansible to remotely deploy docker containers
+  running StreamBase Application.
+
+  The topologies application archive will be used along with the {{{../../applications/topologies/index.html}two node active}} 
+  configuration.  Two VMs are created to host each docker container. ep-maven-plugin is 
+  used to display the status of the node after the container is launched.
+
+  Complete Maven lifecycle will create VMs, deploy SB10, run ep-maven test,
+  and remove the VMs.
+
++------------
+mvn -Pazure post-integration-test
++------------
+  
+  Maven target directory target/staging/azure will be created for Vagrant to bootstrap
+  and deploy with the necessary support files.
+  
+* Setting Profile Properties
+
+  Profile properties file are used and are located at src/main/resources/profiles/<provider>/config.properties.
+  In Maven, profile id represents the provider. The Maven <<initialize>> lifecycle is used
+  to load the config.properties for antrun shell scripts. Also filtering are set to use 
+  the profile properties file when copying resource files like Vagrantfile and scripts.
+
+  The filtering customizes the Vagrantfile with Azure specific settings, hostnames, 
+  number of VMs to be deployed, etc.
+  
+  In addition to these settings, Azure credentials and settings are required
+  for VMs to be provisioned.
+
++------------
+cp src/main/resources/profiles/azure/config.properties src/main/resources/profile/azure/config_myversion.properties
+vi src/main/resources/profile/aws/config_myversion.properties
+mvn -Pazure post-integration-test -DCONFIG_PROP_FILE=config_myversion.properties
++------------
+
+  config.properties
+  
+%{snippet|file=${project.basedir}/src/main/resources/profiles/azure/config.properties}
+
+  The following custom property variables MUST be set prior to running Maven lifecycles.
+
+*------------------------*------------------------------------------*---------------------------------------*
+| <<Variable Name>>      | <<Description>>                          | <<Example Value(s)>>                  |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_TARBALL_URL         |Location to retreive StreamBase Linux     |<https://bucketname.s3.amazonaws.com>  |
+|                        |binary. For Cloud remote deployment, use  | OR                                    |
+|                        |Azure storage account to save bandwidth.  |</vagrant>                             |
+|                        |Otherwise edit Vagrantfile to allow       |                                       |
+|                        |rsync for <<SB_TARBALL>>.                |                                       |
+|                        |                                          |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|AZURE_SUBSCRIPTION_ID   |Azure credentials are necessary to create |                                       |
+|AZURE_CLIENT_ID         |resources. The principal method is used   |                                       |
+|AZURE_SECRET            |by creating a secret for the application. |                                       |
+|AZURE_TENANT            |                                          |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_DOCKER_IMAGE         |Custom StreamBase App and Binary Docker   |                                       |
+|SB_DOCKER_IMAGE_TAG     |image and tag (default latest).           |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY         |Private or public registry.               | <docker.io> (default) |
+|                       |                                           | OR
+|                       |                                           | myprivaterepo.domain.com:5000 |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY_USERNAME|Docker credentials. Can be blank if not   |                                       |
+|DOCKER_REGISTRY_PASSWORD|require by registry                       |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+Required Custom Property Settings for Azure Deployment
+
+* Create and provision VMs
+
+  The compile goal copies the azure custom Vagrant and supporting script files. It
+  then installs the vagrant-azure plugin and hostmanager plugin.
+  The hostmanager plugin is needed to update /etc/hosts file locally and remotely with
+  the name of the VMs.  This allows the local Vagrant host to access the remote VMs
+  by name.
+  
+  <<<vagrant up >>> is called with basic shell provisioning like setting linux repo.
+  
++------------  
+mvn -Pazure compile
++------------
+  
+  Results:
+
++------------
+...
+03:07:31 [INFO] Using 'UTF-8' encoding to copy filtered resources.
+03:07:31 [INFO] Copying 7 resources
+03:07:32 [INFO] Copying 4 resources
+03:07:32 [INFO] 
+03:07:32 [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-provisioner-scripts) @ vagrant ---
+03:07:32 [INFO] Using 'UTF-8' encoding to copy filtered resources.
+03:07:32 [INFO] Copying 98 resources
+03:07:32 [INFO] 
+03:07:32 [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-cloud-inventory-script) @ vagrant ---
+03:07:32 [INFO] Using 'UTF-8' encoding to copy filtered resources.
+03:07:32 [INFO] skip non existing resourceDirectory dtmexamples.vagrant.docker.azure.linux/applications/vagrant/./src/main/azure
+03:07:32 [INFO] 
+03:07:32 [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-nodeconfig) @ vagrant ---
+03:07:32 [INFO] Using 'UTF-8' encoding to copy filtered resources.
+03:07:32 [INFO] Copying 1 resource
+03:07:32 [INFO] 
+03:07:32 [INFO] --- maven-dependency-plugin:2.10:copy (copy-sb-app) @ vagrant ---
+03:07:32 [INFO] Configured Artifact: com.tibco.ep.dtmexamples.applications:topologies:3.1.0-SNAPSHOT:ep-application
+03:07:32 [INFO] Configured Artifact: com.tibco.ep.sb.rt:platform_linuxx86_64:10.1.0-SNAPSHOT:zip
+03:07:32 [INFO] Copying topologies-3.1.0-SNAPSHOT.zip to dtmexamples.vagrant.docker.azure.linux/applications/vagrant/target/staging/azure/app/topologies-3.1.0-SNAPSHOT.zip
+03:07:32 [INFO] Copying platform_linuxx86_64-10.1.0-SNAPSHOT.zip to dtmexamples.vagrant.docker.azure.linux/applications/vagrant/target/staging/azure/app/platform_linuxx86_64-10.1.0-SNAPSHOT.zip
+03:07:32 [INFO] 
+03:07:32 [INFO] --- maven-antrun-plugin:1.8:run (install-hostmanager-plugin) @ vagrant ---
+03:07:32 [INFO] Executing tasks
+03:07:32 
+03:07:32 install_hostmanager_plugin:
+03:07:35      [exec] Installing the 'vagrant-hostmanager' plugin. This can take a few minutes...
+03:07:47      [exec] Installed the plugin 'vagrant-hostmanager (1.8.5)'!
+03:07:48 [INFO] Executed tasks
+03:07:48 [INFO] 
+03:07:48 [INFO] --- maven-antrun-plugin:1.8:run (get-azure-inventory-script) @ vagrant ---
+03:07:48 [INFO] Executing tasks
+03:07:48 
+03:07:48 get-azure-inventory-script:
+03:07:48     [mkdir] Created dir: dtmexamples.vagrant.docker.azure.linux/applications/vagrant/target/staging/azure/ansible/playbooks/inventory
+03:07:48      [exec]   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+03:07:48      [exec]                                  Dload  Upload   Total   Spent    Left  Speed
+03:07:48      [exec] 
+03:07:48      [exec]   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   151  100   151    0     0    327      0 --:--:-- --:--:-- --:--:--   327
+03:07:48      [exec] 100 32631  100 32631    0     0  49826      0 --:--:-- --:--:-- --:--:-- 49826
+03:07:48 [INFO] Executed tasks
+03:07:48 [INFO] 
+03:07:48 [INFO] --- maven-antrun-plugin:1.8:run (upload-sb-s3) @ vagrant ---
+03:07:48 [INFO] Executing tasks
+03:07:48 
+03:07:48 upload_sb_s3:
+03:07:48      [exec]   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+03:07:48      [exec]                                  Dload  Upload   Total   Spent    Left  Speed
+03:07:48      [exec] 
+03:07:49      [exec]   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+...
+03:08:15 [INFO] --- maven-antrun-plugin:1.8:run (install-azure-plugin) @ vagrant ---
+03:08:15 [INFO] Executing tasks
+03:08:15 
+03:08:15 install_azure_plugin:
+03:08:17      [exec] Installing the './vagrant-azure-2.0.0.pre1.gem' plugin. This can take a few minutes...
+03:08:20      [exec] Installed the plugin 'vagrant-azure (2.0.0.pre1)'!
+03:08:20 [INFO] Executed tasks
+03:08:20 [INFO] 
+03:08:20 [INFO] --- maven-antrun-plugin:1.8:run (create-azure-vms) @ vagrant ---
+03:08:20 [INFO] Executing tasks
+03:08:20 
+03:08:20 create_azure_vms:
+03:08:23      [exec] ERROR loader: Unknown config sources: ["29958800_machine_A1", :"32440620_azure.box_azure"]
+03:08:23      [exec] ERROR loader: Unknown config sources: ["29958800_machine_A1", :"32440620_azure.box_azure"]
+03:08:23      [exec] ERROR loader: Unknown config sources: ["29958800_machine_A1"]
+03:08:24      [exec] ERROR loader: Unknown config sources: [:"32440620_azure.box_azure", "29958800_machine_A2"]
+03:08:24      [exec] ERROR loader: Unknown config sources: ["29958800_machine_A1", :"32440620_azure.box_azure"]
+03:08:24      [exec] Bringing machine 'A1' up with 'azure' provider...
+03:08:24      [exec] Bringing machine 'A2' up with 'azure' provider...
+03:08:24      [exec] ==> A1: Launching an instance with the following settings...
+03:08:24      [exec] ==> A1:  -- Management Endpoint: https://management.azure.com
+03:08:24      [exec] ==> A1:  -- Subscription Id: fa12027a-97c4-41dd-9d40-108441806eb3
+03:08:24      [exec] ==> A1:  -- Resource Group Name: testing
+03:08:24      [exec] ==> A1:  -- Location: eastus
+03:08:24      [exec] ==> A1:  -- Admin User Name: vagrant
+03:08:24      [exec] ==> A1:  -- VM Name: A1
+03:08:24      [exec] ==> A1:  -- VM Size: Standard_A3
+03:08:24      [exec] ==> A1:  -- Image URN: OpenLogic:CentOS:7.2:latest
+03:08:24      [exec] ==> A1:  -- Virtual Network Name: testing_vn
+03:08:24      [exec] ==> A1:  -- Subnet Name: testing_subnet
+03:08:26      [exec] ==> A1:  -- Create or Update of Resource Group: testing
+03:08:27      [exec] ==> A1: Starting deployment
+03:12:03      [exec] ==> A1: Finished deploying
+03:12:03      [exec] ==> A1: Waiting for SSH to become available...
+03:12:08      [exec] ==> A1: Machine is booted and ready for use!
+03:12:08      [exec] ==> A1: Running provisioner: shell...
+03:12:09      [exec]     A1: Running: inline script
+03:25:16      [exec] ==> A1: Retrieving http://download.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
+03:25:16      [exec] ==> A1: warning: /var/tmp/rpm-tmp.f9Z8AF: Header V3 RSA/SHA256 Signature, key ID 352c64e5: NOKEY
+03:25:16      [exec] ==> A1: Preparing... 
+03:38:20      [exec] ==> A2: Metadata Cache Created
+...
+03:25:17      [exec] ==> A1:  * epel: mirror.symnds.com
+03:25:17      [exec] ==> A1: Metadata Cache Created
+03:25:17      [exec] ==> A2: Launching an instance with the following settings...
+03:25:17      [exec] ==> A2:  -- Management Endpoint: https://management.azure.com
+03:25:17      [exec] ==> A2:  -- Subscription Id: fa12027a-97c4-41dd-9d40-108441806eb3
+03:25:17      [exec] ==> A2:  -- Resource Group Name: testing
+03:25:17      [exec] ==> A2:  -- Location: eastus
+03:25:17      [exec] ==> A2:  -- Admin User Name: vagrant
+03:25:17      [exec] ==> A2:  -- VM Name: A2
+03:25:17      [exec] ==> A2:  -- VM Size: Standard_A3
+03:25:17      [exec] ==> A2:  -- Image URN: OpenLogic:CentOS:7.2:latest
+03:25:17      [exec] ==> A2:  -- Virtual Network Name: testing_vn
+03:25:17      [exec] ==> A2:  -- Subnet Name: testing_subnet
+03:25:18      [exec] ==> A2:  -- Create or Update of Resource Group: testing
+03:25:19      [exec] ==> A2: Starting deployment
+03:27:54      [exec] ==> A2: Finished deploying
+03:27:54      [exec] ==> A2: Waiting for SSH to become available...
+03:27:57      [exec] ==> A2: Machine is booted and ready for use!
+03:27:57      [exec] ==> A2: Running provisioner: shell...
+03:27:58      [exec]     A2: Running: inline script
+03:38:20 [INFO] Executed tasks
+03:38:20 [INFO] 
+03:38:20 [INFO] --- maven-antrun-plugin:1.8:run (execute-azure-hostmanager-remote) @ vagrant ---
+03:38:21 [INFO] Executing tasks
+03:38:21 
+03:38:21 execute-azure-hostmanager-remote:
+03:38:25      [exec] ERROR loader: Unknown config sources: ["24380000_machine_A1", :"24283760_azure.box_azure"]
+03:38:25      [exec] ERROR loader: Unknown config sources: ["24380000_machine_A1"]
+03:38:25      [exec] [A1] Updating /etc/hosts file...
+03:38:37      [exec] [A2] Updating /etc/hosts file...
+03:38:39 [INFO] Executed tasks
+03:38:39 [INFO] 
+03:38:39 [INFO] --- maven-antrun-plugin:1.8:run (execute-azure-hostmanager-local) @ vagrant ---
+03:38:39 [INFO] Executing tasks
+03:38:39 
+03:38:39 execute-azure-hostmanager-local:
+03:38:43      [exec] ERROR loader: Unknown config sources: ["19460200_machine_A1", :"19284640_azure.box_azure"]
+03:38:43      [exec] ERROR loader: Unknown config sources: ["19460200_machine_A1"]
+03:38:45      [exec] Updating /etc/hosts file on host machine (password may be required)...
+03:38:48 [INFO] Executed tasks
+03:38:48 [INFO] 
+03:38:48 [INFO] --- buildnumber-maven-plugin:1.4:create (prepare-package) @ vagrant ---
+03:38:48 [INFO] --- ep-maven-plugin:1.1.0-SNAPSHOT:install-product (install_sb) @ vagrant ---
+03:38:48 [INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.1.0-SNAPSHOT:provided already installed manually to dtmexamples.vagrant.docker.azure.linux
+03:38:51 [INFO] --- maven-antrun-plugin:1.8:run (execute-azure-rsync) @ vagrant ---
+03:38:51 [INFO] Executing tasks
+03:38:51 
++------------
+  
+* Custom Provision and Run Containers
+
+  The antrun target <provision-sb-azure> executes <<<vagrant provision>>> script calling either Ansible by default or Puppet.
+  This assume previous compile lifecycle has been executed.
+  
+
++------------
+$ mvn -Pazure compile antrun:run@provision-sb-azure
+03:39:00 [INFO] --- maven-antrun-plugin:1.8:run (provision-sb-azure) @ vagrant ---
+03:39:00 [INFO] Executing tasks
+03:39:00 
+03:39:00 provision_sb_azure:
+03:39:04      [exec] ERROR loader: Unknown config sources: ["22847400_machine_A1", :"20616500_azure.box_azure"]
+03:39:04      [exec] ERROR loader: Unknown config sources: ["22847400_machine_A1"]
+03:39:07      [exec] ==> A2: Running provisioner: ansible...
+03:39:09      [exec]     A2: Running ansible-playbook...
+03:39:10      [exec] 
+03:39:10      [exec] PLAY [tag_ClusterName_topologies] **********************************************
+03:39:10      [exec] 
+03:39:10      [exec] TASK [setup] *******************************************************************
+03:39:14      [exec] ok: [A2]
+03:39:14      [exec] ok: [A1]
+03:39:14      [exec] 
+03:39:14      [exec] TASK [common : Install python setup tools] *************************************
+03:39:15      [exec] ok: [A1 -> 127.0.0.1]
+...
+03:51:35      [exec] TASK [Cluster_Docker : start SB container] *************************************
+03:51:41      [exec] changed: [A2] => (item=A2.topologies)
+03:51:43      [exec] changed: [A1] => (item=A1.topologies)
+03:51:43      [exec] 
+03:51:43      [exec] TASK [Cluster_Docker : wait and verify dtm mgmt port is running] ***************
++------------
+    
+* Stop and Remove Containers
+
+  Invoking maven lifecycle <<clean>> will run <<<vagrant destroy>>> script to remove the VMs.
+
++------------  
+mvn -Pazure -fn initialize clean
++------------
+  
+  OR
+  
++------------  
+mvn initialize antrun:run@destroy-azure-vms
++------------
+  
+* Tests
+  
+  ep-maven-plugin is invoked with 'display node' on the first node running inside
+  container A1.topologies.
+
++------------  
+mvn initialize ep:administer-nodes@display-nodes
+[INFO] [5556] Running "display node"
+[INFO] Node             Node Name     Node Description Node State Host Name     Administration Port Discovery Service     Container Node Directory                                      Deployment Directories                         Install Time                  Last Start Time               Build Type  Product Version                                                                         Product Installation Directory Web Server State Web Server URLs
+[INFO] [localhost:5556] A1.topologies No description   Started    A1.topologies 5556                running on port 54321 tibco/sb  /opt/tibco/sb-cep/10/deploy/nodes/A1.topologies /opt/tibco/sb-cep/10/lib:/opt/tibco/topologies 2017-02-08 17:13:01 +0000 UTC 2017-02-08 17:13:14 +0000 UTC DEVELOPMENT TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1702011015 streambase-master-linux-327) /opt/tibco/sb-cep/10       Started          http://A1.topologies:59855
+[INFO] [5556] Finished "display node"
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------
+  
+  Codeline :
+  
+%{snippet|id=eptest|file=${project.basedir}/pom.xml}
+
+  

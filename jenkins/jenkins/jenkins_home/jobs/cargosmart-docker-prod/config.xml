@@ -1,0 +1,146 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<maven2-moduleset plugin="maven-plugin@3.1.2">
+  <actions/>
+  <description>Build and test partition docker. Finally push docker images to dockerhub.</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>3</daysToKeep>
+        <numToKeep>3</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.8.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/ayen-tibco/oocl.git</url>
+        <credentialsId>github</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>com.tibco.ep.sb.example</groupId>
+    <artifactId>partitioning</artifactId>
+  </rootModule>
+  <goals>-Pdocker package -Ddocker.showLogs</goals>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <ignoreUpstremChanges>true</ignoreUpstremChanges>
+  <ignoreUnsuccessfulUpstreams>false</ignoreUnsuccessfulUpstreams>
+  <archivingDisabled>false</archivingDisabled>
+  <siteArchivingDisabled>false</siteArchivingDisabled>
+  <fingerprintingDisabled>false</fingerprintingDisabled>
+  <resolveDependencies>false</resolveDependencies>
+  <processPlugins>false</processPlugins>
+  <mavenValidationLevel>-1</mavenValidationLevel>
+  <runHeadless>false</runHeadless>
+  <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+  <blockTriggerWhenBuilding>true</blockTriggerWhenBuilding>
+  <settings class="jenkins.mvn.FilePathSettingsProvider">
+    <path>${WORKSPACE}/settings.xml</path>
+  </settings>
+  <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+  <reporters/>
+  <publishers/>
+  <buildWrappers>
+    <org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper plugin="credentials-binding@1.16">
+      <bindings>
+        <org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+          <credentialsId>docker.io</credentialsId>
+          <usernameVariable>DOCKERIO_USERNAME</usernameVariable>
+          <passwordVariable>DOCKERIO_PWORD</passwordVariable>
+        </org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+      </bindings>
+    </org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>600</timeoutMinutes>
+      </strategy>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.FailOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <EnvInjectBuildWrapper plugin="envinject@2.1.5">
+      <info>
+        <propertiesContent>TIBCO_EP_HOME=/opt/tibco/sb-cep/10.2
+DOCKER_HOST=unix:///var/run/docker.sock
+DOCKER_IMAGE_NAME=partition_docker</propertiesContent>
+        <secureGroovyScript plugin="script-security@1.43">
+          <script></script>
+          <sandbox>false</sandbox>
+        </secureGroovyScript>
+        <loadFilesFromMaster>false</loadFilesFromMaster>
+      </info>
+    </EnvInjectBuildWrapper>
+  </buildWrappers>
+  <prebuilders>
+    <hudson.tasks.Shell>
+      <command>${WORKSPACE}/partition_docker/launchregistry.sh</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Maven>
+      <targets>-Pdocker clean</targets>
+      <mavenName>3.5.3</mavenName>
+      <pom>pom.xml</pom>
+      <usePrivateRepository>false</usePrivateRepository>
+      <settings class="jenkins.mvn.FilePathSettingsProvider">
+        <path>${WORKSPACE}/settings.xml</path>
+      </settings>
+      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+      <injectBuildVariables>true</injectBuildVariables>
+    </hudson.tasks.Maven>
+  </prebuilders>
+  <postbuilders>
+    <hudson.tasks.Shell>
+      <command>docker network inspect isolated_nw || docker network create --driver bridge isolated_nw</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>docker images | grep &quot;localhost:5000/${DOCKER_IMAGE_NAME}&quot; &amp;&amp; docker rmi localhost:5000/${DOCKER_IMAGE_NAME}
+exit 0</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Maven>
+      <targets>-Pdocker docker:push post-integration-test</targets>
+      <mavenName>3.5.3</mavenName>
+      <pom>pom.xml</pom>
+      <properties>DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME}
+docker.skip.build=true
+docker.registry=localhost:5000
+skipNode2=true
+skipNode3=true
+docker.showLogs=true
+epmaven_hostname=localhost</properties>
+      <usePrivateRepository>false</usePrivateRepository>
+      <settings class="jenkins.mvn.FilePathSettingsProvider">
+        <path>${WORKSPACE}/settings.xml</path>
+      </settings>
+      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+      <injectBuildVariables>true</injectBuildVariables>
+    </hudson.tasks.Maven>
+    <hudson.tasks.Shell>
+      <command>docker login -u $DOCKERIO_USERNAME -p $DOCKERIO_PWORD &amp;&amp; docker tag $DOCKER_IMAGE_NAME ${DOCKERIO_USERNAME}/$DOCKER_IMAGE_NAME:latest &amp;&amp; docker push ${DOCKERIO_USERNAME}/$DOCKER_IMAGE_NAME:latest</command>
+    </hudson.tasks.Shell>
+  </postbuilders>
+  <runPostStepsIfResult>
+    <name>SUCCESS</name>
+    <ordinal>0</ordinal>
+    <color>BLUE</color>
+    <completeBuild>true</completeBuild>
+  </runPostStepsIfResult>
+</maven2-moduleset>

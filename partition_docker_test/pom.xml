@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- vim: set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab : -->
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.tibco.ep.dtmexamples</groupId>
+    <artifactId>partition_docker_test</artifactId>
+    <packaging>ep-application</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>partition_docker_test</name>
+
+    <!-- common definitions for this version of StreamBase -->
+    <parent>
+        <groupId>com.tibco.ep.sb.parent</groupId>
+        <artifactId>ep-application</artifactId>
+        <version>10.2.1</version>
+    </parent>
+
+    <properties>
+        <!-- docker base image - see https://hub.docker.com/_/centos/ -->
+        <docker.from>centos:7</docker.from>
+        <!-- openjdk version to use inside docker -->
+        <docker.jdkversion>1.8.0</docker.jdkversion>
+    </properties>
+
+    <profiles>
+
+        <!-- set properties based on platform -->
+        <profile>
+            <id>linux profile in project</id>
+            <activation>
+                <os><name>linux</name></os>
+            </activation>
+            <properties>
+                <docker.scope>test</docker.scope>
+                <platform_linux.unpack>true</platform_linux.unpack>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>mac profile in project</id>
+            <activation>
+                <os><name>mac os x</name></os>
+            </activation>
+            <properties>
+                <docker.scope>provided</docker.scope>
+                <platform_linux.unpack>true</platform_linux.unpack>
+            </properties>
+            <!-- linux platform for docker build -->
+            <dependencies>
+                <dependency>
+                    <groupId>com.tibco.ep.sb.rt</groupId>
+                    <artifactId>platform_linuxx86_64</artifactId>
+                    <type>zip</type>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>windows profile in project</id>
+            <activation>
+                <property>
+                    <name>path.separator</name>
+                    <value>;</value>
+                </property>
+            </activation>
+            <properties>
+                <docker.scope>provided</docker.scope>
+                <platform_linux.unpack>false</platform_linux.unpack>
+                <docker.run.unpack>cd /opt/tibco; unzip platform_linuxx86_64*.zip; rm platform_linuxx86_64*.zip</docker.run.unpack>
+            </properties>
+            <!-- linux platform for docker build -->
+            <dependencies>
+                <dependency>
+                    <groupId>com.tibco.ep.sb.rt</groupId>
+                    <artifactId>platform_linuxx86_64</artifactId>
+                    <type>zip</type>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+    </profiles>
+
+    <!-- build and test rules -->
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>com.tibco.ep</groupId>
+                <artifactId>ep-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <nodeDeployFile>${project.basedir}/src/test/configurations/node.conf</nodeDeployFile>
+                    <nodes>
+                        <node>A</node>
+                    </nodes>
+                </configuration>
+            </plugin>
+
+            <!-- build docker image containing this application -->
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <configuration>
+                    <logDate>default</logDate>
+                    <verbose>true</verbose>
+                    <autoPull>always</autoPull>
+                    <images>
+                        <image>
+                            <name>%g/%a:%l</name>
+                            <build>
+                                <from>${docker.from}</from>
+                                <assembly>
+                                    <basedir>/opt/tibco</basedir>
+                                    <inline>
+                                        <dependencySets>
+                                            <dependencySet>
+                                                <includes>
+                                                    <include>com.tibco.ep.sb.rt:platform_linuxx86_64:zip</include>
+                                                </includes>
+                                                <scope>${docker.scope}</scope>
+                                                <unpack>${platform_linux.unpack}</unpack>
+                                                <fileMode>755</fileMode>
+                                                <directoryMode>755</directoryMode>
+                                                <outputDirectory></outputDirectory>
+                                            </dependencySet>
+                                            <dependencySet>
+                                                <includes>
+                                                    <!--<include>*:*:ep-application:*</include>-->
+                                                    <include>com.tibco.ep.sb.example:partitioning-application:ep-application:1.0.0-SNAPSHOT</include>
+                                                </includes>
+                                                <unpack>false</unpack>
+                                                <outputDirectory></outputDirectory>
+                                            </dependencySet>
+                                        </dependencySets>
+                                        <files>
+                                            <file>
+                                                <source>${project.basedir}/src/test/configurations/node.conf</source>
+                                                <outputDirectory></outputDirectory>
+                                            </file>
+                                        </files>
+                                    </inline>
+                                </assembly>
+                                <optimise>true</optimise>
+                                <runCmds>
+                                    <run>/usr/sbin/useradd -m -s /bin/bash -d /var/opt/tibco ${user.name}</run>
+                                    <run>yum -y install tar sysstat gdb zip unzip java-${docker.jdkversion}-openjdk-devel net-tools hostname perl; yum clean all</run>
+                                    <run>${docker.run.unpack}</run>
+                                </runCmds>
+                                <user>${user.name}</user>
+                                <env>
+                                    <PATH>/usr/bin:/bin:/opt/tibco/distrib/tibco/bin</PATH>
+                                    <JAVA_HOME>/etc/alternatives/java_sdk_${docker.jdkversion}</JAVA_HOME>
+                                    <TIBCO_EP_HOME>/opt/tibco</TIBCO_EP_HOME>
+                                    <NODENAME>A.${project.artifactId}</NODENAME>
+                                </env>
+                                <cmd>
+                                    <shell>
+                                        <!--epadmin install node adminport=5556 nodename=$NODENAME application=/opt/tibco/${project.artifactId}-${project.version}.zip nodedirectory=/var/opt/tibco nodedeploy=/opt/tibco/node.conf trustedhosts=gateway; \-->
+                                        epadmin username=guest password=guest install node adminport=5556 nodename=$NODENAME application=/opt/tibco/partitioning-application-1.0.0-SNAPSHOT.zip nodedirectory=/var/opt/tibco trustedhosts=gateway; \
+                                        epadmin servicename=$NODENAME start node; \
+                                        echo "COMMAND FINISHED"; \
+                                        sleep infinity
+                                    </shell>
+                                </cmd>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>build</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+    <!-- maven repository -->
+    <repositories>
+        <repository>
+            <id>TIBCOEP</id>
+            <url>file://${env.TIBCO_EP_HOME}/sdk/maven/repo</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>TIBCOEP</id>
+            <url>file://${env.TIBCO_EP_HOME}/sdk/maven/repo</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencies>
+    	<dependency>
+    		<groupId>com.tibco.ep.sb.example</groupId>
+    		<artifactId>partitioning-application</artifactId>
+    		<version>1.0.0-SNAPSHOT</version>
+    		<type>ep-application</type>
+    	</dependency>
+    </dependencies>
+</project>

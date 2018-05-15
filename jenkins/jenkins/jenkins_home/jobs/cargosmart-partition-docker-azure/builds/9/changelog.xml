@@ -1,0 +1,12 @@
+commit 21fd3c5728951d02cc10254725d4ee86e2fa7188
+tree 7dcd063a79b7f44249585c6696c515335131ff82
+parent cdc041ddd3ba4245155bf21e32dce70fb15ac0a2
+author ayen <ayen@tibco.com> 2018-05-13 12:04:30 -0400
+committer ayen <ayen@tibco.com> 2018-05-13 12:04:30 -0400
+
+    Update to use docker_container module
+
+
+
+:100644 100644 b42f509d0f95638fdcd43d50da06c3a02a8791ef 054fac4126bd7f7859b3be2fc2887fa2f834312c M	ansible/src/main/playbooks/roles/Cluster_Docker/tasks/main.yml
+:100644 100644 71b448ffa5ed89078860024bb9ac6b6a1c821a4b 71b448ffa5ed89078860024bb9ac6b6a1c821a4b R100	partitioning-application/src/test/configurations/elastic.conf	partitioning-application/src/main/configurations/elastic.conf

@@ -1,0 +1,1568 @@
+Started by user [8mha:////4LFCF2qqWvAi501ZWXfsAgXzaSAypkNcz23SGiy7qBImAAAAkx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgYu/dLi1CIwAQCumwTUvwAAAA==[0madmin
+[EnvInject] - Loading node environment variables.
+[EnvInject] - Preparing an environment for the build.
+[EnvInject] - Keeping Jenkins system variables.
+[EnvInject] - Keeping Jenkins build variables.
+[EnvInject] - Injecting as environment variables the properties content 
+TIBCO_EP_HOME=/opt/tibco/sb-cep/10.2
+ANSIBLE_TAGS=prep,install,deploy,docker
+SB_DOCKER_IMAGE_TAG=latest
+CONFIG_PROP_FILE=config-docker.properties
+LD_LIBRARY_PATH=
+DOCKERDEPLOY=true
+SB_DOCKER_IMAGE=ayentibco/partition_docker
+
+[EnvInject] - Variables injected successfully.
+[EnvInject] - Injecting contributions.
+Building in workspace /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure
+ > /opt/bitnami/git/bin/git rev-parse --is-inside-work-tree # timeout=10
+Fetching changes from the remote Git repository
+ > /opt/bitnami/git/bin/git config remote.origin.url https://github.com/ayen-tibco/oocl.git # timeout=10
+Fetching upstream changes from https://github.com/ayen-tibco/oocl.git
+ > /opt/bitnami/git/bin/git --version # timeout=10
+using GIT_ASKPASS to set credentials github
+ > /opt/bitnami/git/bin/git fetch --tags --progress https://github.com/ayen-tibco/oocl.git +refs/heads/*:refs/remotes/origin/*
+ > /opt/bitnami/git/bin/git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > /opt/bitnami/git/bin/git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+Checking out Revision 21fd3c5728951d02cc10254725d4ee86e2fa7188 (refs/remotes/origin/master)
+ > /opt/bitnami/git/bin/git config core.sparsecheckout # timeout=10
+ > /opt/bitnami/git/bin/git checkout -f 21fd3c5728951d02cc10254725d4ee86e2fa7188
+Commit message: "Update to use docker_container module"
+ > /opt/bitnami/git/bin/git rev-list --no-walk cdc041ddd3ba4245155bf21e32dce70fb15ac0a2 # timeout=10
+[cargosmart-partition-docker-azure] $ /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/bin/mvn -f vagrant/pom.xml -s /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/settings.xml -Pazure initialize clean -DCONFIG_PROP_FILE=config-docker.properties
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.tibco.ep.sb.sample.cloud:vagrant >----------------
+[INFO] Building Vagrant and Cloud Provisioning Examples 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product-1) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:set-resources (default-set-resources) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (install_sb) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildNumber: 21fd3c5728951d02cc10254725d4ee86e2fa7188 at timestamp: 1526228079871
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (destroy-azure-vms) @ vagrant ---
+[INFO] Executing tasks
+
+destroy_azure_vms:
+     [exec] + grep -c running
+     [exec] + vagrant status
+     [exec] ERROR loader: Unknown config sources: ["22017280_machine_oocldocker1", :"22531840_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["22017280_machine_oocldocker1", :"22531840_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["22017280_machine_oocldocker1"]
+     [exec] ERROR loader: Unknown config sources: ["22017280_machine_oocldocker1", :"22531840_azure.box_azure", "22017280_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["22017280_machine_oocldocker1", :"22531840_azure.box_azure", "22017280_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["22017280_machine_oocldocker1", "22017280_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: [:"22531840_azure.box_azure", "22017280_machine_oocldocker2", "22017280_machine_oocldocker3"]
+     [exec] ERROR loader: Unknown config sources: ["22017280_machine_oocldocker1", :"22531840_azure.box_azure", "22017280_machine_oocldocker3"]
+     [exec] ERROR loader: Unknown config sources: ["22017280_machine_oocldocker1", :"22531840_azure.box_azure", "22017280_machine_oocldocker2"]
+     [exec] + STATUS=0
+     [exec] + [ 0 -gt 0 ]
+     [exec] + [ false == true ]
+     [exec] ./vagrant_destroy_vms.sh: 9: [: false: unexpected operator
+     [exec] + exit
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:stop-nodes (default-stop-nodes) @ vagrant ---
+[INFO] Stop and remove nodes is skipped
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ vagrant ---
+[INFO] Deleting /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 20.503 s
+[INFO] Finished at: 2018-05-13T12:14:47-04:00
+[INFO] ------------------------------------------------------------------------
+Parsing POMs
+Established TCP socket on 45663
+[vagrant] $ /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.model.JDK/jdk8u172/bin/java -cp /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven35-agent-1.12-alpha-1.jar:/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/boot/plexus-classworlds-2.5.2.jar:/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/conf/logging jenkins.maven3.agent.Maven35Main /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3 /opt/bitnami/apache-tomcat/webapps/jenkins/WEB-INF/lib/remoting-3.17.jar /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven35-interceptor-1.12-alpha-1.jar /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven3-interceptor-commons-1.12-alpha-1.jar 45663
+<===[JENKINS REMOTING CAPACITY]===>   channel started
+Executing Maven:  -B -f /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/pom.xml -s /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/settings.xml -Pazure install -DANSIBLE_TAGS=prep,install,deploy,docker -DCONFIG_PROP_FILE=config-docker.properties -DDOCKERDEPLOY=true -DSB_DOCKER_IMAGE=****/partition_docker
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.tibco.ep.sb.sample.cloud:vagrant >----------------
+[INFO] Building Vagrant and Cloud Provisioning Examples 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product-1) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:set-resources (default-set-resources) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (install_sb) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildNumber: 21fd3c5728951d02cc10254725d4ee86e2fa7188 at timestamp: 1526228115718
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-dependency-plugin:3.1.0:unpack-dependencies (unpack-tgz-files) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 50 resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-compiler-plugin:3.6.1:compile (default-compile) @ vagrant ---
+[INFO] No sources to compile
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-dependency-plugin:3.1.0:copy (copy-sb-app) @ vagrant ---
+[INFO] Configured Artifact: com.tibco.ep.sb.example:partitioning-application:1.0.0-SNAPSHOT:ep-application
+[INFO] Configured Artifact: com.tibco.ep.sb.rt:platform_linuxx86_64:?:zip
+[INFO] Copying partitioning-application-1.0.0-SNAPSHOT.zip to /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/staging/azure/app/partitioning-application-1.0.0-SNAPSHOT.zip
+[INFO] Copying platform_linuxx86_64-10.2.1.zip to /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/staging/azure/app/platform_linuxx86_64.zip
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-vagrantfile) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 6 resources
+[INFO] Copying 5 resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-provisioner-scripts) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 100 resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-cloud-inventory-script) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/./src/main/azure
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-localhost-inventory) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:copy-resources (copy-nodeconfig) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (install-hostmanager-plugin) @ vagrant ---
+[INFO] Executing tasks
+
+install_hostmanager_plugin:
+     [exec] Installing the 'vagrant-hostmanager' plugin. This can take a few minutes...
+     [exec] Installed the plugin 'vagrant-hostmanager (1.8.8)'!
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (get-azure-inventory-script) @ vagrant ---
+[INFO] Executing tasks
+
+get-azure-inventory-script:
+    [mkdir] Created dir: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/staging/azure/ansible/playbooks/inventory
+     [exec]   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+     [exec]                                  Dload  Upload   Total   Spent    Left  Speed
+     [exec] 
+     [exec]   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   151  100   151    0     0   1502      0 --:--:-- --:--:-- --:--:--  1510
+     [exec] 100 38050  100 38050    0     0   180k      0 --:--:-- --:--:-- --:--:--  180k
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (upload-sb-s3) @ vagrant ---
+[INFO] Executing tasks
+
+upload_sb_s3:
+     [exec]   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+     [exec]                                  Dload  Upload   Total   Spent    Left  Speed
+     [exec] 
+     [exec]   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 52.216.18.248...* TCP_NODELAY set
+     [exec] * Connected to sbqa.s3.amazonaws.com (52.216.18.248) port 443 (#0)
+     [exec] * ALPN, offering h2
+     [exec] * ALPN, offering http/1.1
+     [exec] * Cipher selection: ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH
+     [exec] * successfully set certificate verify locations:
+     [exec] *   CAfile: /opt/bitnami/common/openssl/certs/curl-ca-bundle.crt
+     [exec]   CApath: /etc/ssl/certs
+     [exec] * TLSv1.2 (OUT), TLS header, Certificate Status (22):
+     [exec] } [5 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS handshake, Client hello (1):
+     [exec] } [512 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Server hello (2):
+     [exec] { [87 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Certificate (11):
+     [exec] { [2514 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+     [exec] { [333 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Server finished (14):
+     [exec] { [4 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+     [exec] } [70 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS change cipher, Client hello (1):
+     [exec] } [1 bytes data]
+     [exec] * TLSv1.2 (OUT), TLS handshake, Finished (20):
+     [exec] } [16 bytes data]
+     [exec] * TLSv1.2 (IN), TLS change cipher, Client hello (1):
+     [exec] { [1 bytes data]
+     [exec] * TLSv1.2 (IN), TLS handshake, Finished (20):
+     [exec] { [16 bytes data]
+     [exec] * SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+     [exec] * ALPN, server did not agree to a protocol
+     [exec] * Server certificate:
+     [exec] *  subject: C=US; ST=Washington; L=Seattle; O=Amazon.com Inc.; CN=*.s3.amazonaws.com
+     [exec] *  start date: Sep 22 00:00:00 2017 GMT
+     [exec] *  expire date: Jan  3 12:00:00 2019 GMT
+     [exec] *  subjectAltName: host "sbqa.s3.amazonaws.com" matched cert's "*.s3.amazonaws.com"
+     [exec] *  issuer: C=US; O=DigiCert Inc; OU=www.digicert.com; CN=DigiCert Baltimore CA-2 G2
+     [exec] *  SSL certificate verify ok.
+     [exec] } [5 bytes data]
+     [exec] > PUT /platform_linuxx86_64.zip HTTP/1.1
+     [exec] > Host: sbqa.s3.amazonaws.com
+     [exec] > User-Agent: curl/7.52.1
+     [exec] > Accept: */*
+     [exec] > Content-Type: application/octet-stream
+     [exec] > Content-Length: 142409116
+     [exec] > Expect: 100-continue
+     [exec] > 
+     [exec] { [5 bytes data]
+     [exec] < HTTP/1.1 100 Continue
+     [exec] } [5 bytes data]
+     [exec] 
+     [exec]   0  135M    0     0    0 32768      0   233k  0:09:55 --:--:--  0:09:55  233k 27  135M    0     0   27 37.0M      0  32.8M  0:00:04  0:00:01  0:00:03 32.7M 83  135M    0     0   83  113M      0  53.4M  0:00:02  0:00:02 --:--:-- 53.4M* We are completely uploaded and fine{ [5 bytes data]
+     [exec] < HTTP/1.1 200 OK
+     [exec] < x-amz-id-2: 4h0OAKQgwmhlC/HCHY0UdGi+5Us4HZWm/kIdwwHQy93pN++Z+fSJAbf5sMvh7EjfCiutdqtgPdk=
+     [exec] < x-amz-request-id: B8AED17DA1EF63B2
+     [exec] < Date: Sun, 13 May 2018 16:15:41 GMT
+     [exec] < ETag: "a111b4bb547fc66c3af5d81be8f6f97f"
+     [exec] < Content-Length: 0
+     [exec] < Server: AmazonS3
+     [exec] < 
+     [exec] * Curl_http_done: called premature == 0
+     [exec] 
+     [exec] 100  135M    0     0  100  135M      0  53.3M  0:00:02  0:00:02 --:--:-- 53.3M* Connection #0 to host sbqa.s3.amazonaws.com left intact
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (install-azure-plugin) @ vagrant ---
+[INFO] Executing tasks
+
+install_azure_plugin:
+     [exec] Installing the 'vagrant-azure' plugin. This can take a few minutes...
+     [exec] Installed the plugin 'vagrant-azure (2.0.0)'!
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (create-azure-vms) @ vagrant ---
+[INFO] Executing tasks
+
+create_azure_vms:
+     [exec] ERROR loader: Unknown config sources: ["13888900_machine_oocldocker1", :"13912680_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["13888900_machine_oocldocker1", :"13912680_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["13888900_machine_oocldocker1"]
+     [exec] ERROR loader: Unknown config sources: ["13888900_machine_oocldocker1", :"13912680_azure.box_azure", "13888900_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["13888900_machine_oocldocker1", :"13912680_azure.box_azure", "13888900_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["13888900_machine_oocldocker1", "13888900_machine_oocldocker2"]
+     [exec] Bringing machine 'oocldocker1' up with 'azure' provider...
+     [exec] Bringing machine 'oocldocker2' up with 'azure' provider...
+     [exec] Bringing machine 'oocldocker3' up with 'azure' provider...
+     [exec] ==> oocldocker1: Launching an instance with the following settings...
+     [exec] ==> oocldocker1:  -- Management Endpoint: https://management.azure.com
+     [exec] ==> oocldocker1:  -- Subscription Id: ****
+     [exec] ==> oocldocker1:  -- Resource Group Name: oocldocker
+     [exec] ==> oocldocker1:  -- Location: eastus
+     [exec] ==> oocldocker1:  -- SSH User Name: vagrant
+     [exec] ==> oocldocker1:  -- Admin Username: vagrant
+     [exec] ==> oocldocker1:  -- VM Name: oocldocker1
+     [exec] ==> oocldocker1:  -- VM Storage Account Type: Premium_LRS
+     [exec] ==> oocldocker1:  -- VM Size: Standard_DS2_v2
+     [exec] ==> oocldocker1:  -- Image URN: OpenLogic:CentOS:7.4:latest
+     [exec] ==> oocldocker1:  -- Virtual Network Name: oocldocker_vn
+     [exec] ==> oocldocker1:  -- Subnet Name: oocldocker_subnet
+     [exec] ==> oocldocker1:  -- TCP Endpoints: ["5556-5558", "10000"]
+     [exec] ==> oocldocker1:  -- DNS Label Prefix: oocldocker1
+     [exec] ==> oocldocker1:  -- Create or Update of Resource Group: oocldocker
+     [exec] ==> oocldocker1:  -- Starting deployment
+     [exec] ==> oocldocker1:  -- Finished deploying
+     [exec] ==> oocldocker1: Waiting for SSH to become available...
+     [exec] ==> oocldocker1: Machine is booted and ready for use!
+     [exec] ==> oocldocker1: Running provisioner: shell...
+     [exec]     oocldocker1: Running: inline script
+     [exec]     oocldocker1: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocldocker1: Preparing...                          
+     [exec]     oocldocker1: ########################################
+     [exec]     oocldocker1: Updating / installing...
+     [exec]     oocldocker1: epel-release-7-9                      
+     [exec]     oocldocker1: #####
+     [exec]     oocldocker1: ######
+     [exec]     oocldocker1: #############################
+     [exec]     oocldocker1: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker1: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocldocker1: 0 metadata files removed
+     [exec]     oocldocker1: 0 sqlite files removed
+     [exec]     oocldocker1: 0 metadata files removed
+     [exec]     oocldocker1: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker1: http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/de126c8180c589a3667728d55721f6e9da5102b2bcb46834511ea9c83c70bb02-updateinfo.xml.bz2: [Errno 12] Timeout on http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/de126c8180c589a3667728d55721f6e9da5102b2bcb46834511ea9c83c70bb02-updateinfo.xml.bz2: (28, 'Connection timed out after 30001 milliseconds')
+     [exec]     oocldocker1: Trying other mirror.
+     [exec]     oocldocker1: Determining fastest mirrors
+     [exec]     oocldocker1:  * epel: ewr.edge.kernel.org
+     [exec]     oocldocker1: Metadata Cache Created
+     [exec] ==> oocldocker2: Launching an instance with the following settings...
+     [exec] ==> oocldocker2:  -- Management Endpoint: https://management.azure.com
+     [exec] ==> oocldocker2:  -- Subscription Id: ****
+     [exec] ==> oocldocker2:  -- Resource Group Name: oocldocker
+     [exec] ==> oocldocker2:  -- Location: eastus
+     [exec] ==> oocldocker2:  -- SSH User Name: vagrant
+     [exec] ==> oocldocker2:  -- Admin Username: vagrant
+     [exec] ==> oocldocker2:  -- VM Name: oocldocker2
+     [exec] ==> oocldocker2:  -- VM Storage Account Type: Premium_LRS
+     [exec] ==> oocldocker2:  -- VM Size: Standard_DS2_v2
+     [exec] ==> oocldocker2:  -- Image URN: OpenLogic:CentOS:7.4:latest
+     [exec] ==> oocldocker2:  -- Virtual Network Name: oocldocker_vn
+     [exec] ==> oocldocker2:  -- Subnet Name: oocldocker_subnet
+     [exec] ==> oocldocker2:  -- TCP Endpoints: ["5556-5558", "10000"]
+     [exec] ==> oocldocker2:  -- DNS Label Prefix: oocldocker2
+     [exec] ==> oocldocker2:  -- Create or Update of Resource Group: oocldocker
+     [exec] ==> oocldocker2:  -- Starting deployment
+     [exec] ==> oocldocker2:  -- Finished deploying
+     [exec] ==> oocldocker2: Waiting for SSH to become available...
+     [exec] ==> oocldocker2: Machine is booted and ready for use!
+     [exec] ==> oocldocker2: Running provisioner: shell...
+     [exec]     oocldocker2: Running: inline script
+     [exec]     oocldocker2: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocldocker2: Preparing...                          
+     [exec]     oocldocker2: ########################################
+     [exec]     oocldocker2: Updating / installing...
+     [exec]     oocldocker2: epel-release-7-9                      
+     [exec]     oocldocker2: ###
+     [exec]     oocldocker2: ##
+     [exec]     oocldocker2: #
+     [exec]     oocldocker2: #####
+     [exec]     oocldocker2: #############################
+     [exec]     oocldocker2: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker2: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocldocker2: 0 metadata files removed
+     [exec]     oocldocker2: 0 sqlite files removed
+     [exec]     oocldocker2: 0 metadata files removed
+     [exec]     oocldocker2: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker2: http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/de126c8180c589a3667728d55721f6e9da5102b2bcb46834511ea9c83c70bb02-updateinfo.xml.bz2: [Errno 12] Timeout on http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/de126c8180c589a3667728d55721f6e9da5102b2bcb46834511ea9c83c70bb02-updateinfo.xml.bz2: (28, 'Connection timed out after 30001 milliseconds')
+     [exec]     oocldocker2: Trying other mirror.
+     [exec]     oocldocker2: Determining fastest mirrors
+     [exec]     oocldocker2:  * epel: ewr.edge.kernel.org
+     [exec]     oocldocker2: Metadata Cache Created
+     [exec] ==> oocldocker2: Running provisioner: shell...
+     [exec]     oocldocker2: Running: inline script
+     [exec]     oocldocker2: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocldocker2: Preparing...                          
+     [exec]     oocldocker2: ########################################
+     [exec]     oocldocker2: 	package epel-release-7-9.noarch is already installed
+     [exec]     oocldocker2: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker2: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocldocker2: 17 metadata files removed
+     [exec]     oocldocker2: 10 sqlite files removed
+     [exec]     oocldocker2: 0 metadata files removed
+     [exec]     oocldocker2: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker2: Loading mirror speeds from cached hostfile
+     [exec]     oocldocker2:  * epel: ewr.edge.kernel.org
+     [exec]     oocldocker2: Metadata Cache Created
+     [exec] ==> oocldocker3: Launching an instance with the following settings...
+     [exec] ==> oocldocker3:  -- Management Endpoint: https://management.azure.com
+     [exec] ==> oocldocker3:  -- Subscription Id: ****
+     [exec] ==> oocldocker3:  -- Resource Group Name: oocldocker
+     [exec] ==> oocldocker3:  -- Location: eastus
+     [exec] ==> oocldocker3:  -- SSH User Name: vagrant
+     [exec] ==> oocldocker3:  -- Admin Username: vagrant
+     [exec] ==> oocldocker3:  -- VM Name: oocldocker3
+     [exec] ==> oocldocker3:  -- VM Storage Account Type: Premium_LRS
+     [exec] ==> oocldocker3:  -- VM Size: Standard_DS2_v2
+     [exec] ==> oocldocker3:  -- Image URN: OpenLogic:CentOS:7.4:latest
+     [exec] ==> oocldocker3:  -- Virtual Network Name: oocldocker_vn
+     [exec] ==> oocldocker3:  -- Subnet Name: oocldocker_subnet
+     [exec] ==> oocldocker3:  -- TCP Endpoints: ["5556-5558", "10000"]
+     [exec] ==> oocldocker3:  -- DNS Label Prefix: oocldocker3
+     [exec] ==> oocldocker3:  -- Create or Update of Resource Group: oocldocker
+     [exec] ==> oocldocker3:  -- Starting deployment
+     [exec] ==> oocldocker3:  -- Finished deploying
+     [exec] ==> oocldocker3: Waiting for SSH to become available...
+     [exec] ==> oocldocker3: Machine is booted and ready for use!
+     [exec] ==> oocldocker3: Running provisioner: shell...
+     [exec]     oocldocker3: Running: inline script
+     [exec]     oocldocker3: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocldocker3: Preparing...                          
+     [exec]     oocldocker3: ########################################
+     [exec]     oocldocker3: Updating / installing...
+     [exec]     oocldocker3: epel-release-7-9                      ###
+     [exec]     oocldocker3: ##
+     [exec]     oocldocker3: #
+     [exec]     oocldocker3: #####
+     [exec]     oocldocker3: #############################
+     [exec]     oocldocker3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker3: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocldocker3: 0 metadata files removed
+     [exec]     oocldocker3: 0 sqlite files removed
+     [exec]     oocldocker3: 0 metadata files removed
+     [exec]     oocldocker3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker3: http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/de126c8180c589a3667728d55721f6e9da5102b2bcb46834511ea9c83c70bb02-updateinfo.xml.bz2: [Errno 12] Timeout on http://csc.mcs.sdsmt.edu/epel/7/x86_64/repodata/de126c8180c589a3667728d55721f6e9da5102b2bcb46834511ea9c83c70bb02-updateinfo.xml.bz2: (28, 'Connection timed out after 30001 milliseconds')
+     [exec]     oocldocker3: Trying other mirror.
+     [exec]     oocldocker3: Determining fastest mirrors
+     [exec]     oocldocker3:  * epel: mirror.es.its.nyu.edu
+     [exec]     oocldocker3: Metadata Cache Created
+     [exec] ==> oocldocker3: Running provisioner: shell...
+     [exec]     oocldocker3: Running: inline script
+     [exec]     oocldocker3: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocldocker3: Preparing...                          
+     [exec]     oocldocker3: ########################################
+     [exec]     oocldocker3: 	package epel-release-7-9.noarch is already installed
+     [exec]     oocldocker3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker3: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocldocker3: 17 metadata files removed
+     [exec]     oocldocker3: 10 sqlite files removed
+     [exec]     oocldocker3: 0 metadata files removed
+     [exec]     oocldocker3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker3: Loading mirror speeds from cached hostfile
+     [exec]     oocldocker3:  * epel: mirror.es.its.nyu.edu
+     [exec]     oocldocker3: Metadata Cache Created
+     [exec] ==> oocldocker3: Running provisioner: shell...
+     [exec]     oocldocker3: Running: inline script
+     [exec]     oocldocker3: Retrieving http://mirror.centos.org/centos/7/extras/x86_64/Packages/epel-release-7-9.noarch.rpm
+     [exec]     oocldocker3: Preparing...                          
+     [exec]     oocldocker3: ########################################
+     [exec]     oocldocker3: 	package epel-release-7-9.noarch is already installed
+     [exec]     oocldocker3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker3: Cleaning repos: base epel extras openlogic updates
+     [exec]     oocldocker3: 17 metadata files removed
+     [exec]     oocldocker3: 10 sqlite files removed
+     [exec]     oocldocker3: 0 metadata files removed
+     [exec]     oocldocker3: Loaded plugins: fastestmirror, langpacks
+     [exec]     oocldocker3: Loading mirror speeds from cached hostfile
+     [exec]     oocldocker3:  * epel: mirror.es.its.nyu.edu
+     [exec]     oocldocker3: Metadata Cache Created
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (execute-azure-hostmanager-remote) @ vagrant ---
+[INFO] Executing tasks
+
+execute-azure-hostmanager-remote:
+     [exec] ERROR loader: Unknown config sources: ["25727860_machine_oocldocker1", :"26511220_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["25727860_machine_oocldocker1"]
+     [exec] ERROR loader: Unknown config sources: ["25727860_machine_oocldocker1", :"26511220_azure.box_azure", "25727860_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["25727860_machine_oocldocker1", "25727860_machine_oocldocker2"]
+     [exec] [vagrant-hostmanager:guest] Updating hosts file on the virtual machine oocldocker1...
+     [exec] [vagrant-hostmanager:guest] Updating hosts file on the virtual machine oocldocker2...
+     [exec] [vagrant-hostmanager:guest] Updating hosts file on the virtual machine oocldocker3...
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (provision-azure-firewall) @ vagrant ---
+[INFO] Executing tasks
+
+provision_azure_firewall:
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-resources-plugin:3.0.2:testResources (default-testResources) @ vagrant ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/src/test/resources
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-compiler-plugin:3.6.1:testCompile (default-testCompile) @ vagrant ---
+[INFO] No sources to compile
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:start-nodes (default-start-nodes) @ vagrant ---
+[INFO] Start and install nodes is skipped
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:test-java-fragment (default-test-java-fragment) @ vagrant ---
+[INFO] Tests are skipped
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:stop-nodes (default-stop-nodes-1) @ vagrant ---
+[INFO] Stop and remove nodes is skipped
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (prepare-package) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildNumber: 21fd3c5728951d02cc10254725d4ee86e2fa7188 at timestamp: 1526228781770
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ vagrant ---
+[INFO] Building jar: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/vagrant-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] >>> maven-source-plugin:3.0.1:jar (attach-sources) > generate-sources @ vagrant >>>
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product-1) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:set-resources (default-set-resources) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (install_sb) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildNumber: 21fd3c5728951d02cc10254725d4ee86e2fa7188 at timestamp: 1526228783811
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ vagrant ---
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Failed to getClass for org.apache.maven.plugins.source.SourceJarMojo
+[INFO] 
+[INFO] <<< maven-source-plugin:3.0.1:jar (attach-sources) < generate-sources @ vagrant <<<
+[INFO] 
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-source-plugin:3.0.1:jar (attach-sources) @ vagrant ---
+[INFO] Building jar: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target/vagrant-1.0.0-SNAPSHOT-sources.jar
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-javadoc-plugin:2.10.4:jar (attach-javadocs) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (execute-azure-rsync) @ vagrant ---
+[INFO] Executing tasks
+
+execute-azure-rsync:
+     [exec] ERROR loader: Unknown config sources: ["17471540_machine_oocldocker1", :"16872260_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["17471540_machine_oocldocker1"]
+     [exec] ERROR loader: Unknown config sources: ["17471540_machine_oocldocker1", :"16872260_azure.box_azure", "17471540_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["17471540_machine_oocldocker1", "17471540_machine_oocldocker2"]
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (provision-sb-azure) @ vagrant ---
+[INFO] Executing tasks
+
+provision_sb_azure:
+     [exec] ./parallel_provision.sh: 3: [: ansible: unexpected operator
+     [exec] ERROR loader: Unknown config sources: ["23039740_machine_oocldocker1", :"23411380_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["23039740_machine_oocldocker1"]
+     [exec] ERROR loader: Unknown config sources: ["23039740_machine_oocldocker1", :"23411380_azure.box_azure", "23039740_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["23039740_machine_oocldocker1", "23039740_machine_oocldocker2"]
+     [exec] ==> oocldocker3: Running provisioner: ansible...
+     [exec] Vagrant has automatically selected the compatibility mode '2.0'
+     [exec] according to the Ansible version installed (2.5.2).
+     [exec] 
+     [exec] Alternatively, the compatibility mode can be specified in your Vagrantfile:
+     [exec] https://www.vagrantup.com/docs/provisioning/ansible_common.html#compatibility_mode
+     [exec]     oocldocker3: Running ansible-playbook...
+     [exec] 
+     [exec] PLAY [localhost] ***************************************************************
+     [exec] 
+     [exec] TASK [Gathering Facts] *********************************************************
+     [exec] ok: [127.0.0.1]
+     [exec] 
+     [exec] PLAY [tag_ClusterName_partition] ***********************************************
+     [exec] 
+     [exec] TASK [Gathering Facts] *********************************************************
+     [exec] ok: [oocldocker1]
+     [exec] ok: [oocldocker2]
+     [exec] ok: [oocldocker3]
+     [exec] 
+     [exec] TASK [common : Install python setup tools for Linux] ***************************
+     [exec] ok: [oocldocker1 -> localhost]
+     [exec] 
+     [exec] TASK [common : Install python setup tools for MacOSX] **************************
+     [exec] skipping: [oocldocker1]
+     [exec] 
+     [exec] TASK [common : Install Pypi] ***************************************************
+     [exec] ok: [oocldocker1 -> localhost]
+     [exec] 
+     [exec] TASK [common : install pyhocon] ************************************************
+     [exec] ok: [oocldocker1 -> localhost]
+     [exec] 
+     [exec] TASK [common : install dnspython for dig lookup for local host file] ***********
+     [exec] ok: [oocldocker1 -> localhost]
+     [exec] 
+     [exec] TASK [common : convert node config file] ***************************************
+     [exec] changed: [oocldocker1 -> localhost]
+     [exec] 
+     [exec] TASK [common : load hocon vars] ************************************************
+     [exec] ok: [oocldocker1 -> localhost]
+     [exec] 
+     [exec] TASK [common : create node array] **********************************************
+     [exec] ok: [oocldocker1 -> localhost]
+     [exec] 
+     [exec] TASK [common : update node array] **********************************************
+     [exec] ok: [oocldocker1 -> localhost] => (item=A.partition)
+     [exec] ok: [oocldocker1 -> localhost] => (item=B.partition)
+     [exec] ok: [oocldocker1 -> localhost] => (item=C.partition)
+     [exec] 
+     [exec] TASK [common : update number of nodes] *****************************************
+     [exec] ok: [oocldocker1 -> localhost]
+     [exec] 
+     [exec] TASK [common : update node assignment file] ************************************
+     [exec] changed: [oocldocker1 -> localhost]
+     [exec] 
+     [exec] TASK [common : load existing node assignment] **********************************
+     [exec] ok: [oocldocker1 -> localhost]
+     [exec] 
+     [exec] TASK [common : update Cluster inventory file] **********************************
+     [exec] changed: [oocldocker1 -> localhost]
+     [exec] ok: [oocldocker2 -> localhost]
+     [exec] ok: [oocldocker3 -> localhost]
+     [exec] 
+     [exec] TASK [centosinstall : clean yum cache] *****************************************
+     [exec]  [WARNING]: Consider using the yum module rather than running yum.  If you need
+     [exec] to use command because yum is insufficient you can add warn=False to this
+     [exec] command task or set command_warnings=False in ansible.cfg to get rid of this
+     [exec] message.
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : clean yum metadata] **************************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : install ntpd] ********************************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : install java dependency package] *************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : install java-devel dependency package] *******************
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker1]
+     [exec] 
+     [exec] TASK [centosinstall : install perl dependency package] *************************
+     [exec] ok: [oocldocker2]
+     [exec] ok: [oocldocker1]
+     [exec] ok: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : install wget dependency package] *************************
+     [exec] ok: [oocldocker2]
+     [exec] ok: [oocldocker1]
+     [exec] ok: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : install tar dependency packages] *************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker2]
+     [exec] 
+     [exec] TASK [centosinstall : install unzip dependency packages] ***********************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : install sysstat/sar dependency packages] *****************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : install dns utils dependency packages] *******************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : install tcpdump dependency packages] *********************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : install net-tootls dependency packages] ******************
+     [exec] ok: [oocldocker2]
+     [exec] ok: [oocldocker1]
+     [exec] ok: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : install hostname dependency packages] ********************
+     [exec] ok: [oocldocker2]
+     [exec] ok: [oocldocker1]
+     [exec] ok: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : service] *************************************************
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : libselinux-python] ***************************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : disable selinux] *****************************************
+     [exec]  [WARNING]: SELinux state temporarily changed from 'enforcing' to 'permissive'.
+     [exec] State change will take effect next reboot.
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [centosinstall : disable dnsmasq] *****************************************
+     [exec] fatal: [oocldocker1]: FAILED! => {"changed": false, "msg": "Could not find the requested service dnsmasq: host"}
+     [exec] ...ignoring
+     [exec] fatal: [oocldocker2]: FAILED! => {"changed": false, "msg": "Could not find the requested service dnsmasq: host"}
+     [exec] ...ignoring
+     [exec] fatal: [oocldocker3]: FAILED! => {"changed": false, "msg": "Could not find the requested service dnsmasq: host"}
+     [exec] ...ignoring
+     [exec] 
+     [exec] TASK [ubuntuinstall : clean up old packages] ***********************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : clean unncessary packages] *******************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install ntpd] ********************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install perl dependency package] *************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install wget dependency package] *************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install tar dependency packages] *************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install unzip dependency packages] ***********************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install sysstat/sar dependency packages] *****************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install dns utils dependency packages] *******************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install tcpdump dependency packages] *********************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install net-tootls dependency packages] ******************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install hostname dependency packages] ********************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : service] *************************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : add jave 8 deb repo] *************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : apt update] **********************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [ubuntuinstall : install java 8] ******************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : backup local /etc/hosts] ********************************
+     [exec] changed: [oocldocker1 -> localhost]
+     [exec] changed: [oocldocker2 -> localhost]
+     [exec] changed: [oocldocker3 -> localhost]
+     [exec] 
+     [exec] TASK [tibcosbinstall : update local hosts file for admin] **********************
+     [exec] changed: [oocldocker1 -> localhost]
+     [exec] 
+     [exec] TASK [tibcosbinstall : update remote hosts file for discovery] *****************
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create sbusers group] ***********************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker2]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create sbusers group] ***********************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create sbuser user account] *****************************
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker1]
+     [exec] 
+     [exec] TASK [tibcosbinstall : add sbuser into docker group] ***************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : add sb env var to bashrc] *******************************
+     [exec] changed: [oocldocker2] => (item={'value': u'platform_linuxx86_64.zip', 'key': u'SB_TARBALL'})
+     [exec] changed: [oocldocker1] => (item={'value': u'platform_linuxx86_64.zip', 'key': u'SB_TARBALL'})
+     [exec] changed: [oocldocker3] => (item={'value': u'platform_linuxx86_64.zip', 'key': u'SB_TARBALL'})
+     [exec] changed: [oocldocker2] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'STREAMBASE_HOME'})
+     [exec] changed: [oocldocker1] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'STREAMBASE_HOME'})
+     [exec] changed: [oocldocker2] => (item={'value': u'/opt/tibco/partitioning-application', 'key': u'SB_APP_DIR'})
+     [exec] changed: [oocldocker3] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'STREAMBASE_HOME'})
+     [exec] changed: [oocldocker1] => (item={'value': u'/opt/tibco/partitioning-application', 'key': u'SB_APP_DIR'})
+     [exec] changed: [oocldocker2] => (item={'value': u'/opt/tibco/highavailability', 'key': u'SB_HA_DIR'})
+     [exec] changed: [oocldocker3] => (item={'value': u'/opt/tibco/partitioning-application', 'key': u'SB_APP_DIR'})
+     [exec] changed: [oocldocker1] => (item={'value': u'/opt/tibco/highavailability', 'key': u'SB_HA_DIR'})
+     [exec] changed: [oocldocker2] => (item={'value': u'/opt/tibco/sb-cep/10/distrib/tibco/bin', 'key': u'TIBCO_EP_BIN'})
+     [exec] changed: [oocldocker3] => (item={'value': u'/opt/tibco/highavailability', 'key': u'SB_HA_DIR'})
+     [exec] changed: [oocldocker1] => (item={'value': u'/opt/tibco/sb-cep/10/distrib/tibco/bin', 'key': u'TIBCO_EP_BIN'})
+     [exec] changed: [oocldocker2] => (item={'value': u'partition', 'key': u'CLUSTER_NAME'})
+     [exec] changed: [oocldocker3] => (item={'value': u'/opt/tibco/sb-cep/10/distrib/tibco/bin', 'key': u'TIBCO_EP_BIN'})
+     [exec] changed: [oocldocker1] => (item={'value': u'partition', 'key': u'CLUSTER_NAME'})
+     [exec] changed: [oocldocker2] => (item={'value': u'C.partition.partition', 'key': u'A3_NODENAME'})
+     [exec] changed: [oocldocker3] => (item={'value': u'partition', 'key': u'CLUSTER_NAME'})
+     [exec] changed: [oocldocker1] => (item={'value': u'C.partition.partition', 'key': u'A3_NODENAME'})
+     [exec] changed: [oocldocker2] => (item={'value': u'PRODUCTION', 'key': u'BUILDTYPE'})
+     [exec] changed: [oocldocker3] => (item={'value': u'C.partition.partition', 'key': u'A3_NODENAME'})
+     [exec] changed: [oocldocker1] => (item={'value': u'PRODUCTION', 'key': u'BUILDTYPE'})
+     [exec] changed: [oocldocker2] => (item={'value': u"'-DTIBCO_EP_HOME=/opt/tibco/sb-cep/10 -Xms512m -Xmx2048m'", 'key': u'JAVA_OPTIONS'})
+     [exec] changed: [oocldocker3] => (item={'value': u'PRODUCTION', 'key': u'BUILDTYPE'})
+     [exec] changed: [oocldocker1] => (item={'value': u"'-DTIBCO_EP_HOME=/opt/tibco/sb-cep/10 -Xms512m -Xmx2048m'", 'key': u'JAVA_OPTIONS'})
+     [exec] changed: [oocldocker2] => (item={'value': 10, 'key': u'SB_CEP_VERSION'})
+     [exec] changed: [oocldocker3] => (item={'value': u"'-DTIBCO_EP_HOME=/opt/tibco/sb-cep/10 -Xms512m -Xmx2048m'", 'key': u'JAVA_OPTIONS'})
+     [exec] changed: [oocldocker2] => (item={'value': u'/opt/tibco/nodes', 'key': u'NODE_INSTALL_DIR'})
+     [exec] changed: [oocldocker1] => (item={'value': 10, 'key': u'SB_CEP_VERSION'})
+     [exec] changed: [oocldocker3] => (item={'value': 10, 'key': u'SB_CEP_VERSION'})
+     [exec] changed: [oocldocker2] => (item={'value': u'/opt/tibco', 'key': u'TIBCO_INSTALL_DIR'})
+     [exec] changed: [oocldocker1] => (item={'value': u'/opt/tibco/nodes', 'key': u'NODE_INSTALL_DIR'})
+     [exec] changed: [oocldocker3] => (item={'value': u'/opt/tibco/nodes', 'key': u'NODE_INSTALL_DIR'})
+     [exec] changed: [oocldocker1] => (item={'value': u'/opt/tibco', 'key': u'TIBCO_INSTALL_DIR'})
+     [exec] changed: [oocldocker2] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'TIBCO_EP_HOME'})
+     [exec] changed: [oocldocker3] => (item={'value': u'/opt/tibco', 'key': u'TIBCO_INSTALL_DIR'})
+     [exec] changed: [oocldocker2] => (item={'value': 5556, 'key': u'SB_ADMIN_PORT'})
+     [exec] changed: [oocldocker1] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'TIBCO_EP_HOME'})
+     [exec] changed: [oocldocker3] => (item={'value': u'/opt/tibco/sb-cep/10', 'key': u'TIBCO_EP_HOME'})
+     [exec] changed: [oocldocker2] => (item={'value': u'B.partition.partition', 'key': u'A2_IPADDR'})
+     [exec] changed: [oocldocker1] => (item={'value': 5556, 'key': u'SB_ADMIN_PORT'})
+     [exec] changed: [oocldocker3] => (item={'value': 5556, 'key': u'SB_ADMIN_PORT'})
+     [exec] changed: [oocldocker2] => (item={'value': u'/etc/alternatives/java_sdk_1.8.0', 'key': u'JAVA_HOME'})
+     [exec] changed: [oocldocker1] => (item={'value': u'B.partition.partition', 'key': u'A2_IPADDR'})
+     [exec] changed: [oocldocker3] => (item={'value': u'B.partition.partition', 'key': u'A2_IPADDR'})
+     [exec] changed: [oocldocker1] => (item={'value': u'/etc/alternatives/java_sdk_1.8.0', 'key': u'JAVA_HOME'})
+     [exec] changed: [oocldocker2] => (item={'value': u'sbuser', 'key': u'SBUSER'})
+     [exec] changed: [oocldocker3] => (item={'value': u'/etc/alternatives/java_sdk_1.8.0', 'key': u'JAVA_HOME'})
+     [exec] changed: [oocldocker2] => (item={'value': u'partitioning-application-1.0.0-SNAPSHOT.zip', 'key': u'SB_APP_FILE'})
+     [exec] changed: [oocldocker1] => (item={'value': u'sbuser', 'key': u'SBUSER'})
+     [exec] changed: [oocldocker3] => (item={'value': u'sbuser', 'key': u'SBUSER'})
+     [exec] changed: [oocldocker2] => (item={'value': u'/opt/tibco/sb-cep/10/lib:/opt/tibco/partitioning-application/java-bin:/vagrant', 'key': u'DEPLOYDIR'})
+     [exec] changed: [oocldocker1] => (item={'value': u'partitioning-application-1.0.0-SNAPSHOT.zip', 'key': u'SB_APP_FILE'})
+     [exec] changed: [oocldocker3] => (item={'value': u'partitioning-application-1.0.0-SNAPSHOT.zip', 'key': u'SB_APP_FILE'})
+     [exec] changed: [oocldocker2] => (item={'value': u'three-node-static-proxy-azure-node.conf', 'key': u'NODE_CONFIG'})
+     [exec] changed: [oocldocker1] => (item={'value': u'/opt/tibco/sb-cep/10/lib:/opt/tibco/partitioning-application/java-bin:/vagrant', 'key': u'DEPLOYDIR'})
+     [exec] changed: [oocldocker3] => (item={'value': u'/opt/tibco/sb-cep/10/lib:/opt/tibco/partitioning-application/java-bin:/vagrant', 'key': u'DEPLOYDIR'})
+     [exec] changed: [oocldocker2] => (item={'value': None, 'key': u'SUBSTITUTIONS'})
+     [exec] changed: [oocldocker1] => (item={'value': u'three-node-static-proxy-azure-node.conf', 'key': u'NODE_CONFIG'})
+     [exec] changed: [oocldocker3] => (item={'value': u'three-node-static-proxy-azure-node.conf', 'key': u'NODE_CONFIG'})
+     [exec] changed: [oocldocker2] => (item={'value': u'A.partition.partition', 'key': u'A1_IPADDR'})
+     [exec] changed: [oocldocker1] => (item={'value': None, 'key': u'SUBSTITUTIONS'})
+     [exec] changed: [oocldocker3] => (item={'value': None, 'key': u'SUBSTITUTIONS'})
+     [exec] changed: [oocldocker2] => (item={'value': u'C.partition.partition', 'key': u'A3_IPADDR'})
+     [exec] changed: [oocldocker1] => (item={'value': u'A.partition.partition', 'key': u'A1_IPADDR'})
+     [exec] changed: [oocldocker3] => (item={'value': u'A.partition.partition', 'key': u'A1_IPADDR'})
+     [exec] changed: [oocldocker2] => (item={'value': 5557, 'key': u'A1_DATATRANSPORTPORT'})
+     [exec] changed: [oocldocker1] => (item={'value': u'C.partition.partition', 'key': u'A3_IPADDR'})
+     [exec] changed: [oocldocker3] => (item={'value': u'C.partition.partition', 'key': u'A3_IPADDR'})
+     [exec] changed: [oocldocker2] => (item={'value': u'test', 'key': u'SB_APP_CONFIG'})
+     [exec] changed: [oocldocker3] => (item={'value': 5557, 'key': u'A1_DATATRANSPORTPORT'})
+     [exec] changed: [oocldocker1] => (item={'value': 5557, 'key': u'A1_DATATRANSPORTPORT'})
+     [exec] changed: [oocldocker2] => (item={'value': u'B.partition.partition', 'key': u'A2_NODENAME'})
+     [exec] changed: [oocldocker1] => (item={'value': u'test', 'key': u'SB_APP_CONFIG'})
+     [exec] changed: [oocldocker3] => (item={'value': u'test', 'key': u'SB_APP_CONFIG'})
+     [exec] changed: [oocldocker2] => (item={'value': u'A.partition.partition', 'key': u'A1_NODENAME'})
+     [exec] changed: [oocldocker1] => (item={'value': u'B.partition.partition', 'key': u'A2_NODENAME'})
+     [exec] changed: [oocldocker3] => (item={'value': u'B.partition.partition', 'key': u'A2_NODENAME'})
+     [exec] changed: [oocldocker2] => (item={'value': u'partitioning-application', 'key': u'SB_APP_NAME'})
+     [exec] changed: [oocldocker1] => (item={'value': u'A.partition.partition', 'key': u'A1_NODENAME'})
+     [exec] changed: [oocldocker2] => (item={'value': 5557, 'key': u'A3_DATATRANSPORTPORT'})
+     [exec] changed: [oocldocker3] => (item={'value': u'A.partition.partition', 'key': u'A1_NODENAME'})
+     [exec] changed: [oocldocker1] => (item={'value': u'partitioning-application', 'key': u'SB_APP_NAME'})
+     [exec] changed: [oocldocker2] => (item={'value': 5557, 'key': u'A2_DATATRANSPORTPORT'})
+     [exec] changed: [oocldocker3] => (item={'value': u'partitioning-application', 'key': u'SB_APP_NAME'})
+     [exec] changed: [oocldocker1] => (item={'value': 5557, 'key': u'A3_DATATRANSPORTPORT'})
+     [exec] changed: [oocldocker3] => (item={'value': 5557, 'key': u'A3_DATATRANSPORTPORT'})
+     [exec] changed: [oocldocker1] => (item={'value': 5557, 'key': u'A2_DATATRANSPORTPORT'})
+     [exec] changed: [oocldocker3] => (item={'value': 5557, 'key': u'A2_DATATRANSPORTPORT'})
+     [exec] 
+     [exec] TASK [tibcosbinstall : set sbuser path to epadmin] *****************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker2]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create SB install directory] ****************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create SB node install directory] ***********************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : download and extract sb] ********************************
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker1]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create app directory] ***********************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker2]
+     [exec] 
+     [exec] TASK [tibcosbinstall : download application] ***********************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker2]
+     [exec] 
+     [exec] TASK [tibcosbinstall : copy node config] ***************************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : create SB user option directory] ************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : copy dtm option file] ***********************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [tibcosbinstall : copy startsb script] ************************************
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] 
+     [exec] TASK [tibcosbinstall : set script attribues] ***********************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : remove existing OS provider docker versions] *************
+     [exec] ok: [oocldocker2]
+     [exec] ok: [oocldocker3]
+     [exec] ok: [oocldocker1]
+     [exec] 
+     [exec] TASK [dockerinstall : Install Docker Deps] *************************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : clean yum cache] *****************************************
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : Add dockerpoject repo] ***********************************
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : Install latest Docker from dockerproject] ****************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : add docker deb repo] *************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : Add docker gpg key] **************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : apt update] **********************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : linux-image-extra-kernel_version] ************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : linux-image-extra-virtual] *******************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : install apt-transport-https] *****************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : install ca-certificates] *********************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : install curl] ********************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : install software-properties-common] **********************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : install python-setuptools] *******************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : install docker CE] ***************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : Install Pypi] ********************************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : Install docker-py] ***************************************
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : Make sure Docker is running] *****************************
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker1]
+     [exec] 
+     [exec] TASK [dockerinstall : set swarm manager if undefined] **************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : set swarm manager ip address if undefined] ***************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : get localhost ip address if swarm manager] ***************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : set swarm manager ip address if localhost] ***************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : determine swarm status] **********************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : initialize swarm manager] ********************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : retrieve swarm manager token] ****************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : retrieve swarm worker token] *****************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : determine swarm status] **********************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [dockerinstall : join worker nodes to cluster] ****************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [weaveinstall : Download and Install Weave] *******************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [weaveinstall : Setup Weave Permissions] **********************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [weaveinstall : Download Weave Containers] ********************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker2]
+     [exec] 
+     [exec] TASK [Cluster_Docker : create docker user dir] *********************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker2]
+     [exec] 
+     [exec] TASK [Cluster_Docker : copy docker auth file] **********************************
+     [exec] 
+     [exec] TASK [Cluster_Docker : count how many containers are running] ******************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : set_fact] ***********************************************
+     [exec] ok: [oocldocker1]
+     [exec] ok: [oocldocker2]
+     [exec] ok: [oocldocker3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : debug] **************************************************
+     [exec] ok: [oocldocker1] => {
+     [exec]     "sb_exist_nodes": "0"
+     [exec] }
+     [exec] ok: [oocldocker2] => {
+     [exec]     "sb_exist_nodes": "0"
+     [exec] }
+     [exec] ok: [oocldocker3] => {
+     [exec]     "sb_exist_nodes": "0"
+     [exec] }
+     [exec] 
+     [exec] TASK [Cluster_Docker : set_fact] ***********************************************
+     [exec] ok: [oocldocker1]
+     [exec] ok: [oocldocker2]
+     [exec] ok: [oocldocker3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : docker login] *******************************************
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : set weave head node ip hostname] ************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : debug] **************************************************
+     [exec] ok: [oocldocker1] => {
+     [exec]     "weave_headnode": "oocldocker1"
+     [exec] }
+     [exec] ok: [oocldocker2] => {
+     [exec]     "weave_headnode": "oocldocker1"
+     [exec] }
+     [exec] ok: [oocldocker3] => {
+     [exec]     "weave_headnode": "oocldocker1"
+     [exec] }
+     [exec] 
+     [exec] TASK [Cluster_Docker : debug] **************************************************
+     [exec] ok: [oocldocker1] => {
+     [exec]     "weave_headnode_ip": "10.0.0.4"
+     [exec] }
+     [exec] ok: [oocldocker2] => {
+     [exec]     "weave_headnode_ip": "10.0.0.4"
+     [exec] }
+     [exec] ok: [oocldocker3] => {
+     [exec]     "weave_headnode_ip": "10.0.0.4"
+     [exec] }
+     [exec] 
+     [exec] TASK [Cluster_Docker : check weave status] *************************************
+     [exec] fatal: [oocldocker1]: FAILED! => {"changed": true, "cmd": ["/usr/local/bin/weave", "status"], "delta": "0:00:00.617614", "end": "2018-05-13 16:35:15.757221", "msg": "non-zero return code", "rc": 1, "start": "2018-05-13 16:35:15.139607", "stderr": "weave container is not present. Have you launched it?", "stderr_lines": ["weave container is not present. Have you launched it?"], "stdout": "", "stdout_lines": []}
+     [exec] ...ignoring
+     [exec] fatal: [oocldocker3]: FAILED! => {"changed": true, "cmd": ["/usr/local/bin/weave", "status"], "delta": "0:00:00.767620", "end": "2018-05-13 16:35:16.160456", "msg": "non-zero return code", "rc": 1, "start": "2018-05-13 16:35:15.392836", "stderr": "weave container is not present. Have you launched it?", "stderr_lines": ["weave container is not present. Have you launched it?"], "stdout": "", "stdout_lines": []}
+     [exec] ...ignoring
+     [exec] fatal: [oocldocker2]: FAILED! => {"changed": true, "cmd": ["/usr/local/bin/weave", "status"], "delta": "0:00:00.709435", "end": "2018-05-13 16:35:16.506715", "msg": "non-zero return code", "rc": 1, "start": "2018-05-13 16:35:15.797280", "stderr": "weave container is not present. Have you launched it?", "stderr_lines": ["weave container is not present. Have you launched it?"], "stdout": "", "stdout_lines": []}
+     [exec] ...ignoring
+     [exec] 
+     [exec] TASK [Cluster_Docker : start weave on head node instance] **********************
+     [exec] changed: [oocldocker1 -> oocldocker1.eastus.cloudapp.azure.com]
+     [exec] 
+     [exec] TASK [Cluster_Docker : connect weave to head node] *****************************
+     [exec] skipping: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : send weave concensus] ***********************************
+     [exec] changed: [oocldocker1]
+     [exec] 
+     [exec] TASK [Cluster_Docker : get weave status] ***************************************
+     [exec] skipping: [oocldocker1]
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker2]
+     [exec] 
+     [exec] TASK [Cluster_Docker : debug] **************************************************
+     [exec] ok: [oocldocker1] => {
+     [exec]     "weave_status": {
+     [exec]         "changed": false, 
+     [exec]         "skip_reason": "Conditional result was False", 
+     [exec]         "skipped": true
+     [exec]     }
+     [exec] }
+     [exec] ok: [oocldocker2] => {
+     [exec]     "weave_status": {
+     [exec]         "changed": true, 
+     [exec]         "cmd": [
+     [exec]             "/usr/local/bin/weave", 
+     [exec]             "status"
+     [exec]         ], 
+     [exec]         "delta": "0:00:00.764273", 
+     [exec]         "end": "2018-05-13 16:35:33.753288", 
+     [exec]         "failed": false, 
+     [exec]         "rc": 0, 
+     [exec]         "start": "2018-05-13 16:35:32.989015", 
+     [exec]         "stderr": "", 
+     [exec]         "stderr_lines": [], 
+     [exec]         "stdout": "\n        Version: 2.3.0 (up to date; next check at 2018/05/13 22:21:09)\n\n        Service: router\n       Protocol: weave 1..2\n           Name: 32:45:c6:6c:6e:e0(oocldocker2)\n     Encryption: disabled\n  PeerDiscovery: enabled\n        Targets: 1\n    Connections: 2 (2 established)\n          Peers: 3 (with 6 established connections)\n TrustedSubnets: none\n\n        Service: ipam\n         Status: ready\n          Range: 10.32.0.0/12\n  DefaultSubnet: 10.32.0.0/12\n\n        Service: dns\n         Domain: partition.local.\n       Upstream: 168.63.129.16\n            TTL: 1\n        Entries: 0\n\n        Service: proxy\n        Address: unix:///var/run/weave/weave.sock\n\n        Service: plugin (legacy)\n     DriverName: weave", 
+     [exec]         "stdout_lines": [
+     [exec]             "", 
+     [exec]             "        Version: 2.3.0 (up to date; next check at 2018/05/13 22:21:09)", 
+     [exec]             "", 
+     [exec]             "        Service: router", 
+     [exec]             "       Protocol: weave 1..2", 
+     [exec]             "           Name: 32:45:c6:6c:6e:e0(oocldocker2)", 
+     [exec]             "     Encryption: disabled", 
+     [exec]             "  PeerDiscovery: enabled", 
+     [exec]             "        Targets: 1", 
+     [exec]             "    Connections: 2 (2 established)", 
+     [exec]             "          Peers: 3 (with 6 established connections)", 
+     [exec]             " TrustedSubnets: none", 
+     [exec]             "", 
+     [exec]             "        Service: ipam", 
+     [exec]             "         Status: ready", 
+     [exec]             "          Range: 10.32.0.0/12", 
+     [exec]             "  DefaultSubnet: 10.32.0.0/12", 
+     [exec]             "", 
+     [exec]             "        Service: dns", 
+     [exec]             "         Domain: partition.local.", 
+     [exec]             "       Upstream: 168.63.129.16", 
+     [exec]             "            TTL: 1", 
+     [exec]             "        Entries: 0", 
+     [exec]             "", 
+     [exec]             "        Service: proxy", 
+     [exec]             "        Address: unix:///var/run/weave/weave.sock", 
+     [exec]             "", 
+     [exec]             "        Service: plugin (legacy)", 
+     [exec]             "     DriverName: weave"
+     [exec]         ]
+     [exec]     }
+     [exec] }
+     [exec] ok: [oocldocker3] => {
+     [exec]     "weave_status": {
+     [exec]         "changed": true, 
+     [exec]         "cmd": [
+     [exec]             "/usr/local/bin/weave", 
+     [exec]             "status"
+     [exec]         ], 
+     [exec]         "delta": "0:00:00.910746", 
+     [exec]         "end": "2018-05-13 16:35:31.727039", 
+     [exec]         "failed": false, 
+     [exec]         "rc": 0, 
+     [exec]         "start": "2018-05-13 16:35:30.816293", 
+     [exec]         "stderr": "", 
+     [exec]         "stderr_lines": [], 
+     [exec]         "stdout": "\n        Version: 2.3.0 (up to date; next check at 2018/05/13 22:45:23)\n\n        Service: router\n       Protocol: weave 1..2\n           Name: c2:ec:d3:fa:d0:a2(oocldocker3)\n     Encryption: disabled\n  PeerDiscovery: enabled\n        Targets: 1\n    Connections: 2 (2 established)\n          Peers: 3 (with 6 established connections)\n TrustedSubnets: none\n\n        Service: ipam\n         Status: ready\n          Range: 10.32.0.0/12\n  DefaultSubnet: 10.32.0.0/12\n\n        Service: dns\n         Domain: partition.local.\n       Upstream: 168.63.129.16\n            TTL: 1\n        Entries: 0\n\n        Service: proxy\n        Address: unix:///var/run/weave/weave.sock\n\n        Service: plugin (legacy)\n     DriverName: weave", 
+     [exec]         "stdout_lines": [
+     [exec]             "", 
+     [exec]             "        Version: 2.3.0 (up to date; next check at 2018/05/13 22:45:23)", 
+     [exec]             "", 
+     [exec]             "        Service: router", 
+     [exec]             "       Protocol: weave 1..2", 
+     [exec]             "           Name: c2:ec:d3:fa:d0:a2(oocldocker3)", 
+     [exec]             "     Encryption: disabled", 
+     [exec]             "  PeerDiscovery: enabled", 
+     [exec]             "        Targets: 1", 
+     [exec]             "    Connections: 2 (2 established)", 
+     [exec]             "          Peers: 3 (with 6 established connections)", 
+     [exec]             " TrustedSubnets: none", 
+     [exec]             "", 
+     [exec]             "        Service: ipam", 
+     [exec]             "         Status: ready", 
+     [exec]             "          Range: 10.32.0.0/12", 
+     [exec]             "  DefaultSubnet: 10.32.0.0/12", 
+     [exec]             "", 
+     [exec]             "        Service: dns", 
+     [exec]             "         Domain: partition.local.", 
+     [exec]             "       Upstream: 168.63.129.16", 
+     [exec]             "            TTL: 1", 
+     [exec]             "        Entries: 0", 
+     [exec]             "", 
+     [exec]             "        Service: proxy", 
+     [exec]             "        Address: unix:///var/run/weave/weave.sock", 
+     [exec]             "", 
+     [exec]             "        Service: plugin (legacy)", 
+     [exec]             "     DriverName: weave"
+     [exec]         ]
+     [exec]     }
+     [exec] }
+     [exec] 
+     [exec] TASK [Cluster_Docker : docker login] *******************************************
+     [exec] changed: [oocldocker1]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker3]
+     [exec] 
+     [exec] TASK [Cluster_Docker : pull image] *********************************************
+     [exec] changed: [oocldocker3]
+     [exec] changed: [oocldocker2]
+     [exec] changed: [oocldocker1]
+     [exec] 
+     [exec] TASK [Cluster_Docker : load existing node assignment if undefined] *************
+     [exec] skipping: [oocldocker1]
+     [exec] 
+     [exec] TASK [Cluster_Docker : start SB container] *************************************
+     [exec] changed: [oocldocker1] => (item=A.partition)
+     [exec] changed: [oocldocker2] => (item=B.partition)
+     [exec] changed: [oocldocker3] => (item=C.partition)
+     [exec] 
+     [exec] TASK [Cluster_Docker : wait and verify sb mgmt port is running] ****************
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (5 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (5 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (5 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (4 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (4 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (4 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (3 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (3 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (3 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (2 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (2 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (2 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (1 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (1 retries left).
+     [exec] FAILED - RETRYING: wait and verify sb mgmt port is running (1 retries left).
+     [exec] failed: [oocldocker1] (item=A.partition) => {"attempts": 5, "changed": true, "cmd": ["docker", "exec", "A.partition", "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin", "servicename=A.partition", "display", "node"], "delta": "0:00:00.085980", "end": "2018-05-13 16:39:54.599056", "item": "A.partition", "msg": "non-zero return code", "rc": 1, "start": "2018-05-13 16:39:54.513076", "stderr": "Error response from daemon: Container a35598d5ec9c44f337f62e071af83a5eedc8e9115c27fcd9856415445dcf0cff is not running", "stderr_lines": ["Error response from daemon: Container a35598d5ec9c44f337f62e071af83a5eedc8e9115c27fcd9856415445dcf0cff is not running"], "stdout": "", "stdout_lines": []}
+     [exec] ...ignoring
+     [exec] failed: [oocldocker2] (item=B.partition) => {"attempts": 5, "changed": true, "cmd": ["docker", "exec", "B.partition", "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin", "servicename=B.partition", "display", "node"], "delta": "0:00:00.073241", "end": "2018-05-13 16:39:54.749787", "item": "B.partition", "msg": "non-zero return code", "rc": 1, "start": "2018-05-13 16:39:54.676546", "stderr": "Error response from daemon: Container 61ae7445004e884f812d73b1c8019dd757b35d45286fb288914b40fc68264a87 is not running", "stderr_lines": ["Error response from daemon: Container 61ae7445004e884f812d73b1c8019dd757b35d45286fb288914b40fc68264a87 is not running"], "stdout": "", "stdout_lines": []}
+     [exec] ...ignoring
+     [exec] failed: [oocldocker3] (item=C.partition) => {"attempts": 5, "changed": true, "cmd": ["docker", "exec", "C.partition", "/opt/tibco/sb-cep/10/distrib/tibco/bin/epadmin", "servicename=C.partition", "display", "node"], "delta": "0:00:00.079741", "end": "2018-05-13 16:39:55.030149", "item": "C.partition", "msg": "non-zero return code", "rc": 1, "start": "2018-05-13 16:39:54.950408", "stderr": "Error response from daemon: Container 1671ab4218580ad41b2a4d5cadd394bb9cd3965bf2ae90e0f19f7d2623a3929d is not running", "stderr_lines": ["Error response from daemon: Container 1671ab4218580ad41b2a4d5cadd394bb9cd3965bf2ae90e0f19f7d2623a3929d is not running"], "stdout": "", "stdout_lines": []}
+     [exec] ...ignoring
+     [exec] 
+     [exec] TASK [partition : count how many sb nodes already exists] **********************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [partition : set_fact] ****************************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [partition : set_fact] ****************************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [partition : debug] *******************************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [partition : do not set default admin port if multi-node deployment is enabled] ***
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [partition : set nodename suffix and index] *******************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [partition : install/start sb node and then launch application] ***********
+     [exec] skipping: [oocldocker1] => (item=A.partition) 
+     [exec] skipping: [oocldocker2] => (item=B.partition) 
+     [exec] skipping: [oocldocker3] => (item=C.partition) 
+     [exec] 
+     [exec] TASK [partition : collect port numbers] ****************************************
+     [exec] skipping: [oocldocker1] => (item=A.partition) 
+     [exec] skipping: [oocldocker2] => (item=B.partition) 
+     [exec] skipping: [oocldocker3] => (item=C.partition) 
+     [exec] 
+     [exec] TASK [partition : debug] *******************************************************
+     [exec] skipping: [oocldocker1]
+     [exec] skipping: [oocldocker2]
+     [exec] skipping: [oocldocker3]
+     [exec] 
+     [exec] TASK [partition : wait and verify sb mgmt port is running] *********************
+     [exec] skipping: [oocldocker1] => (item={'skipped': True, '_ansible_no_log': False, 'skip_reason': u'Conditional result was False', '_ansible_item_result': True, 'item': u'A.partition', 'changed': False, '_ansible_ignore_errors': None}) 
+     [exec] skipping: [oocldocker2] => (item={'skipped': True, '_ansible_no_log': False, 'skip_reason': u'Conditional result was False', '_ansible_item_result': True, 'item': u'B.partition', 'changed': False, '_ansible_ignore_errors': None}) 
+     [exec] skipping: [oocldocker3] => (item={'skipped': True, '_ansible_no_log': False, 'skip_reason': u'Conditional result was False', '_ansible_item_result': True, 'item': u'C.partition', 'changed': False, '_ansible_ignore_errors': None}) 
+     [exec] 
+     [exec] PLAY RECAP *********************************************************************
+     [exec] 127.0.0.1                  : ok=1    changed=0    unreachable=0    failed=0   
+     [exec] oocldocker1                : ok=77   changed=55   unreachable=0    failed=0   
+     [exec] oocldocker2                : ok=65   changed=51   unreachable=0    failed=0   
+     [exec] oocldocker3                : ok=65   changed=51   unreachable=0    failed=0   
+     [exec] 
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (sb-azure-wait) @ vagrant ---
+[INFO] Executing tasks
+
+main:
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:administer-nodes (display_nodes) @ vagrant ---
+[INFO] [5556] Running "display node"
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] [] Failed to open a connection to the node at [A.partition:5556]. Reason: Call to 'connect' failed: Connection refused [errno:111]
+[8mha:////4PKjA5luhb51RCffkbirwY3n+fGCfmVqxocnqg8IeQF1AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEuhYV5Rf55ZekOlc7RKnPKH7IxMBQUcQgBdWQnJ9XnJ+TqucMoUEKGSCAEaSwAACsNFCqYAAAAA==[0m[ERROR] [5556] return code 255
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 25:57 min
+[INFO] Finished at: 2018-05-13T12:40:59-04:00
+[INFO] ------------------------------------------------------------------------
+Waiting for Jenkins to finish collecting data[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] LinkageError while performing UserRequest:hudson.maven.Maven3Builder@7a079c1c
+java.lang.LinkageError: loader constraint violation: loader (instance of hudson/remoting/RemoteClassLoader) previously initiated loading for a different type with name "org/slf4j/Logger"
+	at hudson.maven.Maven3FailureLogger.logSummary(Maven3FailureLogger.java:125)
+	at hudson.maven.Maven3FailureLogger.logFailures(Maven3FailureLogger.java:43)
+	at hudson.maven.Maven3Builder.call(Maven3Builder.java:168)
+	at hudson.maven.Maven3Builder.call(Maven3Builder.java:70)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:210)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:53)
+	at hudson.remoting.Request$2.run(Request.java:364)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:72)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+channel stopped
+[cargosmart-partition-docker-azure] $ /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/bin/mvn -f vagrant/pom.xml -s /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/settings.xml -Pazure initialize clean -DCONFIG_PROP_FILE=config-docker.properties
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.tibco.ep.sb.sample.cloud:vagrant >----------------
+[INFO] Building Vagrant and Cloud Provisioning Examples 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product-1) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:set-resources (default-set-resources) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (install_sb) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- buildnumber-maven-plugin:1.4:create (initialize) @ vagrant ---
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildNumber: 21fd3c5728951d02cc10254725d4ee86e2fa7188 at timestamp: 1526229678446
+[8mha:////4P2TTxz9nrgx+3M1u7rPVFTodSpLuSVzIpcPAvv7Bz2hAAAAYx+LCAAAAAAAAP9b85aBtbiIQSWjNKU4P0+vJLE4u1gvPjexLDVPzxdEhicW5WXmpfvll6S2fNly5fzGzauYGBgqihikoFqS8/OK83NS9ZwhNEghAwQwghQWAACwxA+XYgAAAA==[0m[WARNING] Cannot get the branch information from the git repository: 
+Detecting the current branch failed: fatal: ref HEAD is not a symbolic ref
+
+[INFO] Executing: /bin/sh -c cd '/opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- properties-maven-plugin:1.0.0:read-project-properties (default) @ vagrant ---
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:install-product (default-install-product) @ vagrant ---
+[INFO] com.tibco.ep.sb.rt:platform_linuxx86_64:zip:10.2.1:test already installed manually to /opt/tibco/sb-cep/10.2
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-antrun-plugin:1.8:run (destroy-azure-vms) @ vagrant ---
+[INFO] Executing tasks
+
+destroy_azure_vms:
+     [exec] + grep -c running
+     [exec] + vagrant status
+     [exec] ERROR loader: Unknown config sources: ["10738340_machine_oocldocker1", :"11128880_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["10738340_machine_oocldocker1"]
+     [exec] ERROR loader: Unknown config sources: ["10738340_machine_oocldocker1", :"11128880_azure.box_azure", "10738340_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["10738340_machine_oocldocker1", "10738340_machine_oocldocker2"]
+     [exec] + STATUS=3
+     [exec] + [ 3 -gt 0 ]
+     [exec] + vagrant destroy -f
+     [exec] ERROR loader: Unknown config sources: ["18580000_machine_oocldocker1", :"18181680_azure.box_azure"]
+     [exec] ERROR loader: Unknown config sources: ["18580000_machine_oocldocker1"]
+     [exec] ERROR loader: Unknown config sources: ["18580000_machine_oocldocker1", :"18181680_azure.box_azure", "18580000_machine_oocldocker2"]
+     [exec] ERROR loader: Unknown config sources: ["18580000_machine_oocldocker1", "18580000_machine_oocldocker2"]
+     [exec] ==> oocldocker3: Terminating 'oocldocker3'
+     [exec] ==> oocldocker3: Deleting resource group
+     [exec] ==> oocldocker3: Resource group is deleting... Moving on.
+     [exec] ==> oocldocker3: Terminated 'oocldocker3'
+     [exec] ==> oocldocker2: Terminating 'oocldocker2'
+     [exec] ==> oocldocker2: Deleting resource group
+     [exec] ==> oocldocker2: Resource group is deleting... Moving on.
+     [exec] ==> oocldocker2: Terminated 'oocldocker2'
+     [exec] ==> oocldocker1: Terminating 'oocldocker1'
+     [exec] ==> oocldocker1: Deleting resource group
+     [exec] ==> oocldocker1: Resource group is deleting... Moving on.
+     [exec] ==> oocldocker1: Terminated 'oocldocker1'
+     [exec] + [ false == true ]
+     [exec] ./vagrant_destroy_vms.sh: 9: [: false: unexpected operator
+     [exec] + exit
+[INFO] Executed tasks
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- ep-maven-plugin:1.2.1:stop-nodes (default-stop-nodes) @ vagrant ---
+[INFO] Stop and remove nodes is skipped
+[INFO] 
+[8mha:////4PM3IKEEPP5XVJ7W0Np0T1uGUS2G/Ydu3Bv3iAcCxGD7AAAAYB+LCAAAAAAAAP9b85aBtbiIQSmjNKU4P0+vJLE4u1gvPjexLDVPzxdEGvvmZ+X75ZekLlOVfvTjc8FPJgaGiiIGKaiG5Py84vycVD1nCA1SyAABjCCFBQCV27OjYAAAAA==[0m[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ vagrant ---
+[INFO] Deleting /opt/bitnami/apps/jenkins/jenkins_home/workspace/cargosmart-partition-docker-azure/vagrant/target
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 02:14 min
+[INFO] Finished at: 2018-05-13T12:43:19-04:00
+[INFO] ------------------------------------------------------------------------
+ERROR: Failed to parse POMs
+java.io.IOException: Remote call on Channel to Maven [/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.model.JDK/jdk8u172/bin/java, -cp, /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven35-agent-1.12-alpha-1.jar:/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/boot/plexus-classworlds-2.5.2.jar:/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/conf/logging, jenkins.maven3.agent.Maven35Main, /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3, /opt/bitnami/apache-tomcat/webapps/jenkins/WEB-INF/lib/remoting-3.17.jar, /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven35-interceptor-1.12-alpha-1.jar, /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven3-interceptor-commons-1.12-alpha-1.jar, 45663] failed
+	at hudson.remoting.Channel.call(Channel.java:958)
+	at hudson.maven.ProcessCache$MavenProcess.call(ProcessCache.java:161)
+	at hudson.maven.MavenModuleSetBuild$MavenModuleSetBuildExecution.doRun(MavenModuleSetBuild.java:879)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:504)
+	at hudson.model.Run.execute(Run.java:1727)
+	at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:543)
+	at hudson.model.ResourceController.execute(ResourceController.java:97)
+	at hudson.model.Executor.run(Executor.java:429)
+Caused by: java.lang.LinkageError: loader constraint violation: loader (instance of hudson/remoting/RemoteClassLoader) previously initiated loading for a different type with name "org/slf4j/Logger"
+	at hudson.maven.Maven3FailureLogger.logSummary(Maven3FailureLogger.java:125)
+	at hudson.maven.Maven3FailureLogger.logFailures(Maven3FailureLogger.java:43)
+	at hudson.maven.Maven3Builder.call(Maven3Builder.java:168)
+	at hudson.maven.Maven3Builder.call(Maven3Builder.java:70)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:210)
+	at hudson.remoting.UserRequest.perform(UserRequest.java:53)
+	at hudson.remoting.Request$2.run(Request.java:364)
+	at hudson.remoting.InterceptingExecutorService$1.call(InterceptingExecutorService.java:72)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+	Suppressed: hudson.remoting.Channel$CallSiteStackTrace: Remote call to Channel to Maven [/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.model.JDK/jdk8u172/bin/java, -cp, /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven35-agent-1.12-alpha-1.jar:/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/boot/plexus-classworlds-2.5.2.jar:/opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3/conf/logging, jenkins.maven3.agent.Maven35Main, /opt/bitnami/apps/jenkins/jenkins_home/tools/hudson.tasks.Maven_MavenInstallation/3.5.3, /opt/bitnami/apache-tomcat/webapps/jenkins/WEB-INF/lib/remoting-3.17.jar, /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven35-interceptor-1.12-alpha-1.jar, /opt/bitnami/apps/jenkins/jenkins_home/plugins/maven-plugin/WEB-INF/lib/maven3-interceptor-commons-1.12-alpha-1.jar, 45663]
+		at hudson.remoting.Channel.attachCallSiteStackTrace(Channel.java:1737)
+		at hudson.remoting.UserResponse.retrieve(UserRequest.java:313)
+		at hudson.remoting.Channel.call(Channel.java:952)
+		at hudson.maven.ProcessCache$MavenProcess.call(ProcessCache.java:161)
+		at hudson.maven.MavenModuleSetBuild$MavenModuleSetBuildExecution.doRun(MavenModuleSetBuild.java:879)
+		at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:504)
+		at hudson.model.Run.execute(Run.java:1727)
+		at hudson.maven.MavenModuleSetBuild.run(MavenModuleSetBuild.java:543)
+		at hudson.model.ResourceController.execute(ResourceController.java:97)
+		at hudson.model.Executor.run(Executor.java:429)
+Finished: FAILURE

@@ -1,0 +1,10 @@
+# rename to ~user/.ast/options
+# use to past in dtm deploy options
+#
+#
+#     Any line starting with '#' is ignored
+#
+#     Each option is specified on a separate line, as follows:
+#
+# increase detach timeout since spinning up multiple nodes on same container is taking JVM longer to startup
+detachtimeout = 900

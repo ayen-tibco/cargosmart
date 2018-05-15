@@ -1,0 +1,85 @@
+# Copyright (c) 2017 TIBCO Software Inc.
+#
+# This Dockerfile creates SB10 image with Streambase Application
+# using Maven filtering will substitute ${} with pom.xml properties or from command line -Dvariable=value
+#
+# Requirements:
+#  - Docker Host
+#  - SB 10 Linux runtime binary
+#  - SB Application
+#  - Centos/Fedora/RH7 and JDK 1.8+
+FROM ${DOCKER_BASE_IMAGE}
+
+MAINTAINER Adam Yen <ayen@tibco.com>
+
+# Locations for SB and Samples
+ENV TIBCO_INSTALL_DIR=${TIBCO_INSTALL_DIR}
+ENV SB_CEP_VERSION=${SB_CEP_VERSION}
+ENV STREAMBASE_HOME=$TIBCO_INSTALL_DIR/sb-cep/$SB_CEP_VERSION
+ENV TIBCO_EP_HOME=${DOCKER_TIBCO_EP_HOME}
+ENV INSTALL_NODE_PATH=${TIBCO_INSTALL_DIR}/deploy/nodes
+ENV ADMINISTRATOR=${DOCKER_TIBCO_EP_HOME}/distrib/tibco/bin/epadmin
+ENV SB_TARBALL=${SB_TARBALL}
+ENV SB_APP_FILE=${SB_APP_FILE}
+ENV SB_APP_DIR=${SB_APP_DIR}
+ENV NODE_CONFIG=${NODE_CONFIG}
+ENV SUBSTITUTIONS=${SUBSTITUTIONS}
+ENV MAVEN_HOME=${DOCKER_TIBCO_EP_HOME}/3rdparty/generic/maven/3.3.3
+ENV NODENAME=${nodename}
+
+COPY maven/ /
+
+# Add supporting Centos packages
+RUN yum -y install zip wget tar sysstat unzip git java-1.8.0-openjdk java-1.8.0-openjdk-devel bind-utils tcpdump net-tools hostname && \
+ yum clean all
+
+ENV JAVA_HOME=/etc/alternatives/java_sdk_1.8.0
+
+# use non-root if required - otherwise everything will be installed and run as root
+# create tibco user
+RUN groupadd -g 3303 -f sbusers && \
+ useradd -c "TIBCO StreamBase User" -m -p Tibco123 -u 3303 -g sbusers -s /bin/bash sbuser && \
+ mkdir -p $TIBCO_EP_HOME && chown -R sbuser:sbusers $TIBCO_EP_HOME && \
+ mkdir -p $SB_APP_DIR && chown -R sbuser:sbusers $SB_APP_DIR && \
+ mkdir -p $TIBCO_INSTALL_DIR && chown -R sbuser:sbusers $TIBCO_INSTALL_DIR
+
+# Copy and extract latest SB binary runtime
+${EXTRACT_RUNTIME}
+ENV PATH=$TIBCO_EP_HOME/distrib/tibco/bin:$PATH
+
+# Apply permissions on config files
+RUN chmod -R ugo+rx $SB_APP_DIR
+
+# copy initialization/startup script
+RUN chmod ugo+x $TIBCO_EP_HOME/distrib/tibco/bin/startsb.sh
+
+# Add detachtimeout in sbuser dtm option file so maven build won't error when starting up cluster nodes on slow machines
+COPY sbuser_dtm_options /home/sbuser/.dtm/options
+RUN chown sbuser:sbusers /home/sbuser/.dtm/options
+
+# expose network ports per AST 2.5.1 adminguide.pdf
+# still require -p in docker run command to map external to these internal ports
+
+# expose internal admin port
+EXPOSE 5556/tcp
+
+# expose internal Distribution Transport
+EXPOSE 5557/tcp
+
+# expose internal jmx admin port
+EXPOSE 5558/tcp
+
+# expose SB discover service port
+EXPOSE 54321/udp
+
+# expose SB default Server  port
+EXPOSE 10000
+
+# expose SB LVWeb default Server  port
+EXPOSE 10080
+
+USER sbuser
+
+WORKDIR $TIBCO_EP_HOME/distrib/tibco/bin
+# exec first node - you only get to exec once in docker thus the need for a custom initialization script
+ENTRYPOINT ["./startsb.sh", "Cluster1"]

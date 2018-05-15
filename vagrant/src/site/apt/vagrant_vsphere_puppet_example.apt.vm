@@ -1,0 +1,230 @@
+  ------
+  Vagrant vSphere Puppet Example
+  ------
+~~ %{snippet|file=pom.xml}  
+~~ Copyright 2017 TIBCO Software Inc. ALL RIGHTS RESERVED.
+
+Introduction
+
+%{toc}
+
+  The following sections provide usage information on using Vagrant's integration with puppet agent example.
+  By default, the {{{https://github.com/nsidc/vagrant-vsphere}Vagrant-vsphere Plugin}} is 
+  used as the provider and {{{https://www.vagrantup.com/docs/provisioning/puppet_agent.html}puppet_server}} as the provisioner.
+  
+  The goal is to create vsphere compute VMs with Vagrant 
+  and provision the VMs with Puppet.  Vagrant utilizes open source version of Puppet server and agents to remotely
+  deploy docker containers running StreamBase Application. For Puppet Enterprise Server see {{{../puppet/index.html}Puppet Example}}.
+
+  The topologies application archive will be used along with the {{{../../applications/topologies/index.html}two node active}} 
+  configuration.  Two VMs are created to host each docker container. ep-maven-plugin is 
+  used to display the status of the node after the container is launched.
+
+  Complete Maven lifecycle will create VMs, deploy SB10, run ep-maven test,
+  and remove the VMs.
+
++------------
+mvn post-integration-test
++------------
+  
+  Maven target directory target/staging/vsphere will be created for Vagrant to bootstrap
+  and deploy with the necessary support files.
+  
+  Puppet scripts will be copied from puppet directory to target/staging/vsphere/puppet_server 
+  for provisioning the VMs.
+  
+* Prepare a vSphere Template
+
+  In this example, a vsphere template is used to create VMs. The plugin also supports cloning
+  from existing VM. In this example, a Centos 7.3 Linux VM was created in vCenter with default
+  vagrant user and password account. VMware tools was also installed. Then it was converted into
+  a template.
+  
+* Setting Profile Properties
+
+  Profile properties file are used and are located at src/main/resources/profiles/<provider>/config.properties.
+  In Maven, profile id represents the provider. The Maven <<initialize>> lifecycle is used
+  to load the config.properties for antrun shell scripts. Also filtering are set to use 
+  the profile properties file when copying resources like Vagrantfile and scripts.
+
+  The filtering customizes the Vagrantfile with vsphere specific settings, hostnames, 
+  number of VMs to be deployed, etc.
+  
+  In addition to these settings, Vsphere credentials and vCenter settings are required
+  for VMs to be provisioned.
+
++------------
+cp src/main/resources/profiles/vsphere/config.puppet_server.properties src/main/resources/profile/vsphere/config_myversion_puppet_server.properties
+vi src/main/resources/profile/vsphere/config_myversion_puppet_server.properties
+mvn -Pvsphere post-integration-test -DCONFIG_PROP_FILE=config_myversion_puppet_server.properties
++------------
+  
+  config.puppet_server.properties
+  
+%{snippet|file=${project.basedir}/src/main/resources/profiles/vsphere/config.puppet_server.properties}
+
+  The following custom property variables MUST be set prior to running Maven lifecycles.
+
+*------------------------*------------------------------------------*---------------------------------------*
+| <<Variable Name>>      | <<Description>>                          | <<Example Value(s)>>                  |
+*------------------------*------------------------------------------*---------------------------------------*
+|VSPHERE_USERNAME,        |vSphere vCenter credentials necessary     |                                       |
+|VSPHERE_PASSWORD,        |to create VMs.                            |                                       |
+|VSPHERE_VCENTER_HOST,    |vCenter hostname, template, resource pool |                                       |
+|VSPHERE_COMPUTE_RESOURCE_NAME,|OR computer resource.                |                                       |
+|VSPHERE_RESOURCE_POOL_NAME,|                                       |
+|VSPHERE_TEMPLATE|                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|PUPPET_DOMAIN           |Set your own fully qualified domain or    |
+|                        |use puppet's default.                     |
+*------------------------*------------------------------------------*---------------------------------------*
+|PUPPET_SERVER           |By default, this is set to your primary   |<B1.topologies>                        |
+|                        |node FQDN hostname                        |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|SB_DOCKER_IMAGE,         |Custom StreamBase App and Binary Docker   |                                       |
+|SB_DOCKER_IMAGE_TAG     |image and tag (default latest).           |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY         |Private or public registry.               | <docker.io> (default) |
+|                       |                                           | OR |
+|                       |                                           | myprivaterepo.domain.com:5000 |
+*------------------------*------------------------------------------*---------------------------------------*
+|DOCKER_REGISTRY_USERNAME,|Docker credentials. Can be blank if not   |                                       |
+|DOCKER_REGISTRY_PASSWORD,|required by registry                       |                                       |
+*------------------------*------------------------------------------*---------------------------------------*
+Required Custom Property Settings for vSphere vCenter with Puppet Server Deployment
+
+* Create and provision VMs
+
+  The compile goal copies the vsphere custom Vagrant and supporting Puppet script files. It
+  then installs the vagrant-vsphere plugin and hostmanager plugin.
+  The hostmanager plugin is needed to update /etc/hosts file locally and remotely with
+  the name of the VMs.  This allows the local Vagrant host to access the remote VMs
+  by name.
+  
+  <<<vagrant up>>> is called with puppet shell provisioning which installs the puppet agent
+  for all nodes and puppet server for the primary node by default.
+  
++------------  
+mvn compile
+...
+INFO] Using 'UTF-8' encoding to copy filtered resources.
+17:28:51 [INFO] Copying 5 resources
+17:28:51 [INFO] Copying 4 resources
+17:28:51 [INFO] 
+17:28:51 [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-provisioner-scripts) @ vagrant ---
+17:28:51 [INFO] Using 'UTF-8' encoding to copy filtered resources.
+17:28:51 [INFO] Copying 100 resources
+ [INFO] --- maven-resources-plugin:2.7:copy-resources (copy-nodeconfig) @ vagrant ---
+ [INFO] Using 'UTF-8' encoding to copy filtered resources.
+ [INFO] Copying 1 resource
+ [INFO] 
+ [INFO] --- maven-dependency-plugin:2.10:copy (copy-sb-app) @ vagrant ---
+ [INFO] Configured Artifact: com.tibco.ep.dtmexamples.applications:topologies:3.1.0-SNAPSHOT:ep-application
+ [INFO] Configured Artifact: com.tibco.ep.sb.rt:platform_linuxx86_64:10.1.0-SNAPSHOT:zip
+ [INFO] Copying topologies-3.1.0-SNAPSHOT.zip to applications/vagrant/target/staging/vsphere/app/topologies-3.1.0-SNAPSHOT.zip
+ [INFO] Copying platform_linuxx86_64-10.1.0-SNAPSHOT.zip to applications/vagrant/target/staging/vsphere/app/platform_linuxx86_64-10.1.0-SNAPSHOT.zip
+ [INFO] 
+ [INFO] --- maven-antrun-plugin:1.8:run (install-hostmanager-plugin) @ vagrant ---
+ [INFO] Executing tasks
+ 
+ install_hostmanager_plugin:
+ [INFO] Executed tasks
+ [INFO] 
+ [INFO] --- maven-antrun-plugin:1.8:run (install-vsphere-plugin) @ vagrant ---
+ [INFO] Executing tasks
++------------
+  
+* Custom Provision and Run Containers
+
+  The antrun target <provision-sb-vsphere> executes <<<vagrant provision>>> script calling Puppet.
+  This assume previous compile lifecycle has been executed.
+  
+  Results:
+
++------------
+$ mvn initialize antrun:run@provision-sb-vsphere
+[INFO] Executing tasks
+provision_sb_vsphere:
+16:10:18      [exec] ==> B1: Rsyncing folder: /opt/kabira/users/jenkins/workspace/EventProcessing/dtmexamples.vagrant.puppet.vsphere.linux/applications/vagrant/target/staging/vsphere/app/ => /opt/tibco/topologies
+16:10:18      [exec] ==> B1:   - Exclude: [".vagrant/", "sb"]
+16:10:19      [exec] ==> B1: Rsyncing folder: /opt/kabira/users/jenkins/workspace/EventProcessing/dtmexamples.vagrant.puppet.vsphere.linux/applications/vagrant/target/staging/vsphere/ => /vagrant
+16:10:20      [exec] ==> B1: Running provisioner: puppet_server...
+16:10:20      [exec] ==> B1: Running Puppet agent...
+16:10:49      [exec] ==> B2: Rsyncing folder: /opt/kabira/users/jenkins/workspace/EventProcessing/dtmexamples.vagrant.puppet.vsphere.linux/applications/vagrant/target/staging/vsphere/app/ => /opt/tibco/topologies
+16:10:49      [exec] ==> B2:   - Exclude: [".vagrant/", "sb"]
+16:10:50      [exec] ==> B2: Rsyncing folder: /opt/kabira/users/jenkins/workspace/EventProcessing/dtmexamples.vagrant.puppet.vsphere.linux/applications/vagrant/target/staging/vsphere/ => /vagrant
+16:10:51      [exec] ==> B2: Running provisioner: puppet_server...
+16:10:51      [exec] ==> B2: Running Puppet agent...
+16:11:39      [exec] ==> B1: Info: Using configured environment 'production'
+16:11:39      [exec] ==> B1: Info: Retrieving pluginfacts
+16:11:39      [exec] ==> B1: Notice: /File[/opt/puppetlabs/puppet/cache/facts.d]/mode: mode changed '0755' to '0775'
+16:11:39      [exec] ==> B1: Info: Retrieving plugin
+16:11:39      [exec] ==> B1: Notice: /File[/opt/puppetlabs/puppet/cache/lib/facter]/ensure: created
+16:11:39      [exec] ==> B1: Notice: /File[/opt/puppetlabs/puppet/cache/lib/facter/apt_reboot_required.rb]/ensure: defined content as '{md5}7c3fc46f254fc4b4579d011578caaadb'
+...
+16:11:39      [exec] ==> B1: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B1.topologies] 		Discovery Service running on port 54321
+16:11:39      [exec] ==> B1: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B1.topologies] 		Service name is B1.topologies
+16:11:39      [exec] ==> B1: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B1.topologies] 	Node started
+16:11:39      [exec] ==> B1: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: executed successfully
+16:11:39      [exec] ==> B1: Info: Creating state file /opt/puppetlabs/puppet/cache/state/state.yaml
+16:11:39      [exec] ==> B1: Notice: Applied catalog in 65.07 seconds
+16:11:39      [exec] ==> B2: Info: Creating a new SSL key for b2.serv.streambase.com
+16:11:39      [exec] ==> B2: Info: Caching certificate for ca
+16:11:39      [exec] ==> B2: Info: csr_attributes file loading from /etc/puppetlabs/puppet/csr_attributes.yaml
+16:11:39      [exec] ==> B2: Info: Creating a new SSL certificate request for b2.serv.streambase.com
+16:11:39      [exec] ==> B2: Info: Certificate Request fingerprint (SHA256): E1:C7:E6:1D:81:AC:76:E5:2A:1C:F8:9C:3C:C1:ED:AF:02:64:0C:63:11:31:17:A6:93:60:1F:57:40:C5:51:BA
+16:11:39      [exec] ==> B2: Info: Caching certificate for b2.serv.streambase.com
+16:11:39      [exec] ==> B2: Info: Caching certificate_revocation_list for ca
+16:11:39      [exec] ==> B2: Info: Caching certificate for ca
+16:11:39      [exec] ==> B2: Info: Using configured environment 'production'
+16:11:39      [exec] ==> B2: Info: Retrieving pluginfacts
+16:11:39      [exec] ==> B2: Notice: /File[/opt/puppetlabs/puppet/cache/facts.d]/mode: mode changed '0755' to '0775'
+16:11:39      [exec] ==> B2: Info: Retrieving plugin
+...
+16:11:39      [exec] ==> B2: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B2.topologies] 	Starting node
+16:11:39      [exec] ==> B2: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B2.topologies] 		Engine application::default-engine-for-com.tibco.ep.dtmexamples.javafragment.helloworld started
+16:11:39      [exec] ==> B2: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B2.topologies] 		Loading node configuration
+16:11:39      [exec] ==> B2: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B2.topologies] 		Auditing node security
+16:11:39      [exec] ==> B2: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B2.topologies] 		Host name B2
+16:11:39      [exec] ==> B2: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B2.topologies] 		Administration port is 5556
+16:11:39      [exec] ==> B2: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B2.topologies] 		Discovery Service running on port 54321
+16:11:39      [exec] ==> B2: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B2.topologies] 		Service name is B2.topologies
+16:11:39      [exec] ==> B2: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: [B2.topologies] 	Node started
+16:11:39      [exec] ==> B2: Notice: /Stage[main]/Streambase::Deploy/Exec[topologies]/returns: executed successfully
+16:11:39      [exec] ==> B2: Info: Creating state file /opt/puppetlabs/puppet/cache/state/state.yaml
+16:11:39      [exec] ==> B2: Notice: Applied catalog in 32.18 seconds
++------------
+    
+* Stop and Remove Containers
+
+  Invoking maven lifecycle <<clean>> will run <<<vagrant destroy>>> script to remove the VMs.
+
++------------  
+mvn -fn initialize clean
++------------
+  
+  OR
+  
++------------  
+mvn initialize antrun:run@destroy-vsphere-vms
++------------
+  
+* Tests
+  
+  ep-maven-plugin is invoked with 'display node' on the first node running inside
+  container B1.topologies.
+
++------------  
+mvn initialize ep:administer-nodes@display-nodes
+16:12:41 [INFO] [5556] Running "display node"
+16:12:41 [INFO] Node      Node Name     Node Description Node State Host Name Administration Port Discovery Service     Container Node Directory                        Deployment Directories                                    Install Time                  Last Start Time               Build Type  Product Version                                                                         Product Installation Directory Web Server State Web Server URLs 
+16:12:41 [INFO] [B1:5556] B1.topologies No description   Started    B1        5556                running on port 54321 tibco/sb  /opt/tibco/deploy/nodes/B1.topologies /lib:/opt/tibco/topologies:/opt/tibco/topologies/java-bin 2017-02-17 16:10:53 -0500 UTC 2017-02-17 16:11:04 -0500 UTC DEVELOPMENT TIBCO StreamBase Runtime 10.1.0-SNAPSHOT (build 1701101138 streambase-master-linux-264) /opt/tibco/sb-cep/10       Started          http://B1:32890 
+16:12:41 [INFO] [5556] Finished "display node"
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
++------------
+  
+  Codeline :
+  
+%{snippet|id=eptest|file=${project.basedir}/pom.xml}

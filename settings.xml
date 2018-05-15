@@ -1,0 +1,28 @@
+<settings>
+  <profiles>
+    <profile>
+      <id>default</id>
+      <properties>
+        <docker.prefix></docker.prefix>
+      </properties>
+      <repositories>
+        <repository>
+          <id>sb10-local</id>
+          <name>Local SB10 repository</name>
+          <url>file:///opt/tibco/sb-cep/10.2/sdk/maven/repo</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>sb10-local</id>
+          <name>Local SB10 repository</name>
+          <url>file:///opt/tibco/sb-cep/10.2/sdk/maven/repo</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>default</activeProfile>
+  </activeProfiles>
+</settings>
+
