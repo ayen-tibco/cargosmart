@@ -1,11 +1,5 @@
 # Copyright (c) 2018 TIBCO Software Inc.
 #
-    - name: pull image
-      become: True
-      docker_image: 
-        state: present
-        name: "{{ DOCKER_REGISTRY }}/{{ TIBCO_SB_DOCKER_IMAGE }}"
-
     - name: start SB container
       become: True
       docker_container:
