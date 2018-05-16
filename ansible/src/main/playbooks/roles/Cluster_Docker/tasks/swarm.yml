@@ -11,6 +11,11 @@
     - name: remove existing stack services
       command: docker stack rm {{SB_APP_NAME}}
       delegate_to: "{{ swarm_manager }}"
+
+    - name: Wait 15 seconds for stack to be removed
+      wait_for: 
+        timeout: 15
+      delegate_to: "{{ swarm_manager }}"
       
     - name: deploy SB app stack to swarm
       shell: "docker stack deploy --resolve-image always -c {{SB_APP_DIR}}/docker-compose.yml {{SB_APP_NAME}}"
@@ -19,4 +24,46 @@
 
     - debug:
         var: stackoutput
+      delegate_to: "{{ swarm_manager }}"
+
+    - name: wait and verify sb mgmt port on local swarm manager
+      command: "{{ EP_ADMIN_BIN }} adminport={{ SB_ADMIN_PORT }} username=guest password=guest display node"
+      register: adminport_result
+      when: stackoutput.rc == 0
+      until: adminport_result.rc == 0
+      retries: 5
+      delay: 30
+      ignore_errors: yes
+      delegate_to: "{{ swarm_manager }}"
+
+    - debug:
+        msg: "{{adminport_result.stdout_lines}}"
+      delegate_to: "{{ swarm_manager }}"
+
+    - name: Wait 15 seconds for SB cluster and partition to come up
+      wait_for:
+        timeout: 15
+      when: adminport_result.rc == 0
+      delegate_to: "{{ swarm_manager }}"
+
+    - name: display node cluster
+      command: "{{ EP_ADMIN_BIN }} adminport={{ SB_ADMIN_PORT }} username=guest password=guest display cluster"
+      register: cluster_result
+      when: adminport_result.rc == 0
+      ignore_errors: yes
+      delegate_to: "{{ swarm_manager }}"
+
+    - debug:
+        msg: "{{cluster_result.stdout_lines}}"
+      delegate_to: "{{ swarm_manager }}"
+
+    - name: display node partition
+      command: "{{ EP_ADMIN_BIN }} adminport={{ SB_ADMIN_PORT }} username=guest password=guest display partition"
+      register: partition_result
+      when: adminport_result.rc == 0
+      ignore_errors: yes
+      delegate_to: "{{ swarm_manager }}"
+
+    - debug:
+        msg: "{{partition_result.stdout_lines}}"
       delegate_to: "{{ swarm_manager }}"
