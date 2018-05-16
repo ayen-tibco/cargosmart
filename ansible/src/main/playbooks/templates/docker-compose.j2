@@ -7,7 +7,7 @@ services:
 {% set AdminPortIndex = AdminPortIndex + loop.index0 %}
 {% set SBPortPrefix = SBPortPrefix + loop.index0 %}
   A{{ loop.index }}:
-    image: {{ TIBCO_SB_DOCKER_IMAGE }}
+    image: {{ TIBCO_SB_DOCKER_IMAGE }}:{{ TIBCO_SB_DOCKER_IMAGE_TAG }}
     deploy:
       placement:
         constraints:
