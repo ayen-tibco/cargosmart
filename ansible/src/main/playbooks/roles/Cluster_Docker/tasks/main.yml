@@ -37,6 +37,12 @@
       delegate_to: 127.0.0.1
       run_once: true
 
+    - name: pull image
+      become: True
+      docker_image:
+        state: present
+        name: "{{ DOCKER_REGISTRY }}/{{ TIBCO_SB_DOCKER_IMAGE }}"
+
     - name: deploy container via swarm manager
       include: swarm.yml
       when: swarm_manager is defined
