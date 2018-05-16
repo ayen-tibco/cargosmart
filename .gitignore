@@ -1,0 +1,12 @@
+# Eclipse project settings. Settings files not be needed because all our
+# projects are Maven plain old jar projects; m2e should be capable of
+# recreating settings with Import Existing Maven Projects.
+**/.classpath
+**/.project
+**/.settings
+**/.mine
+
+**/target/**
+.DS_Store
+docker_machine_maven_mine.sh
+
