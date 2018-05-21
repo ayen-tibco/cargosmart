@@ -45,11 +45,19 @@
     - name: retrieve swarm manager token
       shell: docker swarm join-token -q manager
       when: inventory_hostname == swarm_manager
-      register: swarm_manager_token
+      register: manager_result
       tags: swarm
       
     - name: retrieve swarm worker token
       shell: docker swarm join-token -q worker
       when: inventory_hostname == swarm_manager
-      register: swarm_worker_token
+      register: worker_result
       tags: swarm
+
+    - name: set_facts for swarm manager token for hostvars    
+      set_fact: 
+        swarm_manager_token: manager_result 
+
+    - name: set_facts for swarm worker token for hostvars
+      set_fact: 
+        swarm_worker_token: worker_result

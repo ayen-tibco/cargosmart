@@ -132,7 +132,7 @@ SCRIPT
                 # trick to get playbook run only once with parallelism
                 if i == N
                     instance.vm.provision "ansible" do |ansible|
-#                        ansible.verbose = "v"
+                        ansible.verbose = "vv"
                         # fix for ansible plugin hard coded 30s timeout
                         ansible.raw_arguments = ["--timeout=120"]
                         ansible.limit = "all"
