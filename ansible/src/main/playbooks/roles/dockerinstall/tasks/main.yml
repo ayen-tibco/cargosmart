@@ -23,7 +23,7 @@
 
     - name: set swarm manager if undefined
       set_fact:
-        swarm_manager: "{{ groups['partition'][0] }}"
+        swarm_manager: "{{ groups['${ANSIBLE_HOST_GROUP}'][0] }}"
       when: swarm_manager|default(None) == None
       tags: swarm
 

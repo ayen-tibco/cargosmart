@@ -11,6 +11,7 @@
 - name: check if weave docker plugin is installed
   shell: "docker plugin ls -f capability='networkdriver' | grep {{weaveplugin}}"
   register: weaveplugin_result
+  ignore_errors: true
 
 - name: Install Weave plugin for docker
   command: docker plugin install --grant-all-permissions weaveworks/net-plugin:latest_release
